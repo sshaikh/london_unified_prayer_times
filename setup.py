@@ -1,22 +1,53 @@
-import setuptools
+#!/usr/bin/env python
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+"""The setup script."""
 
-setuptools.setup(
-    name="london-unified-prayer-times",
-    version="0.0.1",
-    author="sshaikh",
-    author_email="sshaikh@users.noreply.github.com",
-    description="A library for retrieving the London Unified Prayer Timetable",
-    long_description=long_description,
-    long_description_content_type="text/markdown",
-    url="https://github.com/sshaikh/london-unified-prayer-timetable",
-    packages=setuptools.find_packages(exclude=("tests",)),
+from setuptools import setup, find_packages
+
+with open('README.rst') as readme_file:
+    readme = readme_file.read()
+
+with open('HISTORY.rst') as history_file:
+    history = history_file.read()
+
+requirements = ['Click>=7.0', ]
+
+setup_requirements = ['pytest-runner', ]
+
+test_requirements = ['pytest>=3', ]
+
+setup(
+    author="Shakil Shaikh",
+    author_email='sshaikh@users.noreply.github.com',
+    python_requires='>=3.5',
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GPLv3",
-        "Operating System :: OS Independent",
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
-    python_requires='>=3.6',
+    description="A library for retrieving data from The London Unified Prayer Timetable.",
+    entry_points={
+        'console_scripts': [
+            'london_unified_prayer_times=london_unified_prayer_times.cli:main',
+        ],
+    },
+    install_requires=requirements,
+    license="GNU General Public License v3",
+    long_description=readme + '\n\n' + history,
+    include_package_data=True,
+    keywords='london_unified_prayer_times',
+    name='london_unified_prayer_times',
+    packages=find_packages(include=['london_unified_prayer_times', 'london_unified_prayer_times.*']),
+    setup_requires=setup_requirements,
+    test_suite='tests',
+    tests_require=test_requirements,
+    url='https://github.com/sshaikh/london_unified_prayer_times',
+    version='0.1.0',
+    zip_safe=False,
 )
