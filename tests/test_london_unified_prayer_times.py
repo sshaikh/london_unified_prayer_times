@@ -6,24 +6,8 @@ import pytest
 
 from click.testing import CliRunner
 
-from london_unified_prayer_times import london_unified_prayer_times
+from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
-
-
-@pytest.fixture
-def response():
-    """Sample pytest fixture.
-
-    See more at: http://doc.pytest.org/en/latest/fixture.html
-    """
-    # import requests
-    # return requests.get('https://github.com/audreyr/cookiecutter-pypackage')
-
-
-def test_content(response):
-    """Sample pytest test function with the pytest fixture as an argument."""
-    # from bs4 import BeautifulSoup
-    # assert 'GitHub' in BeautifulSoup(response.content).title.string
 
 
 def test_command_line_interface():
@@ -35,3 +19,10 @@ def test_command_line_interface():
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert '--help  Show this message and exit.' in help_result.output
+
+
+@pytest.mark.vcr()
+def test_get_json_data():
+    url = ("https://mock.location.com/lupt")
+    json = lupt.get_json_data(url)
+    assert json is not None
