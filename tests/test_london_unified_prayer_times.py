@@ -4,6 +4,7 @@
 
 import pytest
 import json
+import jsonschema
 
 from click.testing import CliRunner
 
@@ -86,8 +87,9 @@ def test_get_json_data():
 
 
 def test_validate_json(single_day):
-    assert lupt.validate_json(single_day)
+    assert jsonschema.validate(single_day, lupt.lupt_schema) is None
 
 
 def test_invalid_json(bad_json):
-    assert not lupt.validate_json(bad_json)
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(bad_json, lupt.lupt_schema)

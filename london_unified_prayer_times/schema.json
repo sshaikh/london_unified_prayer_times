@@ -1,0 +1,22 @@
+{
+    "$id": "https://github.com/sshaikh/london_unified_prayer_times",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "data": {
+            "type": "array",
+            "items": {"$ref": "#/definitions/day"}
+        }
+    },
+    "definitions": {
+        "day": {
+            "type": "object",
+            "required": ["gregoriandate"],
+            "properties": {
+                "gregoriandate": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
