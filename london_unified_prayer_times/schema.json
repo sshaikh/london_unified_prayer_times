@@ -14,9 +14,70 @@
             "required": ["gregoriandate"],
             "properties": {
                 "gregoriandate": {
-                    "type": "string"
+                    "type": "string",
+		    "format": "date-time"
+                },
+                 "islamicday": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1\\d|2\\d|30)$"
+                },
+                   "islamicmonth": {
+                    "type": "string",
+		    "enum": ["Muharram", "Safar", "Rabi‘ Al-Awwal", "Rabi‘ Al-Ākhir", "Jumāda Al-Ūlā", "Jumāda Al-Ākhirah", "Rajab", "Sha‘bān", "Ramadān", "Shawwāl", "Dhū Al-Qa‘dah", "Dhū Al-Hijjah"]
+                },
+                 "islamicyear": {
+                    "type": "string",
+		    "pattern": "^\\d{4}$"
+                },
+                 "sunrise": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+               },
+                  "fajrbegins": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "fajrjamāah": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "zuhrbegins": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "zuhrjamāah": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "asrmithl1": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "asrmithl2": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "asrjamāah": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "maghribbegins": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "maghribjamāah": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "ishābegins": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
+                },
+                  "ishājamāah": {
+                    "type": "string",
+		    "pattern": "^([1-9]|1[012]):([0-5][0-9])$"
                 }
-            }
+           }
         }
     }
 }
