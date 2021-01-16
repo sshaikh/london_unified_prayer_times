@@ -5,6 +5,7 @@
 import pytest
 import json
 import jsonschema
+import datetime
 
 from click.testing import CliRunner
 
@@ -79,6 +80,11 @@ def bad_json():
 """)
 
 
+@pytest.fixture
+def london_timezone():
+    return 'Europe/London'
+
+
 @pytest.mark.vcr()
 def test_get_json_data():
     url = ("https://mock.location.com/lupt")
@@ -93,3 +99,35 @@ def test_validate_json(single_day):
 def test_invalid_json(bad_json):
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(bad_json, lupt.lupt_schema)
+
+
+def test_fix_gregorian_date_bst(london_timezone):
+    sample = "2020-10-01T23:00:00.000Z"
+    expected = datetime.date(2020, 10, 2)
+    found = lupt.fix_gregorian_date(sample, london_timezone)
+
+    assert found == expected
+
+
+def test_fix_gregorian_date_gmt(london_timezone):
+    sample = "2020-11-01T00:00:00.000Z"
+    expected = datetime.date(2020, 11, 1)
+    found = lupt.fix_gregorian_date(sample, london_timezone)
+
+    assert found == expected
+
+
+def test_fix_gregorian_date_bst_midnight(london_timezone):
+    sample = "2020-10-01T00:00:00.000Z"
+    expected = datetime.date(2020, 10, 1)
+    found = lupt.fix_gregorian_date(sample, london_timezone)
+
+    assert found == expected
+
+
+def test_fix_gregorian_date_gmt_2300(london_timezone):
+    sample = "2020-11-01T23:00:00.000Z"
+    expected = datetime.date(2020, 11, 1)
+    found = lupt.fix_gregorian_date(sample, london_timezone)
+
+    assert found == expected
