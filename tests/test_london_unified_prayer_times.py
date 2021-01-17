@@ -131,7 +131,8 @@ def test_fix_gregorian_date_gmt_2300():
 def help_test_unaware_time_to_utc(sample_time, sample_date, expected,
                                   is_pm=False):
     tz = pytz.timezone('Europe/London')
-    found = lupt.unaware_time_to_utc(sample_time, sample_date, tz, is_pm)
+    h, m = map(int, sample_time.split(':'))
+    found = lupt.unaware_time_to_utc(h, m, sample_date, tz, is_pm)
     assert found == expected
 
 
@@ -157,9 +158,9 @@ def test_unaware_time_to_utc_gmt_pm():
 
 
 def test_is_zhur_pm():
-    assert lupt.is_zhur_pm("11:13") is False
-    assert lupt.is_zhur_pm("1:13") is True
-    assert lupt.is_zhur_pm("4:13") is False
+    assert lupt.is_zhur_pm(11, 4) is False
+    assert lupt.is_zhur_pm(1, 4) is True
+    assert lupt.is_zhur_pm(4, 4) is False
 
 
 @pytest.fixture
@@ -175,7 +176,7 @@ def help_test_auto_am_pm(pm_prayers):
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
                                                 pytz.timezone('Europe/London'),
-                                                prayer, pm_prayers)
+                                                prayer, pm_prayers, 4)
 
         assert found == expected
     return help_test_auto_am_pm
