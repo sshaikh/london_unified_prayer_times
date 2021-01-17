@@ -12,10 +12,10 @@ import datetime
 lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))
 
 
-def get_json_data(url):
+def get_json_data(url, schema=lupt_schema):
     with urllib.request.urlopen(url) as data:
         json_data = json.loads(data.read().decode())
-        jsonschema.validate(json_data, lupt_schema)
+        jsonschema.validate(json_data, schema)
         return json_data
 
 
@@ -33,3 +33,15 @@ def unaware_time_to_utc(sample_time, sample_date, timezone, is_pm=False):
     dt = timezone.localize(datetime.datetime.combine(sample_date, time))
     dt_utc = dt.astimezone(pytz.utc)
     return dt_utc
+
+
+def is_zhur_pm(sample_time):
+    h, m = map(int, sample_time.split(':'))
+    return (h < 4)
+
+
+def unaware_prayer_time_to_utc(sample_time, sample_date, timezone,
+                               prayer, pm_prayers):
+    is_pm = ((prayer in pm_prayers) or
+             (prayer.startswith("zhur") and is_zhur_pm(sample_time)))
+    return unaware_time_to_utc(sample_time, sample_date, timezone, is_pm)

@@ -154,3 +154,76 @@ def test_unaware_time_to_utc_gmt_pm():
     sample_date = datetime.date(2020, 11, 1)
     expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 18, 1))
     help_test_unaware_time_to_utc(sample_time, sample_date, expected, True)
+
+
+def test_is_zhur_pm():
+    assert lupt.is_zhur_pm("11:13") is False
+    assert lupt.is_zhur_pm("1:13") is True
+    assert lupt.is_zhur_pm("4:13") is False
+
+
+@pytest.fixture
+def pm_prayers():
+    prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
+               'maghribbegins', 'maghribjamāah',
+               'ishābegins', 'ishājamāah']
+    return prayers
+
+
+@pytest.fixture
+def help_test_auto_am_pm(pm_prayers):
+    def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
+        found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
+                                                pytz.timezone('Europe/London'),
+                                                prayer, pm_prayers)
+
+        assert found == expected
+    return help_test_auto_am_pm
+
+
+def test_fajr_am_pm_before_1pm(help_test_auto_am_pm):
+    sample_time = "1:13"
+    sample_date = datetime.date(2020, 11, 1)
+    prayer = "fajrbegins"
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 1, 13))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_asr_am_pm_after_1pm(help_test_auto_am_pm):
+    sample_time = "4:13"
+    sample_date = datetime.date(2020, 11, 1)
+    prayer = "asrmithl1"
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 16, 13))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_zhur_am_pm_before_1pm(help_test_auto_am_pm):
+    sample_time = "11:13"
+    sample_date = datetime.date(2020, 11, 1)
+    prayer = "zuhrbegins"
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 11, 13))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_zhur_am_pm_after_1pm(help_test_auto_am_pm):
+    sample_time = "1:13"
+    sample_date = datetime.date(2020, 11, 1)
+    prayer = "zhurbegins"
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 13, 13))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_zhur_am_pm_before_1pm_bst(help_test_auto_am_pm):
+    sample_time = "12:59"
+    sample_date = datetime.date(2020, 10, 1)
+    prayer = "zuhrbegins"
+    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 11, 59))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_zhur_am_pm_after_1pm_bst(help_test_auto_am_pm):
+    sample_time = "1:01"
+    sample_date = datetime.date(2020, 10, 1)
+    prayer = "zhurbegins"
+    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 12, 1))
+    help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
