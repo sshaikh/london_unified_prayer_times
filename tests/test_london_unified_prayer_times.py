@@ -6,6 +6,7 @@ import pytest
 import json
 import jsonschema
 import datetime
+import pytz
 
 from click.testing import CliRunner
 
@@ -80,11 +81,6 @@ def bad_json():
 """)
 
 
-@pytest.fixture
-def london_timezone():
-    return 'Europe/London'
-
-
 @pytest.mark.vcr()
 def test_get_json_data():
     url = ("https://mock.location.com/lupt")
@@ -101,33 +97,60 @@ def test_invalid_json(bad_json):
         jsonschema.validate(bad_json, lupt.lupt_schema)
 
 
-def test_fix_gregorian_date_bst(london_timezone):
+def help_test_fix_gregorian_date(sample_string, expected_date):
+    tz = pytz.timezone('Europe/London')
+    found = lupt.fix_gregorian_date(sample_string, tz)
+
+    assert found == expected_date
+
+
+def test_fix_gregorian_date_bst():
     sample = "2020-10-01T23:00:00.000Z"
     expected = datetime.date(2020, 10, 2)
-    found = lupt.fix_gregorian_date(sample, london_timezone)
-
-    assert found == expected
+    help_test_fix_gregorian_date(sample, expected)
 
 
-def test_fix_gregorian_date_gmt(london_timezone):
+def test_fix_gregorian_date_gmt():
     sample = "2020-11-01T00:00:00.000Z"
     expected = datetime.date(2020, 11, 1)
-    found = lupt.fix_gregorian_date(sample, london_timezone)
-
-    assert found == expected
+    help_test_fix_gregorian_date(sample, expected)
 
 
-def test_fix_gregorian_date_bst_midnight(london_timezone):
+def test_fix_gregorian_date_bst_midnight():
     sample = "2020-10-01T00:00:00.000Z"
     expected = datetime.date(2020, 10, 1)
-    found = lupt.fix_gregorian_date(sample, london_timezone)
-
-    assert found == expected
+    help_test_fix_gregorian_date(sample, expected)
 
 
-def test_fix_gregorian_date_gmt_2300(london_timezone):
+def test_fix_gregorian_date_gmt_2300():
     sample = "2020-11-01T23:00:00.000Z"
     expected = datetime.date(2020, 11, 1)
-    found = lupt.fix_gregorian_date(sample, london_timezone)
+    help_test_fix_gregorian_date(sample, expected)
 
+
+def help_test_unaware_time_to_utc(sample_time, sample_date, expected,
+                                  is_pm=False):
+    tz = pytz.timezone('Europe/London')
+    found = lupt.unaware_time_to_utc(sample_time, sample_date, tz, is_pm)
     assert found == expected
+
+
+def test_unaware_time_to_utc_gmt():
+    sample_time = "6:01"
+    sample_date = datetime.date(2020, 11, 1)
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 6, 1))
+    help_test_unaware_time_to_utc(sample_time, sample_date, expected)
+
+
+def test_unaware_time_to_utc_bst():
+    sample_time = "6:01"
+    sample_date = datetime.date(2020, 10, 1)
+    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 5, 1))
+    help_test_unaware_time_to_utc(sample_time, sample_date, expected)
+
+
+def test_unaware_time_to_utc_gmt_pm():
+    sample_time = "6:01"
+    sample_date = datetime.date(2020, 11, 1)
+    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 18, 1))
+    help_test_unaware_time_to_utc(sample_time, sample_date, expected, True)
