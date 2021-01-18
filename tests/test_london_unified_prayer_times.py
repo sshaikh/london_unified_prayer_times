@@ -200,56 +200,67 @@ def help_test_unaware_time_to_utc(sample_time, sample_date, expected,
     assert found == expected
 
 
+def create_utc_datetime(y, m, d, hh, mm):
+    return pytz.utc.localize(datetime.datetime(y, m, d, hh, mm))
+
+
 def test_unaware_time_to_utc_gmt():
     sample_time = "6:01"
     sample_date = datetime.date(2020, 11, 1)
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 6, 1))
+    expected = create_utc_datetime(2020, 11, 1, 6, 1)
     help_test_unaware_time_to_utc(sample_time, sample_date, expected)
 
 
 def test_unaware_time_to_utc_bst():
     sample_time = "6:01"
     sample_date = datetime.date(2020, 10, 1)
-    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 5, 1))
+    expected = create_utc_datetime(2020, 10, 1, 5, 1)
     help_test_unaware_time_to_utc(sample_time, sample_date, expected)
 
 
 def test_unaware_time_to_utc_gmt_pm():
     sample_time = "6:01"
     sample_date = datetime.date(2020, 11, 1)
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 18, 1))
+    expected = create_utc_datetime(2020, 11, 1, 18, 1)
     help_test_unaware_time_to_utc(sample_time, sample_date, expected, True)
 
 
 @pytest.fixture
-def pm_prayers_config():
+def prayers_config():
     timezone = pytz.timezone('Europe/London')
+    prayers = ['sunrise',
+               'fajrbegins', 'fajrjamāah',
+               'zuhrbegins', 'zuhrjamāah',
+               'asrmithl1', 'asrmithl2', 'asrjamāah',
+               'maghribbegins', 'maghribjamāah',
+               'ishābegins', 'ishājamāah']
     pm_prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
                   'maghribbegins', 'maghribjamāah',
                   'ishābegins', 'ishājamāah']
     ambigious_prayers = ['zuhrbegins', 'zuhrjamāah']
     ambigious_threshold = 4
-    pm_prayers_config = {
+    prayers_config = {
+        'prayers': prayers,
         'pm_prayers': pm_prayers,
         'ambigious_prayers': ambigious_prayers,
         'ambigious_threshold': ambigious_threshold,
         'timezone': timezone
     }
 
-    return pm_prayers_config
+    return prayers_config
 
 
-def test_is_zuhr_pm(pm_prayers_config):
-    assert lupt.is_ambigious_pm("zuhrbegins", 11, pm_prayers_config) is False
-    assert lupt.is_ambigious_pm("zuhrbegins", 1, pm_prayers_config) is True
-    assert lupt.is_ambigious_pm("zuhrjamāah", 4, pm_prayers_config) is False
+def test_is_zuhr_pm(prayers_config):
+    assert lupt.is_ambigious_pm("zuhrbegins", 11, prayers_config) is False
+    assert lupt.is_ambigious_pm("zuhrbegins", 1, prayers_config) is True
+    assert lupt.is_ambigious_pm("zuhrjamāah", 4, prayers_config) is False
 
 
 @pytest.fixture
-def help_test_auto_am_pm(pm_prayers_config):
+def help_test_auto_am_pm(prayers_config):
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
-                                                prayer, pm_prayers_config)
+                                                prayer, prayers_config)
 
         assert found == expected
     return help_test_auto_am_pm
@@ -259,7 +270,7 @@ def test_fajr_am_pm_before_1pm(help_test_auto_am_pm):
     sample_time = "1:13"
     sample_date = datetime.date(2020, 11, 1)
     prayer = "fajrbegins"
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 1, 13))
+    expected = create_utc_datetime(2020, 11, 1, 1, 13)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
@@ -267,7 +278,7 @@ def test_asr_am_pm_after_1pm(help_test_auto_am_pm):
     sample_time = "4:13"
     sample_date = datetime.date(2020, 11, 1)
     prayer = "asrmithl1"
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 16, 13))
+    expected = create_utc_datetime(2020, 11, 1, 16, 13)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
@@ -275,7 +286,7 @@ def test_zuhr_am_pm_before_1pm(help_test_auto_am_pm):
     sample_time = "11:13"
     sample_date = datetime.date(2020, 11, 1)
     prayer = "zuhrbegins"
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 11, 13))
+    expected = create_utc_datetime(2020, 11, 1, 11, 13)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
@@ -283,7 +294,7 @@ def test_zuhr_am_pm_after_1pm(help_test_auto_am_pm):
     sample_time = "1:13"
     sample_date = datetime.date(2020, 11, 1)
     prayer = "zuhrbegins"
-    expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 13, 13))
+    expected = create_utc_datetime(2020, 11, 1, 13, 13)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
@@ -291,7 +302,7 @@ def test_zuhr_am_pm_before_1pm_bst(help_test_auto_am_pm):
     sample_time = "12:59"
     sample_date = datetime.date(2020, 10, 1)
     prayer = "zuhrbegins"
-    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 11, 59))
+    expected = create_utc_datetime(2020, 10, 1, 11, 59)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
@@ -299,16 +310,36 @@ def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
     sample_time = "1:01"
     sample_date = datetime.date(2020, 10, 1)
     prayer = "zuhrbegins"
-    expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 12, 1))
+    expected = create_utc_datetime(2020, 10, 1, 12, 1)
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_get_list_of_date_items(three_unsorted_days):
-    tz = pytz.timezone('Europe/London')
-    date_dict = lupt.extract_dates(three_unsorted_days, tz)
+def test_new_timetable(prayers_config):
+    timetable = lupt.create_empty_timetable(prayers_config['prayers'])
+
+    assert len(timetable['dates']) == 0
+
+    prayers = timetable['prayer_times']
+    assert len(prayers) == len(prayers_config['prayers'])
+
+    for prayer in prayers:
+        assert len(timetable['prayer_times'][prayer]) == 0
+
+
+def test_get_list_of_date_items(three_unsorted_days, prayers_config):
+    timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
+    date_dict = timetable['dates']
     assert len(date_dict) == 3
     assert date_dict[datetime.date(2020, 10, 2)] == (1442, "Safar", 15)
 
 
-def test_get_sorted_prayer_times(three_unsorted_days):
-    pass
+def test_get_sorted_prayer_times(three_unsorted_days, prayers_config):
+    prayer = "sunrise"
+    timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
+
+    prayers = timetable['prayer_times']
+    assert len(prayers) == len(prayers_config['prayers'])
+
+    sorted_times = prayers[prayer]
+    assert len(sorted_times) == 3
+    assert sorted_times[1] == create_utc_datetime(2020, 10, 2, 6, 0)
