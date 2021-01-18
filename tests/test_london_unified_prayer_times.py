@@ -54,6 +54,70 @@ def single_day():
 
 
 @pytest.fixture
+def three_unsorted_days():
+    return json.loads("""
+    {
+        "data": [
+            {
+                "gregoriandate": "2020-10-02T23:00:00.000Z",
+                "islamicday": "16",
+                "islamicmonth": "Safar",
+                "islamicyear": "1442",
+                "sunrise": "7:02",
+                "fajrbegins": "5:34",
+                "fajrjamāah": "6:04",
+                "zuhrbegins": "12:54",
+                "zuhrjamāah": "1:30",
+                "asrmithl1": "3:52",
+                "asrmithl2": "4:39",
+                "asrjamāah": "5:00",
+                "maghribbegins": "6:36",
+                "maghribjamāah": "6:43",
+                "ishābegins": "7:55",
+                "ishājamāah": "8:15"
+            },
+            {
+                "gregoriandate": "2020-10-01T23:00:00.000Z",
+                "islamicday": "15",
+                "islamicmonth": "Safar",
+                "islamicyear": "1442",
+                "sunrise": "7:00",
+                "fajrbegins": "5:32",
+                "fajrjamāah": "6:02",
+                "zuhrbegins": "12:55",
+                "zuhrjamāah": "1:45",
+                "asrmithl1": "3:54",
+                "asrmithl2": "4:41",
+                "asrjamāah": "5:00",
+                "maghribbegins": "6:38",
+                "maghribjamāah": "6:45",
+                "ishābegins": "7:56",
+                "ishājamāah": "8:15"
+            },
+            {
+                "gregoriandate": "2020-09-30T23:00:00.000Z",
+                "islamicday": "14",
+                "islamicmonth": "Safar",
+                "islamicyear": "1442",
+                "sunrise": "6:59",
+                "fajrbegins": "5:31",
+                "fajrjamāah": "6:01",
+                "zuhrbegins": "12:55",
+                "zuhrjamāah": "1:30",
+                "asrmithl1": "3:55",
+                "asrmithl2": "4:43",
+                "asrjamāah": "5:00",
+                "maghribbegins": "6:40",
+                "maghribjamāah": "6:47",
+                "ishābegins": "7:58",
+                "ishājamāah": "8:15"
+            }
+        ]
+    }
+""")
+
+
+@pytest.fixture
 def bad_json():
     return json.loads("""
     {
@@ -236,3 +300,10 @@ def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
     prayer = "zuhrbegins"
     expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 12, 1))
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
+
+
+def test_get_list_of_date_items(three_unsorted_days):
+    tz = pytz.timezone('Europe/London')
+    date_dict = lupt.extract_dates(three_unsorted_days, tz)
+    assert len(date_dict) == 3
+    assert date_dict[datetime.date(2020, 10, 2)] == (1442, "Safar", 15)

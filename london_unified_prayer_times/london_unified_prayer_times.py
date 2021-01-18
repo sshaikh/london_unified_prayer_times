@@ -49,3 +49,14 @@ def unaware_prayer_time_to_utc(sample_time, sample_date, timezone,
     h, m = map(int, sample_time.split(':'))
     is_pm = prayer_is_pm(prayer, h, pm_prayers_config)
     return unaware_time_to_utc(h, m, sample_date, timezone, is_pm)
+
+
+def extract_dates(json, timezone):
+    data = json['data']
+    date_dict = {}
+    for day in data:
+        dt = fix_gregorian_date(day['gregoriandate'], timezone)
+        date_dict[dt] = (int(day['islamicyear']),
+                         day['islamicmonth'],
+                         int(day['islamicday']))
+    return date_dict
