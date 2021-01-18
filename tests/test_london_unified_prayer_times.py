@@ -157,26 +157,34 @@ def test_unaware_time_to_utc_gmt_pm():
     help_test_unaware_time_to_utc(sample_time, sample_date, expected, True)
 
 
-def test_is_zhur_pm():
-    assert lupt.is_zhur_pm(11, 4) is False
-    assert lupt.is_zhur_pm(1, 4) is True
-    assert lupt.is_zhur_pm(4, 4) is False
+@pytest.fixture
+def pm_prayers_config():
+    pm_prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
+                  'maghribbegins', 'maghribjamāah',
+                  'ishābegins', 'ishājamāah']
+    ambigious_prayers = ['zuhrbegins', 'zuhrjamāah']
+    ambigious_threshold = 4
+    pm_prayers_config = {
+        'pm_prayers': pm_prayers,
+        'ambigious_prayers': ambigious_prayers,
+        'ambigious_threshold': ambigious_threshold
+    }
+
+    return pm_prayers_config
+
+
+def test_is_zuhr_pm(pm_prayers_config):
+    assert lupt.is_ambigious_pm("zuhrbegins", 11, pm_prayers_config) is False
+    assert lupt.is_ambigious_pm("zuhrbegins", 1, pm_prayers_config) is True
+    assert lupt.is_ambigious_pm("zuhrjamāah", 4, pm_prayers_config) is False
 
 
 @pytest.fixture
-def pm_prayers():
-    prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
-               'maghribbegins', 'maghribjamāah',
-               'ishābegins', 'ishājamāah']
-    return prayers
-
-
-@pytest.fixture
-def help_test_auto_am_pm(pm_prayers):
+def help_test_auto_am_pm(pm_prayers_config):
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
                                                 pytz.timezone('Europe/London'),
-                                                prayer, pm_prayers, 4)
+                                                prayer, pm_prayers_config)
 
         assert found == expected
     return help_test_auto_am_pm
@@ -198,7 +206,7 @@ def test_asr_am_pm_after_1pm(help_test_auto_am_pm):
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_zhur_am_pm_before_1pm(help_test_auto_am_pm):
+def test_zuhr_am_pm_before_1pm(help_test_auto_am_pm):
     sample_time = "11:13"
     sample_date = datetime.date(2020, 11, 1)
     prayer = "zuhrbegins"
@@ -206,15 +214,15 @@ def test_zhur_am_pm_before_1pm(help_test_auto_am_pm):
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_zhur_am_pm_after_1pm(help_test_auto_am_pm):
+def test_zuhr_am_pm_after_1pm(help_test_auto_am_pm):
     sample_time = "1:13"
     sample_date = datetime.date(2020, 11, 1)
-    prayer = "zhurbegins"
+    prayer = "zuhrbegins"
     expected = pytz.utc.localize(datetime.datetime(2020, 11, 1, 13, 13))
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_zhur_am_pm_before_1pm_bst(help_test_auto_am_pm):
+def test_zuhr_am_pm_before_1pm_bst(help_test_auto_am_pm):
     sample_time = "12:59"
     sample_date = datetime.date(2020, 10, 1)
     prayer = "zuhrbegins"
@@ -222,9 +230,9 @@ def test_zhur_am_pm_before_1pm_bst(help_test_auto_am_pm):
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_zhur_am_pm_after_1pm_bst(help_test_auto_am_pm):
+def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
     sample_time = "1:01"
     sample_date = datetime.date(2020, 10, 1)
-    prayer = "zhurbegins"
+    prayer = "zuhrbegins"
     expected = pytz.utc.localize(datetime.datetime(2020, 10, 1, 12, 1))
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)

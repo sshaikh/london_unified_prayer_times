@@ -34,13 +34,18 @@ def unaware_time_to_utc(h, m, sample_date, timezone, is_pm=False):
     return dt_utc
 
 
-def is_zhur_pm(h, threshold):
-    return (h < threshold)
+def is_ambigious_pm(prayer, h, pm_prayers_config):
+    return (prayer in pm_prayers_config['ambigious_prayers'] and
+            (h < pm_prayers_config['ambigious_threshold']))
+
+
+def prayer_is_pm(prayer, h, pm_prayers_config):
+    return (prayer in pm_prayers_config['pm_prayers'] or
+            is_ambigious_pm(prayer, h, pm_prayers_config))
 
 
 def unaware_prayer_time_to_utc(sample_time, sample_date, timezone,
-                               prayer, pm_prayers, zhur_threshold):
+                               prayer, pm_prayers_config):
     h, m = map(int, sample_time.split(':'))
-    is_pm = ((prayer in pm_prayers) or
-             (prayer.startswith("zhur") and is_zhur_pm(h, zhur_threshold)))
+    is_pm = prayer_is_pm(prayer, h, pm_prayers_config)
     return unaware_time_to_utc(h, m, sample_date, timezone, is_pm)
