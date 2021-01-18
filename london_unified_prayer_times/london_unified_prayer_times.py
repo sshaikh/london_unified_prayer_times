@@ -44,11 +44,12 @@ def prayer_is_pm(prayer, h, pm_prayers_config):
             is_ambigious_pm(prayer, h, pm_prayers_config))
 
 
-def unaware_prayer_time_to_utc(sample_time, sample_date, timezone,
+def unaware_prayer_time_to_utc(sample_time, sample_date,
                                prayer, pm_prayers_config):
     h, m = map(int, sample_time.split(':'))
     is_pm = prayer_is_pm(prayer, h, pm_prayers_config)
-    return unaware_time_to_utc(h, m, sample_date, timezone, is_pm)
+    return unaware_time_to_utc(h, m, sample_date,
+                               pm_prayers_config['timezone'], is_pm)
 
 
 def extract_dates(json, timezone):

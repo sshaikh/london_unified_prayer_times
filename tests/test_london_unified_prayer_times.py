@@ -223,6 +223,7 @@ def test_unaware_time_to_utc_gmt_pm():
 
 @pytest.fixture
 def pm_prayers_config():
+    timezone = pytz.timezone('Europe/London')
     pm_prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
                   'maghribbegins', 'maghribjamāah',
                   'ishābegins', 'ishājamāah']
@@ -231,7 +232,8 @@ def pm_prayers_config():
     pm_prayers_config = {
         'pm_prayers': pm_prayers,
         'ambigious_prayers': ambigious_prayers,
-        'ambigious_threshold': ambigious_threshold
+        'ambigious_threshold': ambigious_threshold,
+        'timezone': timezone
     }
 
     return pm_prayers_config
@@ -247,7 +249,6 @@ def test_is_zuhr_pm(pm_prayers_config):
 def help_test_auto_am_pm(pm_prayers_config):
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
-                                                pytz.timezone('Europe/London'),
                                                 prayer, pm_prayers_config)
 
         assert found == expected
@@ -307,3 +308,7 @@ def test_get_list_of_date_items(three_unsorted_days):
     date_dict = lupt.extract_dates(three_unsorted_days, tz)
     assert len(date_dict) == 3
     assert date_dict[datetime.date(2020, 10, 2)] == (1442, "Safar", 15)
+
+
+def test_get_sorted_prayer_times(three_unsorted_days):
+    pass
