@@ -7,6 +7,9 @@ import importlib.resources as pkg_resources
 import dateutil.parser
 import pytz
 import datetime
+import os
+import appdirs
+import pickle
 
 
 def build_config(json):
@@ -89,6 +92,19 @@ def build_timetable(json, prayers_config):
             prayers[prayer] = prayer_time
 
     return results
+
+
+def cache_timetable(timetable):
+    cache_dir = appdirs.user_cache_dir(__package__)
+    os.mkdir(cache_dir)
+    cache_file = cache_dir + '/timetable.pickle'
+    try:
+        os.remove(cache_file)
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+
+    with open(cache_file, 'wb') as outfile:
+        pickle.dump(timetable, outfile)
 
 
 lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))

@@ -7,6 +7,10 @@ import json
 import jsonschema
 import datetime
 import pytz
+import appdirs
+import os
+import shutil
+import pickle
 
 from click.testing import CliRunner
 
@@ -326,3 +330,39 @@ def test_get_sorted_prayer_times(three_unsorted_days):
     times = day['times']
     assert len(times) == len(prayers_config['prayers'])
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
+
+
+@pytest.fixture
+def timetable(three_unsorted_days):
+    prayers_config = lupt.default_config
+    return lupt.build_timetable(three_unsorted_days, prayers_config)
+
+
+def test_cache_timetable(timetable):
+    appname = "london_unified_prayer_times"
+    cache_dir = appdirs.user_cache_dir(appname)
+    try:
+        shutil.rmtree(cache_dir)
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+
+    lupt.cache_timetable(timetable)
+
+    cache_file = cache_dir + '/timetable.pickle'
+    with open(cache_file, 'rb') as cache_json:
+        data = pickle.load(cache_json)
+
+        assert len(data) == 1
+        assert len(data['dates']) == 3
+        day = data['dates'][datetime.date(2020, 10, 2)]
+        assert day['islamicdate'] == (1442, "Safar", 15)
+        assert (day['times']['sunrise'] ==
+                create_utc_datetime(2020, 10, 2, 6, 0))
+
+        try:
+            os.remove(cache_file)
+        except OSError as e:
+            print("Error: %s - %s." % (e.filename, e.strerror))
+
+
+# def test_get_next_prayer_time():
