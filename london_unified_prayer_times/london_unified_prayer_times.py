@@ -120,6 +120,13 @@ def load_cached_timetable():
         return pickle.load(cached_pickle)
 
 
+def refresh_timetable(url, schema, config):
+    json = get_json_data(url, schema)
+    timetable = build_timetable(json, config)
+    cache_timetable(timetable)
+    return timetable
+
+
 lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))
 default_config_json = json.loads(
     pkg_resources.read_text(__package__, 'default_config.json'))

@@ -338,6 +338,15 @@ def timetable(three_unsorted_days):
     return lupt.build_timetable(three_unsorted_days, prayers_config)
 
 
+def assert_timetable(data, size):
+    assert len(data) == 1
+    assert len(data['dates']) == size
+    day = data['dates'][datetime.date(2020, 10, 2)]
+    assert day['islamicdate'] == (1442, "Safar", 15)
+    assert (day['times']['sunrise'] ==
+            create_utc_datetime(2020, 10, 2, 6, 0))
+
+
 def test_cache_timetable(timetable):
     appname = "london_unified_prayer_times"
     cache_dir = appdirs.user_cache_dir(appname)
@@ -352,12 +361,7 @@ def test_cache_timetable(timetable):
     with open(cache_file, 'rb') as cache_json:
         data = pickle.load(cache_json)
 
-        assert len(data) == 1
-        assert len(data['dates']) == 3
-        day = data['dates'][datetime.date(2020, 10, 2)]
-        assert day['islamicdate'] == (1442, "Safar", 15)
-        assert (day['times']['sunrise'] ==
-                create_utc_datetime(2020, 10, 2, 6, 0))
+        assert_timetable(data, 3)
 
         try:
             os.remove(cache_file)
@@ -369,12 +373,7 @@ def test_read_cached_timetable(timetable):
     lupt.cache_timetable(timetable)
     data = lupt.load_cached_timetable()
 
-    assert len(data) == 1
-    assert len(data['dates']) == 3
-    day = data['dates'][datetime.date(2020, 10, 2)]
-    assert day['islamicdate'] == (1442, "Safar", 15)
-    assert (day['times']['sunrise'] ==
-            create_utc_datetime(2020, 10, 2, 6, 0))
+    assert_timetable(data, 3)
 
     appname = "london_unified_prayer_times"
     cache_file = appdirs.user_cache_dir(appname) + '/timetable.pickle'
@@ -382,6 +381,15 @@ def test_read_cached_timetable(timetable):
         os.remove(cache_file)
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
+
+
+@pytest.mark.vcr()
+def test_refresh_timetable():
+    url = ("https://mock.location.com/lupt")
+    data = lupt.refresh_timetable(url,
+                                  lupt.lupt_schema,
+                                  lupt.default_config)
+    assert_timetable(data, 457)
 
 
 # def test_get_next_prayer_time():
