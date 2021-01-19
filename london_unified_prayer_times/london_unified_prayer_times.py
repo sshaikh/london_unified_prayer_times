@@ -94,10 +94,16 @@ def build_timetable(json, prayers_config):
     return results
 
 
-def cache_timetable(timetable):
+def get_cache_fileinfo():
     cache_dir = appdirs.user_cache_dir(__package__)
-    os.mkdir(cache_dir)
     cache_file = cache_dir + '/timetable.pickle'
+    return cache_dir, cache_file
+
+
+def cache_timetable(timetable):
+    cache_dir, cache_file = get_cache_fileinfo()
+
+    os.makedirs(cache_dir, exist_ok=True)
     try:
         os.remove(cache_file)
     except OSError as e:
@@ -105,6 +111,13 @@ def cache_timetable(timetable):
 
     with open(cache_file, 'wb') as outfile:
         pickle.dump(timetable, outfile)
+
+
+def load_cached_timetable():
+    cache_dir, cache_file = get_cache_fileinfo()
+
+    with open(cache_file, 'rb') as cached_pickle:
+        return pickle.load(cached_pickle)
 
 
 lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))

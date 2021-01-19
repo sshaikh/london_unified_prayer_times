@@ -365,4 +365,23 @@ def test_cache_timetable(timetable):
             print("Error: %s - %s." % (e.filename, e.strerror))
 
 
+def test_read_cached_timetable(timetable):
+    lupt.cache_timetable(timetable)
+    data = lupt.load_cached_timetable()
+
+    assert len(data) == 1
+    assert len(data['dates']) == 3
+    day = data['dates'][datetime.date(2020, 10, 2)]
+    assert day['islamicdate'] == (1442, "Safar", 15)
+    assert (day['times']['sunrise'] ==
+            create_utc_datetime(2020, 10, 2, 6, 0))
+
+    appname = "london_unified_prayer_times"
+    cache_file = appdirs.user_cache_dir(appname) + '/timetable.pickle'
+    try:
+        os.remove(cache_file)
+    except OSError as e:
+        print("Error: %s - %s." % (e.filename, e.strerror))
+
+
 # def test_get_next_prayer_time():
