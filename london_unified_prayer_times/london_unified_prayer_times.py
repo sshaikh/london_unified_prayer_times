@@ -52,23 +52,15 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
                                prayers_config['timezone'], is_pm)
 
 
-def create_empty_timetable(prayer_list):
+def create_empty_timetable():
     results = {}
-    prayers = {}
-
-    for prayer in prayer_list:
-        prayers[prayer] = []
-
-    results['prayer_times'] = prayers
-
     date_dict = {}
     results['dates'] = date_dict
     return results
 
 
 def build_timetable(json, prayers_config):
-    results = create_empty_timetable(prayers_config['prayers'])
-    prayers = results['prayer_times']
+    results = create_empty_timetable()
     dates = results['dates']
 
     data = sorted(json['data'], key=lambda k: k['gregoriandate'])
@@ -76,13 +68,21 @@ def build_timetable(json, prayers_config):
     for day in data:
         dt = fix_gregorian_date(day['gregoriandate'],
                                 prayers_config['timezone'])
-        dates[dt] = (int(day['islamicyear']),
-                     day['islamicmonth'],
-                     int(day['islamicday']))
+        day_entry = {}
+        dates[dt] = day_entry
+
+        islamicdate = (int(day['islamicyear']),
+                       day['islamicmonth'],
+                       int(day['islamicday']))
+        day_entry['islamicdate'] = islamicdate
+
+        prayers = {}
+        day_entry['times'] = prayers
+
         for prayer in prayers_config['prayers']:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],
                                                      dt, prayer,
                                                      prayers_config)
-            prayers[prayer].append(prayer_time)
+            prayers[prayer] = prayer_time
 
     return results

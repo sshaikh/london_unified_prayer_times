@@ -315,31 +315,30 @@ def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
 
 
 def test_new_timetable(prayers_config):
-    timetable = lupt.create_empty_timetable(prayers_config['prayers'])
+    timetable = lupt.create_empty_timetable()
 
+    assert len(timetable) == 1
     assert len(timetable['dates']) == 0
-
-    prayers = timetable['prayer_times']
-    assert len(prayers) == len(prayers_config['prayers'])
-
-    for prayer in prayers:
-        assert len(timetable['prayer_times'][prayer]) == 0
 
 
 def test_get_list_of_date_items(three_unsorted_days, prayers_config):
     timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
     date_dict = timetable['dates']
     assert len(date_dict) == 3
-    assert date_dict[datetime.date(2020, 10, 2)] == (1442, "Safar", 15)
+    assert (date_dict[datetime.date(2020, 10, 2)]['islamicdate'] ==
+            (1442, "Safar", 15))
 
 
 def test_get_sorted_prayer_times(three_unsorted_days, prayers_config):
     prayer = "sunrise"
     timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
 
-    prayers = timetable['prayer_times']
-    assert len(prayers) == len(prayers_config['prayers'])
+    dates = timetable['dates']
+    assert len(dates) == 3
 
-    sorted_times = prayers[prayer]
-    assert len(sorted_times) == 3
-    assert sorted_times[1] == create_utc_datetime(2020, 10, 2, 6, 0)
+    day = dates[datetime.date(2020, 10, 2)]
+    assert len(day) == 2
+
+    times = day['times']
+    assert len(times) == len(prayers_config['prayers'])
+    assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
