@@ -148,7 +148,7 @@ def bad_json():
 @pytest.mark.vcr()
 def test_get_json_data():
     url = ("https://mock.location.com/lupt")
-    json = lupt.get_json_data(url)
+    json = lupt.get_json_data(url, lupt.lupt_schema)
     assert json is not None
 
 
