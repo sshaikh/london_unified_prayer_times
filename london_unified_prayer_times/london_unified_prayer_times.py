@@ -12,6 +12,12 @@ import datetime
 lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))
 
 
+def build_config(json):
+    config = json.copy()
+    config['timezone'] = pytz.timezone(json['timezone'])
+    return config
+
+
 def get_json_data(url, schema=lupt_schema):
     with urllib.request.urlopen(url) as data:
         json_data = json.loads(data.read().decode())
@@ -86,3 +92,8 @@ def build_timetable(json, prayers_config):
             prayers[prayer] = prayer_time
 
     return results
+
+
+default_config_json = json.loads(
+    pkg_resources.read_text(__package__, 'default_config.json'))
+default_config = build_config(default_config_json)

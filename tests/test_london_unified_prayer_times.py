@@ -225,42 +225,25 @@ def test_unaware_time_to_utc_gmt_pm():
     help_test_unaware_time_to_utc(sample_time, sample_date, expected, True)
 
 
-@pytest.fixture
-def prayers_config():
-    timezone = pytz.timezone('Europe/London')
-    prayers = ['sunrise',
-               'fajrbegins', 'fajrjamāah',
-               'zuhrbegins', 'zuhrjamāah',
-               'asrmithl1', 'asrmithl2', 'asrjamāah',
-               'maghribbegins', 'maghribjamāah',
-               'ishābegins', 'ishājamāah']
-    pm_prayers = ['asrmithl1', 'asrmithl2', "asrjamāah",
-                  'maghribbegins', 'maghribjamāah',
-                  'ishābegins', 'ishājamāah']
-    ambigious_prayers = ['zuhrbegins', 'zuhrjamāah']
-    ambigious_threshold = 4
-    prayers_config = {
-        'prayers': prayers,
-        'pm_prayers': pm_prayers,
-        'ambigious_prayers': ambigious_prayers,
-        'ambigious_threshold': ambigious_threshold,
-        'timezone': timezone
-    }
-
-    return prayers_config
+def test_build_config():
+    json = lupt.default_config_json
+    config = lupt.build_config(json)
+    assert len(config) == len(json)
+    assert config['timezone'] == pytz.timezone('Europe/London')
 
 
-def test_is_zuhr_pm(prayers_config):
+def test_is_zuhr_pm():
+    prayers_config = lupt.default_config
     assert lupt.is_ambigious_pm("zuhrbegins", 11, prayers_config) is False
     assert lupt.is_ambigious_pm("zuhrbegins", 1, prayers_config) is True
     assert lupt.is_ambigious_pm("zuhrjamāah", 4, prayers_config) is False
 
 
 @pytest.fixture
-def help_test_auto_am_pm(prayers_config):
+def help_test_auto_am_pm():
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
-                                                prayer, prayers_config)
+                                                prayer, lupt.default_config)
 
         assert found == expected
     return help_test_auto_am_pm
@@ -314,23 +297,24 @@ def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
-def test_new_timetable(prayers_config):
+def test_new_timetable():
     timetable = lupt.create_empty_timetable()
 
     assert len(timetable) == 1
     assert len(timetable['dates']) == 0
 
 
-def test_get_list_of_date_items(three_unsorted_days, prayers_config):
-    timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
+def test_get_list_of_date_items(three_unsorted_days):
+    timetable = lupt.build_timetable(three_unsorted_days, lupt.default_config)
     date_dict = timetable['dates']
     assert len(date_dict) == 3
     assert (date_dict[datetime.date(2020, 10, 2)]['islamicdate'] ==
             (1442, "Safar", 15))
 
 
-def test_get_sorted_prayer_times(three_unsorted_days, prayers_config):
+def test_get_sorted_prayer_times(three_unsorted_days):
     prayer = "sunrise"
+    prayers_config = lupt.default_config
     timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
 
     dates = timetable['dates']

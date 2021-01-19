@@ -1,0 +1,17 @@
+{
+	"prayers": [
+		"sunrise",
+		"fajrbegins", "fajrjamāah",
+                "zuhrbegins", "zuhrjamāah",
+                "asrmithl1", "asrmithl2", "asrjamāah",
+                "maghribbegins", "maghribjamāah",
+                "ishābegins", "ishājamāah"],
+	"pm_prayers": [
+		"asrmithl1", "asrmithl2", "asrjamāah",
+                   "maghribbegins", "maghribjamāah",
+                   "ishābegins", "ishājamāah"],
+	"ambigious_prayers": [
+		"zuhrbegins", "zuhrjamāah"],
+	"ambigious_threshold": 4,
+	"timezone": "Europe/London"
+}
