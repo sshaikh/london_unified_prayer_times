@@ -25,9 +25,22 @@ class TimetableKeys(Enum):
 tk = TimetableKeys
 
 
+class ConfigKeys(Enum):
+    PRAYERS = 'prayers'
+    PM_PRAYERS = 'pm_prayers'
+    AMBIGIOUS_PRAYERS = 'ambigious_prayers'
+    AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
+    TIMEZONE = 'timezone'
+
+
+ck = ConfigKeys
+
+
 def build_config(json):
-    config = json.copy()
-    config['timezone'] = pytz.timezone(json['timezone'])
+    config = {}
+    for k in ck:
+        config[k] = json[k.value]
+    config[ck.TIMEZONE] = pytz.timezone(json['timezone'])
     return config
 
 
@@ -54,12 +67,12 @@ def unaware_time_to_utc(h, m, sample_date, timezone, is_pm=False):
 
 
 def is_ambigious_pm(prayer, h, prayers_config):
-    return (prayer in prayers_config['ambigious_prayers'] and
-            (h < prayers_config['ambigious_threshold']))
+    return (prayer in prayers_config[ck.AMBIGIOUS_PRAYERS] and
+            (h < prayers_config[ck.AMBIGIOUS_THRESHOLD]))
 
 
 def prayer_is_pm(prayer, h, prayers_config):
-    return (prayer in prayers_config['pm_prayers'] or
+    return (prayer in prayers_config[ck.PM_PRAYERS] or
             is_ambigious_pm(prayer, h, prayers_config))
 
 
@@ -68,7 +81,7 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
     h, m = map(int, sample_time.split(':'))
     is_pm = prayer_is_pm(prayer, h, prayers_config)
     return unaware_time_to_utc(h, m, sample_date,
-                               prayers_config['timezone'], is_pm)
+                               prayers_config[ck.TIMEZONE], is_pm)
 
 
 def create_empty_timetable():
@@ -87,7 +100,7 @@ def build_timetable(json, prayers_config):
 
     for day in data:
         dt = fix_gregorian_date(day['gregoriandate'],
-                                prayers_config['timezone'])
+                                prayers_config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
@@ -103,7 +116,7 @@ def build_timetable(json, prayers_config):
         prayers = {}
         day_entry[tk.TIMES] = prayers
 
-        for prayer in prayers_config['prayers']:
+        for prayer in prayers_config[ck.PRAYERS]:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],
                                                      dt, prayer,
                                                      prayers_config)

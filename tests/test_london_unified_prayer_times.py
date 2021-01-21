@@ -19,6 +19,7 @@ from london_unified_prayer_times import cli
 
 
 tk = lupt.TimetableKeys
+ck = lupt.ConfigKeys
 
 
 def test_command_line_interface():
@@ -236,7 +237,7 @@ def test_build_config():
     json = lupt.default_config_json
     config = lupt.build_config(json)
     assert len(config) == len(json)
-    assert config['timezone'] == pytz.timezone('Europe/London')
+    assert config[ck.TIMEZONE] == pytz.timezone('Europe/London')
 
 
 def test_is_zuhr_pm():
@@ -332,7 +333,7 @@ def test_get_sorted_prayer_times(three_unsorted_days):
     assert len(day) == 2
 
     times = day[tk.TIMES]
-    assert len(times) == len(prayers_config['prayers'])
+    assert len(times) == len(prayers_config[ck.PRAYERS])
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
 
 
