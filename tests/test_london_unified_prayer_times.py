@@ -16,10 +16,10 @@ from click.testing import CliRunner
 
 from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
+from london_unified_prayer_times import constants
 
-
-tk = lupt.TimetableKeys
-ck = lupt.ConfigKeys
+tk = constants.TimetableKeys
+ck = constants.ConfigKeys
 
 
 def test_command_line_interface():

@@ -10,38 +10,11 @@ import datetime
 import os
 import appdirs
 import pickle
-from enum import Enum
+from london_unified_prayer_times import constants as c
 
 
-class TimetableKeys(Enum):
-    DATES = 'dates'
-    DATA = 'data'
-    ISLAMIC_DATES = 'islamicdates'
-    TODAY = 'today'
-    TOMORROW = 'tomorrow'
-    TIMES = 'times'
-
-
-tk = TimetableKeys
-
-
-class ConfigKeys(Enum):
-    PRAYERS = 'prayers'
-    PM_PRAYERS = 'pm_prayers'
-    AMBIGIOUS_PRAYERS = 'ambigious_prayers'
-    AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
-    TIMEZONE = 'timezone'
-
-
-ck = ConfigKeys
-
-
-JSON_DATA = 'data'
-JSON_GREGORIAN_DATE = 'gregoriandate'
-JSON_ISLAMIC_DAY = 'islamicday'
-JSON_ISLAMIC_MONTH = 'islamicmonth'
-JSON_ISLAMIC_YEAR = 'islamicyear'
-PICKLE_FILENAME = 'timetable.pickle'
+tk = c.TimetableKeys
+ck = c.ConfigKeys
 
 
 def build_config(json):
@@ -103,20 +76,20 @@ def build_timetable(json, prayers_config):
     results = create_empty_timetable()
     dates = results[tk.DATES]
 
-    data = sorted(json[JSON_DATA], key=lambda k: k[JSON_GREGORIAN_DATE])
+    data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])
     yesterday = None
 
     for day in data:
-        dt = fix_gregorian_date(day[JSON_GREGORIAN_DATE],
+        dt = fix_gregorian_date(day[c.JSON_GREGORIAN_DATE],
                                 prayers_config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
         day_entry[tk.ISLAMIC_DATES] = islamicdates
 
-        today = (int(day[JSON_ISLAMIC_YEAR]),
-                 day[JSON_ISLAMIC_MONTH],
-                 int(day[JSON_ISLAMIC_DAY]))
+        today = (int(day[c.JSON_ISLAMIC_YEAR]),
+                 day[c.JSON_ISLAMIC_MONTH],
+                 int(day[c.JSON_ISLAMIC_DAY]))
         islamicdates[tk.TODAY] = today
         if yesterday is not None:
             yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today
@@ -137,7 +110,7 @@ def build_timetable(json, prayers_config):
 
 def get_cache_fileinfo():
     cache_dir = appdirs.user_cache_dir(__package__)
-    cache_file = cache_dir + '/' + PICKLE_FILENAME
+    cache_file = cache_dir + '/' + c.PICKLE_FILENAME
     return cache_dir, cache_file
 
 

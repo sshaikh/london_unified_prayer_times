@@ -1,0 +1,32 @@
+from enum import Enum
+
+
+class TimetableKeys(Enum):
+    DATES = 'dates'
+    DATA = 'data'
+    ISLAMIC_DATES = 'islamicdates'
+    TODAY = 'today'
+    TOMORROW = 'tomorrow'
+    TIMES = 'times'
+
+
+tk = TimetableKeys
+
+
+class ConfigKeys(Enum):
+    PRAYERS = 'prayers'
+    PM_PRAYERS = 'pm_prayers'
+    AMBIGIOUS_PRAYERS = 'ambigious_prayers'
+    AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
+    TIMEZONE = 'timezone'
+
+
+ck = ConfigKeys
+
+
+JSON_DATA = 'data'
+JSON_GREGORIAN_DATE = 'gregoriandate'
+JSON_ISLAMIC_DAY = 'islamicday'
+JSON_ISLAMIC_MONTH = 'islamicmonth'
+JSON_ISLAMIC_YEAR = 'islamicyear'
+PICKLE_FILENAME = 'timetable.pickle'
