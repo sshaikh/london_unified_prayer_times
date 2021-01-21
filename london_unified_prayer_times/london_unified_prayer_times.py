@@ -10,6 +10,19 @@ import datetime
 import os
 import appdirs
 import pickle
+from enum import Enum
+
+
+class TimetableKeys(Enum):
+    DATES = 'dates'
+    DATA = 'data'
+    ISLAMIC_DATES = 'islamicdates'
+    TODAY = 'today'
+    TOMORROW = 'tomorrow'
+    TIMES = 'times'
+
+
+tk = TimetableKeys
 
 
 def build_config(json):
@@ -61,13 +74,13 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
 def create_empty_timetable():
     results = {}
     date_dict = {}
-    results['dates'] = date_dict
+    results[tk.DATES] = date_dict
     return results
 
 
 def build_timetable(json, prayers_config):
     results = create_empty_timetable()
-    dates = results['dates']
+    dates = results[tk.DATES]
 
     data = sorted(json['data'], key=lambda k: k['gregoriandate'])
     yesterday = None
@@ -78,17 +91,17 @@ def build_timetable(json, prayers_config):
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
-        day_entry['islamicdates'] = islamicdates
+        day_entry[tk.ISLAMIC_DATES] = islamicdates
 
         today = (int(day['islamicyear']),
                  day['islamicmonth'],
                  int(day['islamicday']))
-        islamicdates['today'] = today
+        islamicdates[tk.TODAY] = today
         if yesterday is not None:
-            yesterday['islamicdates']['tomorrow'] = today
+            yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today
 
         prayers = {}
-        day_entry['times'] = prayers
+        day_entry[tk.TIMES] = prayers
 
         for prayer in prayers_config['prayers']:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],

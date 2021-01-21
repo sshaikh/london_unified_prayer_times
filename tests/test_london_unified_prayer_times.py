@@ -18,6 +18,9 @@ from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
 
 
+tk = lupt.TimetableKeys
+
+
 def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
@@ -305,17 +308,16 @@ def test_new_timetable():
     timetable = lupt.create_empty_timetable()
 
     assert len(timetable) == 1
-    assert len(timetable['dates']) == 0
+    assert len(timetable[tk.DATES]) == 0
 
 
 def test_get_list_of_date_items(three_unsorted_days):
     timetable = lupt.build_timetable(three_unsorted_days, lupt.default_config)
-    date_dict = timetable['dates']
+    date_dict = timetable[tk.DATES]
     assert len(date_dict) == 3
-    assert (date_dict[datetime.date(2020, 10, 2)]['islamicdates']['today'] ==
-            (1442, "Safar", 15))
-    tomorrow = date_dict[datetime.date(2020, 10, 2)]
-    assert tomorrow['islamicdates']['tomorrow'] == (1442, "Safar", 16)
+    dt = date_dict[datetime.date(2020, 10, 2)]
+    assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
+    assert dt[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
 
 
 def test_get_sorted_prayer_times(three_unsorted_days):
@@ -323,13 +325,13 @@ def test_get_sorted_prayer_times(three_unsorted_days):
     prayers_config = lupt.default_config
     timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
 
-    dates = timetable['dates']
+    dates = timetable[tk.DATES]
     assert len(dates) == 3
 
     day = dates[datetime.date(2020, 10, 2)]
     assert len(day) == 2
 
-    times = day['times']
+    times = day[tk.TIMES]
     assert len(times) == len(prayers_config['prayers'])
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
 
@@ -342,11 +344,11 @@ def timetable(three_unsorted_days):
 
 def assert_timetable(data, size):
     assert len(data) == 1
-    assert len(data['dates']) == size
-    day = data['dates'][datetime.date(2020, 10, 2)]
-    assert day['islamicdates']['today'] == (1442, "Safar", 15)
-    assert day['islamicdates']['tomorrow'] == (1442, "Safar", 16)
-    assert (day['times']['sunrise'] ==
+    assert len(data[tk.DATES]) == size
+    day = data[tk.DATES][datetime.date(2020, 10, 2)]
+    assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
+    assert day[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
+    assert (day[tk.TIMES]['sunrise'] ==
             create_utc_datetime(2020, 10, 2, 6, 0))
 
 
