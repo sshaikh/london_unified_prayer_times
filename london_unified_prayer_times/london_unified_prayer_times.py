@@ -36,11 +36,19 @@ class ConfigKeys(Enum):
 ck = ConfigKeys
 
 
+JSON_DATA = 'data'
+JSON_GREGORIAN_DATE = 'gregoriandate'
+JSON_ISLAMIC_DAY = 'islamicday'
+JSON_ISLAMIC_MONTH = 'islamicmonth'
+JSON_ISLAMIC_YEAR = 'islamicyear'
+PICKLE_FILENAME = 'timetable.pickle'
+
+
 def build_config(json):
     config = {}
     for k in ck:
         config[k] = json[k.value]
-    config[ck.TIMEZONE] = pytz.timezone(json['timezone'])
+    config[ck.TIMEZONE] = pytz.timezone(json[ck.TIMEZONE.value])
     return config
 
 
@@ -95,20 +103,20 @@ def build_timetable(json, prayers_config):
     results = create_empty_timetable()
     dates = results[tk.DATES]
 
-    data = sorted(json['data'], key=lambda k: k['gregoriandate'])
+    data = sorted(json[JSON_DATA], key=lambda k: k[JSON_GREGORIAN_DATE])
     yesterday = None
 
     for day in data:
-        dt = fix_gregorian_date(day['gregoriandate'],
+        dt = fix_gregorian_date(day[JSON_GREGORIAN_DATE],
                                 prayers_config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
         day_entry[tk.ISLAMIC_DATES] = islamicdates
 
-        today = (int(day['islamicyear']),
-                 day['islamicmonth'],
-                 int(day['islamicday']))
+        today = (int(day[JSON_ISLAMIC_YEAR]),
+                 day[JSON_ISLAMIC_MONTH],
+                 int(day[JSON_ISLAMIC_DAY]))
         islamicdates[tk.TODAY] = today
         if yesterday is not None:
             yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today
@@ -129,7 +137,7 @@ def build_timetable(json, prayers_config):
 
 def get_cache_fileinfo():
     cache_dir = appdirs.user_cache_dir(__package__)
-    cache_file = cache_dir + '/timetable.pickle'
+    cache_file = cache_dir + '/' + PICKLE_FILENAME
     return cache_dir, cache_file
 
 
