@@ -10,18 +10,12 @@ class TimetableKeys(Enum):
     TIMES = 'times'
 
 
-tk = TimetableKeys
-
-
 class ConfigKeys(Enum):
     PRAYERS = 'prayers'
     PM_PRAYERS = 'pm_prayers'
     AMBIGIOUS_PRAYERS = 'ambigious_prayers'
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
-
-
-ck = ConfigKeys
 
 
 JSON_DATA = 'data'
