@@ -70,17 +70,22 @@ def build_timetable(json, prayers_config):
     dates = results['dates']
 
     data = sorted(json['data'], key=lambda k: k['gregoriandate'])
+    yesterday = None
 
     for day in data:
         dt = fix_gregorian_date(day['gregoriandate'],
                                 prayers_config['timezone'])
         day_entry = {}
         dates[dt] = day_entry
+        islamicdates = {}
+        day_entry['islamicdates'] = islamicdates
 
-        islamicdate = (int(day['islamicyear']),
-                       day['islamicmonth'],
-                       int(day['islamicday']))
-        day_entry['islamicdate'] = islamicdate
+        today = (int(day['islamicyear']),
+                 day['islamicmonth'],
+                 int(day['islamicday']))
+        islamicdates['today'] = today
+        if yesterday is not None:
+            yesterday['islamicdates']['tomorrow'] = today
 
         prayers = {}
         day_entry['times'] = prayers
@@ -90,6 +95,8 @@ def build_timetable(json, prayers_config):
                                                      dt, prayer,
                                                      prayers_config)
             prayers[prayer] = prayer_time
+
+        yesterday = day_entry
 
     return results
 

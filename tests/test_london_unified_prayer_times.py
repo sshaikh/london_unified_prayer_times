@@ -312,8 +312,10 @@ def test_get_list_of_date_items(three_unsorted_days):
     timetable = lupt.build_timetable(three_unsorted_days, lupt.default_config)
     date_dict = timetable['dates']
     assert len(date_dict) == 3
-    assert (date_dict[datetime.date(2020, 10, 2)]['islamicdate'] ==
+    assert (date_dict[datetime.date(2020, 10, 2)]['islamicdates']['today'] ==
             (1442, "Safar", 15))
+    tomorrow = date_dict[datetime.date(2020, 10, 2)]
+    assert tomorrow['islamicdates']['tomorrow'] == (1442, "Safar", 16)
 
 
 def test_get_sorted_prayer_times(three_unsorted_days):
@@ -342,7 +344,8 @@ def assert_timetable(data, size):
     assert len(data) == 1
     assert len(data['dates']) == size
     day = data['dates'][datetime.date(2020, 10, 2)]
-    assert day['islamicdate'] == (1442, "Safar", 15)
+    assert day['islamicdates']['today'] == (1442, "Safar", 15)
+    assert day['islamicdates']['tomorrow'] == (1442, "Safar", 16)
     assert (day['times']['sunrise'] ==
             create_utc_datetime(2020, 10, 2, 6, 0))
 
