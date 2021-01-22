@@ -14,12 +14,12 @@ import pickle
 
 from click.testing import CliRunner
 
-from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
 from london_unified_prayer_times import constants
 from london_unified_prayer_times import config
 from london_unified_prayer_times import remote_data
 from london_unified_prayer_times import timetable
+from london_unified_prayer_times import cache
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
@@ -368,7 +368,7 @@ def test_cache_timetable(three_day_timetable):
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
 
-    lupt.cache_timetable(three_day_timetable)
+    cache.cache_timetable(three_day_timetable)
 
     cache_file = cache_dir + '/timetable.pickle'
     with open(cache_file, 'rb') as cache_json:
@@ -383,8 +383,8 @@ def test_cache_timetable(three_day_timetable):
 
 
 def test_read_cached_timetable(three_day_timetable):
-    lupt.cache_timetable(three_day_timetable)
-    data = lupt.load_cached_timetable()
+    cache.cache_timetable(three_day_timetable)
+    data = cache.load_cached_timetable()
 
     assert_timetable(data, 3)
 
@@ -399,9 +399,9 @@ def test_read_cached_timetable(three_day_timetable):
 @pytest.mark.vcr()
 def test_refresh_timetable():
     url = ("https://mock.location.com/lupt")
-    data = lupt.refresh_timetable(url,
-                                  config.lupt_schema,
-                                  config.default_config)
+    data = cache.refresh_timetable(url,
+                                   config.lupt_schema,
+                                   config.default_config)
     assert_timetable(data, 457)
 
 
