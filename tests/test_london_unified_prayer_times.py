@@ -19,6 +19,7 @@ from london_unified_prayer_times import cli
 from london_unified_prayer_times import constants
 from london_unified_prayer_times import config
 from london_unified_prayer_times import remote_data
+from london_unified_prayer_times import timetable
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
@@ -173,7 +174,7 @@ def test_invalid_json(bad_json):
 
 def help_test_fix_gregorian_date(sample_string, expected_date):
     tz = pytz.timezone('Europe/London')
-    found = lupt.fix_gregorian_date(sample_string, tz)
+    found = timetable.fix_gregorian_date(sample_string, tz)
 
     assert found == expected_date
 
@@ -206,7 +207,7 @@ def help_test_unaware_time_to_utc(sample_time, sample_date, expected,
                                   is_pm=False):
     tz = pytz.timezone('Europe/London')
     h, m = map(int, sample_time.split(':'))
-    found = lupt.unaware_time_to_utc(h, m, sample_date, tz, is_pm)
+    found = timetable.unaware_time_to_utc(h, m, sample_date, tz, is_pm)
     assert found == expected
 
 
@@ -244,16 +245,18 @@ def test_build_config():
 
 def test_is_zuhr_pm():
     prayers_config = config.default_config
-    assert lupt.is_ambigious_pm("zuhrbegins", 11, prayers_config) is False
-    assert lupt.is_ambigious_pm("zuhrbegins", 1, prayers_config) is True
-    assert lupt.is_ambigious_pm("zuhrjamāah", 4, prayers_config) is False
+    assert timetable.is_ambigious_pm("zuhrbegins", 11, prayers_config) is False
+    assert timetable.is_ambigious_pm("zuhrbegins", 1, prayers_config) is True
+    assert timetable.is_ambigious_pm("zuhrjamāah", 4, prayers_config) is False
 
 
 @pytest.fixture
 def help_test_auto_am_pm():
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
-        found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
-                                                prayer, config.default_config)
+        found = timetable.unaware_prayer_time_to_utc(sample_time,
+                                                     sample_date,
+                                                     prayer,
+                                                     config.default_config)
 
         assert found == expected
     return help_test_auto_am_pm
@@ -308,16 +311,16 @@ def test_zuhr_am_pm_after_1pm_bst(help_test_auto_am_pm):
 
 
 def test_new_timetable():
-    timetable = lupt.create_empty_timetable()
+    new_timetable = timetable.create_empty_timetable()
 
-    assert len(timetable) == 1
-    assert len(timetable[tk.DATES]) == 0
+    assert len(new_timetable) == 1
+    assert len(new_timetable[tk.DATES]) == 0
 
 
 def test_get_list_of_date_items(three_unsorted_days):
-    timetable = lupt.build_timetable(three_unsorted_days,
-                                     config.default_config)
-    date_dict = timetable[tk.DATES]
+    built_timetable = timetable.build_timetable(three_unsorted_days,
+                                                config.default_config)
+    date_dict = built_timetable[tk.DATES]
     assert len(date_dict) == 3
     dt = date_dict[datetime.date(2020, 10, 2)]
     assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
@@ -327,9 +330,10 @@ def test_get_list_of_date_items(three_unsorted_days):
 def test_get_sorted_prayer_times(three_unsorted_days):
     prayer = "sunrise"
     prayers_config = config.default_config
-    timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
+    built_timetable = timetable.build_timetable(three_unsorted_days,
+                                                prayers_config)
 
-    dates = timetable[tk.DATES]
+    dates = built_timetable[tk.DATES]
     assert len(dates) == 3
 
     day = dates[datetime.date(2020, 10, 2)]
@@ -341,9 +345,9 @@ def test_get_sorted_prayer_times(three_unsorted_days):
 
 
 @pytest.fixture
-def timetable(three_unsorted_days):
+def three_day_timetable(three_unsorted_days):
     prayers_config = config.default_config
-    return lupt.build_timetable(three_unsorted_days, prayers_config)
+    return timetable.build_timetable(three_unsorted_days, prayers_config)
 
 
 def assert_timetable(data, size):
@@ -356,7 +360,7 @@ def assert_timetable(data, size):
             create_utc_datetime(2020, 10, 2, 6, 0))
 
 
-def test_cache_timetable(timetable):
+def test_cache_timetable(three_day_timetable):
     appname = "london_unified_prayer_times"
     cache_dir = appdirs.user_cache_dir(appname)
     try:
@@ -364,7 +368,7 @@ def test_cache_timetable(timetable):
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
 
-    lupt.cache_timetable(timetable)
+    lupt.cache_timetable(three_day_timetable)
 
     cache_file = cache_dir + '/timetable.pickle'
     with open(cache_file, 'rb') as cache_json:
@@ -378,8 +382,8 @@ def test_cache_timetable(timetable):
             print("Error: %s - %s." % (e.filename, e.strerror))
 
 
-def test_read_cached_timetable(timetable):
-    lupt.cache_timetable(timetable)
+def test_read_cached_timetable(three_day_timetable):
+    lupt.cache_timetable(three_day_timetable)
     data = lupt.load_cached_timetable()
 
     assert_timetable(data, 3)
