@@ -17,6 +17,7 @@ from click.testing import CliRunner
 from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
 from london_unified_prayer_times import constants
+from london_unified_prayer_times import config
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
@@ -234,14 +235,14 @@ def test_unaware_time_to_utc_gmt_pm():
 
 
 def test_build_config():
-    json = lupt.default_config_json
-    config = lupt.build_config(json)
-    assert len(config) == len(json)
-    assert config[ck.TIMEZONE] == pytz.timezone('Europe/London')
+    json = config.default_config_json
+    bconfig = config.build_config(json)
+    assert len(bconfig) == len(json)
+    assert bconfig[ck.TIMEZONE] == pytz.timezone('Europe/London')
 
 
 def test_is_zuhr_pm():
-    prayers_config = lupt.default_config
+    prayers_config = config.default_config
     assert lupt.is_ambigious_pm("zuhrbegins", 11, prayers_config) is False
     assert lupt.is_ambigious_pm("zuhrbegins", 1, prayers_config) is True
     assert lupt.is_ambigious_pm("zuhrjamāah", 4, prayers_config) is False
@@ -251,7 +252,7 @@ def test_is_zuhr_pm():
 def help_test_auto_am_pm():
     def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
         found = lupt.unaware_prayer_time_to_utc(sample_time, sample_date,
-                                                prayer, lupt.default_config)
+                                                prayer, config.default_config)
 
         assert found == expected
     return help_test_auto_am_pm
@@ -313,7 +314,8 @@ def test_new_timetable():
 
 
 def test_get_list_of_date_items(three_unsorted_days):
-    timetable = lupt.build_timetable(three_unsorted_days, lupt.default_config)
+    timetable = lupt.build_timetable(three_unsorted_days,
+                                     config.default_config)
     date_dict = timetable[tk.DATES]
     assert len(date_dict) == 3
     dt = date_dict[datetime.date(2020, 10, 2)]
@@ -323,7 +325,7 @@ def test_get_list_of_date_items(three_unsorted_days):
 
 def test_get_sorted_prayer_times(three_unsorted_days):
     prayer = "sunrise"
-    prayers_config = lupt.default_config
+    prayers_config = config.default_config
     timetable = lupt.build_timetable(three_unsorted_days, prayers_config)
 
     dates = timetable[tk.DATES]
@@ -339,7 +341,7 @@ def test_get_sorted_prayer_times(three_unsorted_days):
 
 @pytest.fixture
 def timetable(three_unsorted_days):
-    prayers_config = lupt.default_config
+    prayers_config = config.default_config
     return lupt.build_timetable(three_unsorted_days, prayers_config)
 
 
@@ -394,7 +396,7 @@ def test_refresh_timetable():
     url = ("https://mock.location.com/lupt")
     data = lupt.refresh_timetable(url,
                                   lupt.lupt_schema,
-                                  lupt.default_config)
+                                  config.default_config)
     assert_timetable(data, 457)
 
 
