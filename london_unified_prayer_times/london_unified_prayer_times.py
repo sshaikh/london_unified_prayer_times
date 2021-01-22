@@ -1,8 +1,6 @@
 """Main module."""
 
-import urllib.request
 import json
-import jsonschema
 import importlib.resources as pkg_resources
 import dateutil.parser
 import pytz
@@ -11,17 +9,11 @@ import os
 import appdirs
 import pickle
 from london_unified_prayer_times import constants as c
+from london_unified_prayer_times import remote_data
 
 
 tk = c.TimetableKeys
 ck = c.ConfigKeys
-
-
-def get_json_data(url, schema):
-    with urllib.request.urlopen(url) as data:
-        json_data = json.loads(data.read().decode())
-        jsonschema.validate(json_data, schema)
-        return json_data
 
 
 def fix_gregorian_date(from_json, timezone):
@@ -127,7 +119,7 @@ def load_cached_timetable():
 
 
 def refresh_timetable(url, schema, config):
-    json = get_json_data(url, schema)
+    json = remote_data.get_json_data(url, schema)
     timetable = build_timetable(json, config)
     cache_timetable(timetable)
     return timetable

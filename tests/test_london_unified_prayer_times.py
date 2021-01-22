@@ -18,6 +18,7 @@ from london_unified_prayer_times import london_unified_prayer_times as lupt
 from london_unified_prayer_times import cli
 from london_unified_prayer_times import constants
 from london_unified_prayer_times import config
+from london_unified_prayer_times import remote_data
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
@@ -157,7 +158,7 @@ def bad_json():
 @pytest.mark.vcr()
 def test_get_json_data():
     url = ("https://mock.location.com/lupt")
-    json = lupt.get_json_data(url, lupt.lupt_schema)
+    json = remote_data.get_json_data(url, lupt.lupt_schema)
     assert json is not None
 
 
