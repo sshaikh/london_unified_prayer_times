@@ -158,17 +158,17 @@ def bad_json():
 @pytest.mark.vcr()
 def test_get_json_data():
     url = ("https://mock.location.com/lupt")
-    json = remote_data.get_json_data(url, lupt.lupt_schema)
+    json = remote_data.get_json_data(url, config.lupt_schema)
     assert json is not None
 
 
 def test_validate_json(single_day):
-    assert jsonschema.validate(single_day, lupt.lupt_schema) is None
+    assert jsonschema.validate(single_day, config.lupt_schema) is None
 
 
 def test_invalid_json(bad_json):
     with pytest.raises(jsonschema.ValidationError):
-        jsonschema.validate(bad_json, lupt.lupt_schema)
+        jsonschema.validate(bad_json, config.lupt_schema)
 
 
 def help_test_fix_gregorian_date(sample_string, expected_date):
@@ -396,7 +396,7 @@ def test_read_cached_timetable(timetable):
 def test_refresh_timetable():
     url = ("https://mock.location.com/lupt")
     data = lupt.refresh_timetable(url,
-                                  lupt.lupt_schema,
+                                  config.lupt_schema,
                                   config.default_config)
     assert_timetable(data, 457)
 

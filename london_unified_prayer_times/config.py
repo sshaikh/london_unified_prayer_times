@@ -18,3 +18,4 @@ def build_config(json):
 default_config_json = json.loads(
     pkg_resources.read_text(__package__, 'default_config.json'))
 default_config = build_config(default_config_json)
+lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))

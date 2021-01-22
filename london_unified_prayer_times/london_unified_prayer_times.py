@@ -1,7 +1,5 @@
 """Main module."""
 
-import json
-import importlib.resources as pkg_resources
 import dateutil.parser
 import pytz
 import datetime
@@ -123,6 +121,3 @@ def refresh_timetable(url, schema, config):
     timetable = build_timetable(json, config)
     cache_timetable(timetable)
     return timetable
-
-
-lupt_schema = json.loads(pkg_resources.read_text(__package__, 'schema.json'))
