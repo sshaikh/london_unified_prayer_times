@@ -11,6 +11,7 @@ from . import test_timetable
 
 
 tk = constants.TimetableKeys
+pickle_filename = constants.PICKLE_FILENAME
 
 
 def assert_timetable(data, size):
@@ -31,7 +32,7 @@ def test_cache_timetable(three_day_timetable):
     except OSError as e:
         print("Error: %s - %s." % (e.filename, e.strerror))
 
-    cache.cache_timetable(three_day_timetable)
+    cache.cache_timetable(three_day_timetable, pickle_filename)
 
     cache_file = cache_dir + '/timetable.pickle'
     with open(cache_file, 'rb') as cache_json:
@@ -46,8 +47,8 @@ def test_cache_timetable(three_day_timetable):
 
 
 def test_read_cached_timetable(three_day_timetable):
-    cache.cache_timetable(three_day_timetable)
-    data = cache.load_cached_timetable()
+    cache.cache_timetable(three_day_timetable, pickle_filename)
+    data = cache.load_cached_timetable(pickle_filename)
 
     assert_timetable(data, 3)
 
@@ -64,5 +65,6 @@ def test_refresh_timetable():
     url = ("https://mock.location.com/lupt")
     data = cache.refresh_timetable(url,
                                    config.lupt_schema,
-                                   config.default_config)
+                                   config.default_config,
+                                   pickle_filename)
     assert_timetable(data, 457)
