@@ -33,6 +33,6 @@ def load_cached_timetable(pickle_filename):
 
 def refresh_timetable(url, schema, config, pickle_filename):
     json = remote_data.get_json_data(url, schema)
-    built_timetable = timetable.build_timetable(json, config)
+    built_timetable = timetable.build_timetable(url, json, config)
     cache_timetable(built_timetable, pickle_filename)
     return built_timetable

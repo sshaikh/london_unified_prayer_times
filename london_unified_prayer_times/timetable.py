@@ -45,11 +45,13 @@ def create_empty_timetable():
     results = {}
     date_dict = {}
     results[tk.DATES] = date_dict
+    results[tk.SOURCE] = None
     return results
 
 
-def build_timetable(json, prayers_config):
+def build_timetable(source, json, prayers_config):
     results = create_empty_timetable()
+    results[tk.SOURCE] = source
     dates = results[tk.DATES]
 
     data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])

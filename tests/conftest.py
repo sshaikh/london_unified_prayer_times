@@ -127,4 +127,6 @@ def three_unsorted_days():
 @pytest.fixture
 def three_day_timetable(three_unsorted_days):
     prayers_config = config.default_config
-    return timetable.build_timetable(three_unsorted_days, prayers_config)
+    return timetable.build_timetable('three_unsorted_days_fixture',
+                                     three_unsorted_days,
+                                     prayers_config)

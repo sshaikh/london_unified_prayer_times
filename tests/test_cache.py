@@ -15,7 +15,7 @@ pickle_filename = constants.PICKLE_FILENAME
 
 
 def assert_timetable(data, size):
-    assert len(data) == 1
+    assert len(data) == 2
     assert len(data[tk.DATES]) == size
     day = data[tk.DATES][datetime.date(2020, 10, 2)]
     assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
@@ -68,3 +68,5 @@ def test_refresh_timetable():
                                    config.default_config,
                                    pickle_filename)
     assert_timetable(data, 457)
+
+    assert data[tk.SOURCE] == url

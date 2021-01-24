@@ -140,27 +140,24 @@ def test_zuhr_am_pm_after_1pm_bst():
 def test_new_timetable():
     new_timetable = timetable.create_empty_timetable()
 
-    assert len(new_timetable) == 1
+    assert len(new_timetable) == 2
     assert len(new_timetable[tk.DATES]) == 0
+    assert new_timetable[tk.SOURCE] is None
 
 
-def test_get_list_of_date_items(three_unsorted_days):
-    built_timetable = timetable.build_timetable(three_unsorted_days,
-                                                config.default_config)
-    date_dict = built_timetable[tk.DATES]
+def test_get_list_of_date_items(three_day_timetable):
+    date_dict = three_day_timetable[tk.DATES]
     assert len(date_dict) == 3
     dt = date_dict[datetime.date(2020, 10, 2)]
     assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
     assert dt[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
 
 
-def test_get_sorted_prayer_times(three_unsorted_days):
+def test_get_sorted_prayer_times(three_day_timetable):
     prayer = "sunrise"
     prayers_config = config.default_config
-    built_timetable = timetable.build_timetable(three_unsorted_days,
-                                                prayers_config)
 
-    dates = built_timetable[tk.DATES]
+    dates = three_day_timetable[tk.DATES]
     assert len(dates) == 3
 
     day = dates[datetime.date(2020, 10, 2)]

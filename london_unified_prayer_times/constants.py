@@ -7,6 +7,7 @@ class TimetableKeys(Enum):
     TODAY = 'today'
     TOMORROW = 'tomorrow'
     TIMES = 'times'
+    SOURCE = 'source'
 
 
 class ConfigKeys(Enum):
