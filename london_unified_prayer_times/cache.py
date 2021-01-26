@@ -7,7 +7,7 @@ from london_unified_prayer_times import timetable
 
 def get_cache_fileinfo(pickle_filename):
     cache_dir = appdirs.user_cache_dir(__package__)
-    cache_file = cache_dir + '/' + pickle_filename
+    cache_file = cache_dir + '/' + pickle_filename + '.pickle'
     return cache_dir, cache_file
 
 
