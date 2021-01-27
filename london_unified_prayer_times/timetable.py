@@ -1,7 +1,7 @@
 import dateutil.parser
 import pytz
 import datetime
-from london_unified_prayer_times import constants as c
+from . import constants as c
 
 
 tk = c.TimetableKeys

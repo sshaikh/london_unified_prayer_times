@@ -1,6 +1,6 @@
 import json
 import importlib.resources as pkg_resources
-from london_unified_prayer_times import constants
+from . import constants
 import pytz
 
 

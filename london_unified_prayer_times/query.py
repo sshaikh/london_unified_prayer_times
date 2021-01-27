@@ -1,4 +1,4 @@
-from london_unified_prayer_times import constants
+from . import constants
 
 
 tk = constants.TimetableKeys

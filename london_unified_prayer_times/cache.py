@@ -1,8 +1,8 @@
 import appdirs
 import os
 import pickle
-from london_unified_prayer_times import remote_data
-from london_unified_prayer_times import timetable
+from . import remote_data
+from . import timetable
 
 
 def get_cache_fileinfo(pickle_filename):
