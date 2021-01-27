@@ -37,7 +37,7 @@ setup(
     description="A library for retrieving data from The London Unified Prayer Timetable.",
     entry_points={
         'console_scripts': [
-            'london_unified_prayer_times=london_unified_prayer_times.cli:main',
+            'lupt=london_unified_prayer_times.cli:main',
         ],
     },
     install_requires=requirements,
