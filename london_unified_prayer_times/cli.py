@@ -8,17 +8,22 @@ from . import constants
 
 
 @click.group()
-def main(args=None):
+@click.option('--timetable', '-t', default=constants.PICKLE_FILENAME)
+@click.pass_context
+def main(ctx, timetable):
     """Console script for london_unified_prayer_times."""
+    ctx.ensure_object(dict)
+    ctx.obj['timetable'] = timetable
     return 0
 
 
 @main.command()
+@click.pass_context
 # @main.option('--url', '-u', help='URL to retrieve times from')
-def refresh():
+def refresh(ctx):
     url = 'plop'
     schema = config.lupt_schema
-    pickle_filename = constants.PICKLE_FILENAME
+    pickle_filename = ctx.obj['timetable']
     tt = cache.refresh_timetable(url, schema, config, pickle_filename)
     if tt:
         num_dates = len(tt[constants.TimetableKeys.DATES])
@@ -31,4 +36,4 @@ def refresh():
 
 
 if __name__ == "__main__":
-    sys.exit(main())  # pragma: no cover
+    sys.exit(main(obj={}))  # pragma: no cover

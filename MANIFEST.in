@@ -3,6 +3,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include london_unified_prayer_times/*.json
 
 recursive-include tests *
 recursive-exclude * __pycache__
