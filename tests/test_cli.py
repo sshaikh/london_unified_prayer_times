@@ -22,7 +22,10 @@ def assert_cli(args, expected):
 
 
 def test_init_database_default(cache_mock):
-    assert_cli(['init', '--url', 'test_source'],
+    assert_cli(['init',
+                '--url', 'test_source',
+                '--config', 'config',
+                '--schema', 'schema'],
                'Successfully initialised timetable ' +
                'with 3 dates from conftest.py')
 

@@ -23,14 +23,20 @@ def main(ctx, timetable):
 
 @main.command()
 @click.pass_context
-@click.option('--url', '-u', help='URL to retrive timetable from',
-              required=True)
-def init(ctx, url):
+@click.option('--url', '-u', required=True,
+              help='URL to retrive timetable from')
+@click.option('--config', '-c', 'config_file',
+              help='Location of custom config')
+@click.option('--schema', '-s', 'schema_file',
+              help='Location of custom schema')
+def init(ctx, url, config_file, schema_file):
     name = ctx.obj[tk.NAME]
+    safe_config = config.load_config(config_file)
+    safe_schema = config.load_schema(schema_file)
     tt = cache.init_timetable(name,
                               url,
-                              config.default_config,
-                              config.lupt_schema)
+                              safe_config,
+                              safe_schema)
     if tt:
         click.echo(f'Successfully initialised {tt[tk.NAME]}' +
                    f' with {tt[tk.NUMBER_OF_DATES]} dates' +
