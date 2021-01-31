@@ -51,3 +51,8 @@ def refresh_timetable(timetable):
     config = timetable[tk.CONFIG]
     name = timetable[tk.NAME]
     return init_timetable(name, url, config, schema)
+
+
+def refresh_timetable_by_name(name):
+    timetable = load_cached_timetable(name)
+    return refresh_timetable(timetable)

@@ -82,3 +82,10 @@ def test_init_timetable(three_unsorted_days_mock):
 def test_refresh_timetable(three_day_timetable, three_unsorted_days_mock):
     data = cache.refresh_timetable(three_day_timetable)
     assert_timetable(data, three_day_timetable)
+
+
+def test_refresh_timetable_by_name(three_day_timetable,
+                                   three_unsorted_days_mock,
+                                   cached_timetable_mock):
+    data = cache.refresh_timetable_by_name(three_day_timetable[tk.NAME])
+    assert_timetable(data, three_day_timetable)
