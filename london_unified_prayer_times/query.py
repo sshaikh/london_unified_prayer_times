@@ -23,3 +23,7 @@ def get_available_times(timetable):
 
 def get_time(timetable, date, time):
     return timetable[tk.DATES][date][tk.TIMES][time]
+
+
+def get_times(timetable, date):
+    return timetable[tk.DATES][date][tk.TIMES]

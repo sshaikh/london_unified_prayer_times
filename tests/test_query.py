@@ -42,3 +42,10 @@ def test_query_time(three_day_timetable):
                           datetime.date(2020, 10, 2),
                           "sunrise")
     assert time == test_timetable.create_utc_datetime(2020, 10, 2, 6, 0)
+
+
+def test_query_times(three_day_timetable):
+    times = query.get_times(three_day_timetable,
+                            datetime.date(2020, 10, 2))
+    assert (times['sunrise'] ==
+            test_timetable.create_utc_datetime(2020, 10, 2, 6, 0))
