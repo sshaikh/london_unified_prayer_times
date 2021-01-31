@@ -33,7 +33,7 @@ def init(ctx, url):
                               config.lupt_schema)
     if tt:
         click.echo(f'Successfully initialised {tt[tk.NAME]}' +
-                   f' with {len(tt[tk.DATES])} dates' +
+                   f' with {tt[tk.NUMBER_OF_DATES]} dates' +
                    f' from {tt[tk.SOURCE]}')
         return 0
     return -1
@@ -45,10 +45,8 @@ def refresh(ctx):
     name = ctx.obj[tk.NAME]
     tt = cache.refresh_timetable_by_name(name)
     if tt:
-        returned_name = tt[tk.NAME]
-        returned_dates = len(tt[tk.DATES])
-        click.echo(f'Successfully refreshed {returned_name}' +
-                   f' with {returned_dates} dates')
+        click.echo(f'Successfully refreshed {tt[tk.NAME]}' +
+                   f' with {tt[tk.NUMBER_OF_DATES]} dates')
         return 0
 
     return -1
