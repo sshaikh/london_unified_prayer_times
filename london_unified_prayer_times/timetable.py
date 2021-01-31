@@ -49,6 +49,7 @@ def create_empty_timetable(name, source, config, schema):
     results[tk.NAME] = name
     results[tk.SCHEMA] = schema
     results[tk.CONFIG] = config
+    results[tk.NUMBER_OF_DATES] = 0
     return results
 
 
@@ -85,4 +86,5 @@ def build_timetable(name, source, config, schema, json):
 
         yesterday = day_entry
 
+    results[tk.NUMBER_OF_DATES] = len(dates)
     return results

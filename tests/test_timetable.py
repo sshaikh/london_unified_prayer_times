@@ -148,8 +148,8 @@ def test_new_timetable():
                                                      dconfig,
                                                      schema)
 
-    assert len(new_timetable) == 5
     assert len(new_timetable[tk.DATES]) == 0
+    assert new_timetable[tk.NUMBER_OF_DATES] == 0
     assert new_timetable[tk.SOURCE] is source
     assert new_timetable[tk.NAME] is name
     assert new_timetable[tk.SCHEMA] is schema
@@ -158,7 +158,7 @@ def test_new_timetable():
 
 def test_get_list_of_date_items(three_day_timetable):
     date_dict = three_day_timetable[tk.DATES]
-    assert len(date_dict) == 3
+    assert three_day_timetable[tk.NUMBER_OF_DATES] == len(date_dict)
     dt = date_dict[datetime.date(2020, 10, 2)]
     assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
     assert dt[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
@@ -169,7 +169,6 @@ def test_get_sorted_prayer_times(three_day_timetable):
     prayers_config = config.default_config
 
     dates = three_day_timetable[tk.DATES]
-    assert len(dates) == 3
 
     day = dates[datetime.date(2020, 10, 2)]
     assert len(day) == 2

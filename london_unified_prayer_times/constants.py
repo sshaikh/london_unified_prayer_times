@@ -11,6 +11,7 @@ class TimetableKeys(Enum):
     NAME = 'name'
     CONFIG = 'config'
     SCHEMA = 'schema'
+    NUMBER_OF_DATES = 'num_dates'
 
 
 class ConfigKeys(Enum):
