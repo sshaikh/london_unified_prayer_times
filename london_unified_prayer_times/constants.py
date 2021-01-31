@@ -8,6 +8,9 @@ class TimetableKeys(Enum):
     TOMORROW = 'tomorrow'
     TIMES = 'times'
     SOURCE = 'source'
+    NAME = 'name'
+    CONFIG = 'config'
+    SCHEMA = 'schema'
 
 
 class ConfigKeys(Enum):

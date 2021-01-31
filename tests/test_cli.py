@@ -1,4 +1,3 @@
-import pytest
 from click.testing import CliRunner
 
 from london_unified_prayer_times import cli
@@ -13,12 +12,6 @@ def test_command_line_interface():
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert 'Show this message and exit.' in help_result.output
-
-
-@pytest.fixture
-def three_day_timetable_mock(three_day_timetable, mocker):
-    mocker.patch('london_unified_prayer_times.cli.cache.refresh_timetable',
-                 return_value=three_day_timetable)
 
 
 def assert_cli(args, expected):

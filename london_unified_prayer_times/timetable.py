@@ -41,17 +41,19 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
                                prayers_config[ck.TIMEZONE], is_pm)
 
 
-def create_empty_timetable():
+def create_empty_timetable(name, source, config, schema):
     results = {}
     date_dict = {}
     results[tk.DATES] = date_dict
-    results[tk.SOURCE] = None
+    results[tk.SOURCE] = source
+    results[tk.NAME] = name
+    results[tk.SCHEMA] = schema
+    results[tk.CONFIG] = config
     return results
 
 
-def build_timetable(source, json, prayers_config):
-    results = create_empty_timetable()
-    results[tk.SOURCE] = source
+def build_timetable(name, source, config, schema, json):
+    results = create_empty_timetable(name, source, config, schema)
     dates = results[tk.DATES]
 
     data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])
@@ -59,7 +61,7 @@ def build_timetable(source, json, prayers_config):
 
     for day in data:
         dt = fix_gregorian_date(day[c.JSON_GREGORIAN_DATE],
-                                prayers_config[ck.TIMEZONE])
+                                config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
@@ -75,10 +77,10 @@ def build_timetable(source, json, prayers_config):
         prayers = {}
         day_entry[tk.TIMES] = prayers
 
-        for prayer in prayers_config[ck.PRAYERS]:
+        for prayer in config[ck.PRAYERS]:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],
                                                      dt, prayer,
-                                                     prayers_config)
+                                                     config)
             prayers[prayer] = prayer_time
 
         yesterday = day_entry

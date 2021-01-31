@@ -3,6 +3,10 @@ import os
 import pickle
 from . import remote_data
 from . import timetable
+from . import constants
+
+
+tk = constants.TimetableKeys
 
 
 def get_cache_fileinfo(pickle_filename):
@@ -11,7 +15,8 @@ def get_cache_fileinfo(pickle_filename):
     return cache_dir, cache_file
 
 
-def cache_timetable(timetable, pickle_filename):
+def cache_timetable(timetable):
+    pickle_filename = timetable[tk.NAME]
     cache_dir, cache_file = get_cache_fileinfo(pickle_filename)
 
     os.makedirs(cache_dir, exist_ok=True)
@@ -31,8 +36,18 @@ def load_cached_timetable(pickle_filename):
         return pickle.load(cached_pickle)
 
 
-def refresh_timetable(url, schema, config, pickle_filename):
-    json = remote_data.get_json_data(url, schema)
-    built_timetable = timetable.build_timetable(url, json, config)
-    cache_timetable(built_timetable, pickle_filename)
+def init_timetable(name, source, config, schema):
+    json = remote_data.get_json_data(source, schema)
+    built_timetable = timetable.build_timetable(name, source,
+                                                config, schema,
+                                                json)
+    cache_timetable(built_timetable)
     return built_timetable
+
+
+def refresh_timetable(timetable):
+    url = timetable[tk.SOURCE]
+    schema = timetable[tk.SCHEMA]
+    config = timetable[tk.CONFIG]
+    name = timetable[tk.NAME]
+    return init_timetable(name, url, config, schema)

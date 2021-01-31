@@ -24,7 +24,7 @@ def refresh(ctx):
     url = 'plop'
     schema = config.lupt_schema
     pickle_filename = ctx.obj['timetable']
-    tt = cache.refresh_timetable(url, schema, config, pickle_filename)
+    tt = cache.init_timetable(url, schema, config, pickle_filename)
     if tt:
         num_dates = len(tt[constants.TimetableKeys.DATES])
         click.echo(f'Successfully refreshed {num_dates}' +

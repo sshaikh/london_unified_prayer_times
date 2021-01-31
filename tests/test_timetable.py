@@ -138,11 +138,22 @@ def test_zuhr_am_pm_after_1pm_bst():
 
 
 def test_new_timetable():
-    new_timetable = timetable.create_empty_timetable()
+    name = 'test_timetable'
+    source = 'test_source'
+    schema = config.lupt_schema
+    dconfig = config.default_config
 
-    assert len(new_timetable) == 2
+    new_timetable = timetable.create_empty_timetable(name,
+                                                     source,
+                                                     dconfig,
+                                                     schema)
+
+    assert len(new_timetable) == 5
     assert len(new_timetable[tk.DATES]) == 0
-    assert new_timetable[tk.SOURCE] is None
+    assert new_timetable[tk.SOURCE] is source
+    assert new_timetable[tk.NAME] is name
+    assert new_timetable[tk.SCHEMA] is schema
+    assert new_timetable[tk.CONFIG] is dconfig
 
 
 def test_get_list_of_date_items(three_day_timetable):
@@ -166,3 +177,7 @@ def test_get_sorted_prayer_times(three_day_timetable):
     times = day[tk.TIMES]
     assert len(times) == len(prayers_config[ck.PRAYERS])
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
+
+    assert three_day_timetable[tk.NAME] == 'timetable'
+    assert three_day_timetable[tk.CONFIG] == prayers_config
+    assert three_day_timetable[tk.SCHEMA] == config.lupt_schema
