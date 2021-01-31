@@ -21,7 +21,7 @@ def assert_cli(args, expected):
     assert expected in result.output
 
 
-def test_init_database_default(cache_mock):
+def test_init_timetable(cache_mock):
     assert_cli(['init',
                 '--url', 'test_source',
                 '--config', 'config',
@@ -30,6 +30,11 @@ def test_init_database_default(cache_mock):
                'with 3 dates from conftest.py')
 
 
-def test_refresh_database_default(cache_mock):
+def test_refresh_timetable(cache_mock):
     assert_cli(['refresh'],
                'Successfully refreshed timetable with 3 dates')
+
+
+def test_query_timetable(cache_mock):
+    assert_cli(['times'],
+               'timetable contains times for:\nsunrise')

@@ -2,6 +2,7 @@ from . import constants
 
 
 tk = constants.TimetableKeys
+ck = constants.ConfigKeys
 
 
 def get_islamic_date(timetable, date, when):
@@ -17,13 +18,7 @@ def get_islamic_date_tomorrow(timetable, date):
 
 
 def get_available_times(timetable):
-    dates = timetable[tk.DATES]
-
-    if len(dates) == 0:
-        return []
-
-    day = next(iter(dates.values()))
-    return day[tk.TIMES].keys()
+    return timetable[tk.CONFIG][ck.TIMES]
 
 
 def get_time(timetable, date, time):

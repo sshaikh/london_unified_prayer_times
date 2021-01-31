@@ -15,9 +15,9 @@ class TimetableKeys(Enum):
 
 
 class ConfigKeys(Enum):
-    PRAYERS = 'prayers'
-    PM_PRAYERS = 'pm_prayers'
-    AMBIGIOUS_PRAYERS = 'ambigious_prayers'
+    TIMES = 'times'
+    PM_TIMES = 'pm_times'
+    AMBIGIOUS_TIMES = 'ambigious_times'
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
 

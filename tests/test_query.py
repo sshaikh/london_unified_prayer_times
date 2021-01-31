@@ -27,14 +27,14 @@ def test_query_available_times(three_day_timetable):
     assert len(list_times) == 12
 
 
-def test_query_available_times_is_zero():
+def test_query_available_times_empty_timetable():
     tt = timetable.create_empty_timetable('test',
                                           'url',
                                           config.default_config,
                                           config.lupt_schema)
     list_times = query.get_available_times(tt)
 
-    assert len(list_times) == 0
+    assert len(list_times) == 12
 
 
 def test_query_time(three_day_timetable):

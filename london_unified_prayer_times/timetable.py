@@ -24,12 +24,12 @@ def unaware_time_to_utc(h, m, sample_date, timezone, is_pm=False):
 
 
 def is_ambigious_pm(prayer, h, prayers_config):
-    return (prayer in prayers_config[ck.AMBIGIOUS_PRAYERS] and
+    return (prayer in prayers_config[ck.AMBIGIOUS_TIMES] and
             (h < prayers_config[ck.AMBIGIOUS_THRESHOLD]))
 
 
 def prayer_is_pm(prayer, h, prayers_config):
-    return (prayer in prayers_config[ck.PM_PRAYERS] or
+    return (prayer in prayers_config[ck.PM_TIMES] or
             is_ambigious_pm(prayer, h, prayers_config))
 
 
@@ -78,7 +78,7 @@ def build_timetable(name, source, config, schema, json):
         prayers = {}
         day_entry[tk.TIMES] = prayers
 
-        for prayer in config[ck.PRAYERS]:
+        for prayer in config[ck.TIMES]:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],
                                                      dt, prayer,
                                                      config)

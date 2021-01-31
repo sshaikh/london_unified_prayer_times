@@ -1,16 +1,16 @@
 {
-	"prayers": [
+	"times": [
 		"sunrise",
 		"fajrbegins", "fajrjamāah",
                 "zuhrbegins", "zuhrjamāah",
                 "asrmithl1", "asrmithl2", "asrjamāah",
                 "maghribbegins", "maghribjamāah",
                 "ishābegins", "ishājamāah"],
-	"pm_prayers": [
+	"pm_times": [
 		"asrmithl1", "asrmithl2", "asrjamāah",
                    "maghribbegins", "maghribjamāah",
                    "ishābegins", "ishājamāah"],
-	"ambigious_prayers": [
+	"ambigious_times": [
 		"zuhrbegins", "zuhrjamāah"],
 	"ambigious_threshold": 4,
 	"timezone": "Europe/London"
