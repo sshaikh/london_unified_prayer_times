@@ -1,6 +1,7 @@
 """Console script for london_unified_prayer_times."""
 import sys
 import click
+from click_default_group import DefaultGroup
 from datetime import date
 from datetime import datetime
 import pytz
@@ -15,7 +16,7 @@ tk = constants.TimetableKeys
 ck = constants.ConfigKeys
 
 
-@click.group()
+@click.group(cls=DefaultGroup, default='show-day', default_if_no_args=True)
 @click.option('--timetable', '-t', default=constants.PICKLE_FILENAME,
               help='Name of the local timetable to use')
 @click.pass_context

@@ -158,6 +158,9 @@ def cache_mock(three_day_timetable, mocker):
     mocker.patch('london_unified_prayer_times.cli.cache.' +
                  'refresh_timetable_by_name',
                  return_value=three_day_timetable)
+    mocker.patch('london_unified_prayer_times.cli.cache.' +
+                 'load_cached_timetable',
+                 return_value=three_day_timetable)
     mocker.patch('london_unified_prayer_times.cli.config.' +
                  'load_config',
                  return_value=config.default_config)

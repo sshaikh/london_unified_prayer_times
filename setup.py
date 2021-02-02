@@ -10,7 +10,8 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.0',
+requirements = ['Click>=7.1.2',
+                'click-default-group>=1.2.2',
                 'jsonschema>=3.2.0',
                 'python-dateutil>=2.8.1',
                 'appdirs>=1.4.4']

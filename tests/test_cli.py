@@ -7,8 +7,12 @@ def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
     result = runner.invoke(cli.main)
-    assert result.exit_code == 0
-    assert 'Show this message and exit.' in result.output
+
+    # default command tries to show-day for today, so will fail
+    # as probably not in test data. Expect this instead of
+    # mocking today()
+    assert result.exit_code == 1
+
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert 'Show this message and exit.' in help_result.output
@@ -60,7 +64,7 @@ def test_show_calendar():
     pass
 
 
-def test_show_calendar_today():
+def test_show_calendar_tz():
     pass
 
 
@@ -68,9 +72,5 @@ def test_now_next():
     pass
 
 
-def test_now_next_now():
-    pass
-
-
-def test_debug():
+def test_dump():
     pass
