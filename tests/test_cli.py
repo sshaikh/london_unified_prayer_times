@@ -51,6 +51,11 @@ def test_show_day(cache_mock):
                'Default timetable for 2020-10-01:\nfajrbegins: 4:31')
 
 
+def test_show_day_tz(cache_mock):
+    assert_cli(['show-day', '--date', '2020-10-01', '--timezone', 'CET'],
+               'Default timetable for 2020-10-01:\nfajrbegins: 6:31')
+
+
 def test_show_calendar():
     pass
 
