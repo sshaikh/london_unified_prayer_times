@@ -43,13 +43,16 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
 
 def create_empty_timetable(name, source, config, schema):
     results = {}
-    date_dict = {}
-    results[tk.DATES] = date_dict
-    results[tk.SOURCE] = source
     results[tk.NAME] = name
-    results[tk.SCHEMA] = schema
-    results[tk.CONFIG] = config
-    results[tk.NUMBER_OF_DATES] = 0
+    results[tk.SETUP] = {}
+    results[tk.SETUP][tk.SOURCE] = source
+    results[tk.SETUP][tk.SCHEMA] = schema
+    results[tk.SETUP][tk.CONFIG] = config
+    results[tk.STATS] = {}
+    results[tk.STATS][tk.NUMBER_OF_DATES] = 0
+    results[tk.STATS][tk.MIN_DATE] = None
+    results[tk.STATS][tk.MAX_DATE] = None
+    results[tk.DATES] = {}
     return results
 
 
@@ -86,5 +89,8 @@ def build_timetable(name, source, config, schema, json):
 
         yesterday = day_entry
 
-    results[tk.NUMBER_OF_DATES] = len(dates)
+    results[tk.STATS][tk.NUMBER_OF_DATES] = len(dates)
+    results[tk.STATS][tk.MIN_DATE] = min(dates.keys())
+    results[tk.STATS][tk.MAX_DATE] = max(dates.keys())
+
     return results

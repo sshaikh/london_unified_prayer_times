@@ -18,7 +18,7 @@ def get_islamic_date_tomorrow(timetable, date):
 
 
 def get_available_times(timetable):
-    return timetable[tk.CONFIG][ck.TIMES]
+    return timetable[tk.SETUP][tk.CONFIG][ck.TIMES]
 
 
 def get_time(timetable, date, time):

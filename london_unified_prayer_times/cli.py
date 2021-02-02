@@ -54,8 +54,8 @@ def init(ctx, url, config_file, schema_file):
 
     def operate(tt):
         click.echo(f'Successfully initialised {tt[tk.NAME]} timetable' +
-                   f' with {tt[tk.NUMBER_OF_DATES]} dates' +
-                   f' from {tt[tk.SOURCE]}')
+                   f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates' +
+                   f' from {tt[tk.SETUP][tk.SOURCE]}')
 
     operate_timetable(setup, operate)
 
@@ -69,7 +69,7 @@ def refresh(ctx):
 
     def operate(tt):
         click.echo(f'Successfully refreshed {tt[tk.NAME]} timetable' +
-                   f' with {tt[tk.NUMBER_OF_DATES]} dates')
+                   f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates')
 
     operate_timetable(setup, operate)
 

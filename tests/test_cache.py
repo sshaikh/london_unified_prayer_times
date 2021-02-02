@@ -16,21 +16,21 @@ pickle_filename = constants.PICKLE_FILENAME
 
 def assert_timetable_components(data, name, url, size):
     assert data[tk.NAME] == name
-    assert data[tk.SOURCE] == url
+    assert data[tk.SETUP][tk.SOURCE] == url
     assert len(data[tk.DATES]) == size
     day = data[tk.DATES][datetime.date(2020, 10, 2)]
     assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
     assert day[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
     assert (day[tk.TIMES]['sunrise'] ==
             test_timetable.create_utc_datetime(2020, 10, 2, 6, 0))
-    assert data[tk.CONFIG] == config.default_config
-    assert data[tk.SCHEMA] == config.lupt_schema
+    assert data[tk.SETUP][tk.CONFIG] == config.default_config
+    assert data[tk.SETUP][tk.SCHEMA] == config.lupt_schema
 
 
 def assert_timetable(data, timetable):
     assert_timetable_components(data,
                                 timetable[tk.NAME],
-                                timetable[tk.SOURCE],
+                                timetable[tk.SETUP][tk.SOURCE],
                                 len(timetable[tk.DATES]))
 
 

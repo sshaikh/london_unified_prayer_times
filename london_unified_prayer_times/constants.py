@@ -9,9 +9,13 @@ class TimetableKeys(Enum):
     TIMES = 'times'
     SOURCE = 'source'
     NAME = 'name'
+    SETUP = 'setup'
     CONFIG = 'config'
     SCHEMA = 'schema'
     NUMBER_OF_DATES = 'num_dates'
+    STATS = 'stats'
+    MIN_DATE = 'min_date'
+    MAX_DATE = 'max_date'
 
 
 class ConfigKeys(Enum):

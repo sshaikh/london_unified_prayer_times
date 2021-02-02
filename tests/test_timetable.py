@@ -149,16 +149,18 @@ def test_new_timetable():
                                                      schema)
 
     assert len(new_timetable[tk.DATES]) == 0
-    assert new_timetable[tk.NUMBER_OF_DATES] == 0
-    assert new_timetable[tk.SOURCE] is source
+    assert new_timetable[tk.STATS][tk.NUMBER_OF_DATES] == 0
+    assert new_timetable[tk.STATS][tk.MIN_DATE] is None
+    assert new_timetable[tk.STATS][tk.MAX_DATE] is None
+    assert new_timetable[tk.SETUP][tk.SOURCE] is source
     assert new_timetable[tk.NAME] is name
-    assert new_timetable[tk.SCHEMA] is schema
-    assert new_timetable[tk.CONFIG] is dconfig
+    assert new_timetable[tk.SETUP][tk.SCHEMA] is schema
+    assert new_timetable[tk.SETUP][tk.CONFIG] is dconfig
 
 
 def test_get_list_of_date_items(three_day_timetable):
     date_dict = three_day_timetable[tk.DATES]
-    assert three_day_timetable[tk.NUMBER_OF_DATES] == len(date_dict)
+    assert three_day_timetable[tk.STATS][tk.NUMBER_OF_DATES] == len(date_dict)
     dt = date_dict[datetime.date(2020, 10, 2)]
     assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
     assert dt[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
@@ -178,5 +180,12 @@ def test_get_sorted_prayer_times(three_day_timetable):
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
 
     assert three_day_timetable[tk.NAME] == 'default'
-    assert three_day_timetable[tk.CONFIG] == prayers_config
-    assert three_day_timetable[tk.SCHEMA] == config.lupt_schema
+    assert three_day_timetable[tk.SETUP][tk.CONFIG] == prayers_config
+    assert three_day_timetable[tk.SETUP][tk.SCHEMA] == config.lupt_schema
+
+
+def test_min_max_dates(three_day_timetable):
+    assert (three_day_timetable[tk.STATS][tk.MIN_DATE] ==
+            datetime.date(2020, 10, 1))
+    assert (three_day_timetable[tk.STATS][tk.MAX_DATE] ==
+            datetime.date(2020, 10, 3))

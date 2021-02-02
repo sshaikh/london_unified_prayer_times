@@ -46,9 +46,10 @@ def init_timetable(name, source, config, schema):
 
 
 def refresh_timetable(timetable):
-    url = timetable[tk.SOURCE]
-    schema = timetable[tk.SCHEMA]
-    config = timetable[tk.CONFIG]
+    setup = timetable[tk.SETUP]
+    url = setup[tk.SOURCE]
+    schema = setup[tk.SCHEMA]
+    config = setup[tk.CONFIG]
     name = timetable[tk.NAME]
     return init_timetable(name, url, config, schema)
 
