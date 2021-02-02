@@ -41,7 +41,9 @@ def test_list_times(cache_mock):
 
 
 def test_list_dates(cache_mock):
-    pass
+    assert_cli(['list-dates'],
+               'Default timetable contains 3 dates between ' +
+               '2020-10-01 and 2020-10-03')
 
 
 def test_show_day(cache_mock):

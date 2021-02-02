@@ -92,6 +92,18 @@ def list_times(ctx):
     operate_timetable(load_timetable(ctx), operate)
 
 
+@main.command(name='list-dates')
+@click.pass_context
+def list_dates(ctx):
+    def operate(tt):
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains ' +
+                   f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates between ' +
+                   f'{tt[tk.STATS][tk.MIN_DATE]} and ' +
+                   f'{tt[tk.STATS][tk.MAX_DATE]}')
+
+    operate_timetable(load_timetable(ctx), operate)
+
+
 @main.command(name='show-day')
 @click.pass_context
 @click.option('--date', '-d', 'requested_date',
