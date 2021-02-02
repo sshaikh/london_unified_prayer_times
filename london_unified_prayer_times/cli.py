@@ -1,6 +1,9 @@
 """Console script for london_unified_prayer_times."""
 import sys
 import click
+from datetime import date
+from datetime import datetime
+import pytz
 
 from . import cache
 from . import config
@@ -50,7 +53,7 @@ def init(ctx, url, config_file, schema_file):
                                     safe_schema)
 
     def operate(tt):
-        click.echo(f'Successfully initialised {tt[tk.NAME]}' +
+        click.echo(f'Successfully initialised {tt[tk.NAME]} timetable' +
                    f' with {tt[tk.NUMBER_OF_DATES]} dates' +
                    f' from {tt[tk.SOURCE]}')
 
@@ -65,25 +68,49 @@ def refresh(ctx):
         return cache.refresh_timetable_by_name(name)
 
     def operate(tt):
-        click.echo(f'Successfully refreshed {tt[tk.NAME]}' +
+        click.echo(f'Successfully refreshed {tt[tk.NAME]} timetable' +
                    f' with {tt[tk.NUMBER_OF_DATES]} dates')
 
     operate_timetable(setup, operate)
 
 
-@main.command()
-@click.pass_context
-def times(ctx):
-    def setup():
+def load_timetable(ctx):
+    def load_timetable():
         name = ctx.obj[tk.NAME]
         return cache.load_cached_timetable(name)
+    return load_timetable
 
+
+@main.command(name='list-times')
+@click.pass_context
+def list_times(ctx):
     def operate(tt):
-        click.echo(f'{tt[tk.NAME]} contains times for:')
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains times for:')
         for time in query.get_available_times(tt):
             click.echo(time)
 
-    operate_timetable(setup, operate)
+    operate_timetable(load_timetable(ctx), operate)
+
+
+@main.command(name='show-day')
+@click.pass_context
+@click.option('--date', '-d', 'requested_date',
+              default=date.today().isoformat(),
+              help='Date to show times for (defaults to today)')
+@click.option('--timezone', '-t',
+              default=str(datetime.utcnow().astimezone().tzinfo),
+              help='Timezone to render times in')
+def show_day(ctx, requested_date, timezone):
+    def operate(tt):
+        dt = date.fromisoformat(requested_date)
+        day = query.get_day(tt, dt)
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
+                   f'{dt.isoformat()}:')
+        for name, time in day[tk.TIMES].items():
+            local_time = time.astimezone(pytz.timezone(timezone))
+            click.echo(f'{name}: {local_time.strftime("%-H:%M")}')
+
+    operate_timetable(load_timetable(ctx), operate)
 
 
 if __name__ == "__main__":

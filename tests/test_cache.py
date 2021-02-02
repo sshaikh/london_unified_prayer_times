@@ -44,7 +44,7 @@ def test_cache_timetable(three_day_timetable):
 
     cache.cache_timetable(three_day_timetable)
 
-    cache_file = cache_dir + '/timetable.pickle'
+    cache_file = cache_dir + '/default.pickle'
     with open(cache_file, 'rb') as cache_json:
         data = pickle.load(cache_json)
 
@@ -63,7 +63,7 @@ def test_read_cached_timetable(three_day_timetable):
     assert_timetable(data, three_day_timetable)
 
     appname = "london_unified_prayer_times"
-    cache_file = appdirs.user_cache_dir(appname) + '/timetable.pickle'
+    cache_file = appdirs.user_cache_dir(appname) + '/default.pickle'
     try:
         os.remove(cache_file)
     except OSError as e:

@@ -177,6 +177,6 @@ def test_get_sorted_prayer_times(three_day_timetable):
     assert len(times) == len(prayers_config[ck.TIMES])
     assert times[prayer] == create_utc_datetime(2020, 10, 2, 6, 0)
 
-    assert three_day_timetable[tk.NAME] == 'timetable'
+    assert three_day_timetable[tk.NAME] == 'default'
     assert three_day_timetable[tk.CONFIG] == prayers_config
     assert three_day_timetable[tk.SCHEMA] == config.lupt_schema
