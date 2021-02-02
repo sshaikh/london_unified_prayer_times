@@ -37,7 +37,7 @@ def test_refresh(cache_mock):
 
 def test_list_times(cache_mock):
     assert_cli(['list-times'],
-               'Default timetable contains times for:\nsunrise')
+               'Default timetable contains times for:\nfajrbegins')
 
 
 def test_list_dates(cache_mock):
@@ -46,7 +46,7 @@ def test_list_dates(cache_mock):
 
 def test_show_day(cache_mock):
     assert_cli(['show-day', '--date', '2020-10-02'],
-               'Default timetable for 2020-10-02:\nsunrise: 6:00')
+               'Default timetable for 2020-10-02:\nfajrbegins: 4:32')
 
 
 def test_show_day_today(cache_mock):
