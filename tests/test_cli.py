@@ -47,14 +47,8 @@ def test_list_dates(cache_mock):
 
 
 def test_show_day(cache_mock):
-    assert_cli(['show-day', '--date', '2020-10-02'],
-               'Default timetable for 2020-10-02:\nfajrbegins: 4:32')
-
-
-def test_show_day_today(cache_mock):
-    pass
-#    assert_cli(['show-day'],
-#               'Default timetable for 20201002:\nsunrise: 2020')
+    assert_cli(['show-day', '--date', '2020-10-01'],
+               'Default timetable for 2020-10-01:\nfajrbegins: 4:31')
 
 
 def test_show_calendar():

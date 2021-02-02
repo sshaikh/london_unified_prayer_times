@@ -17,7 +17,7 @@ ck = constants.ConfigKeys
 
 @click.group()
 @click.option('--timetable', '-t', default=constants.PICKLE_FILENAME,
-              help='Local name of the timetable to use')
+              help='Name of the local timetable to use')
 @click.pass_context
 def main(ctx, timetable):
     """Console script for london_unified_prayer_times."""
