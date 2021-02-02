@@ -14,16 +14,20 @@ from . import query
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
+clk = constants.ClickKeys
 
 
 @click.group(cls=DefaultGroup, default='show-day', default_if_no_args=True)
 @click.option('--timetable', '-t', default=constants.PICKLE_FILENAME,
               help='Name of the local timetable to use')
+@click.option('--12h/--24h', 'hours', default=False,
+              help='Render times in 24h or 12h')
 @click.pass_context
-def main(ctx, timetable):
+def main(ctx, timetable, hours):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
-    ctx.obj[tk.NAME] = timetable
+    ctx.obj[clk.NAME] = timetable
+    ctx.obj[clk.HOURS] = hours
     return 0
 
 
@@ -45,7 +49,7 @@ def operate_timetable(setup, operate):
               help='Location of custom schema')
 def init(ctx, url, config_file, schema_file):
     def setup():
-        name = ctx.obj[tk.NAME]
+        name = ctx.obj[clk.NAME]
         safe_config = config.load_config(config_file)
         safe_schema = config.load_schema(schema_file)
         return cache.init_timetable(name,
@@ -65,7 +69,7 @@ def init(ctx, url, config_file, schema_file):
 @click.pass_context
 def refresh(ctx):
     def setup():
-        name = ctx.obj[tk.NAME]
+        name = ctx.obj[clk.NAME]
         return cache.refresh_timetable_by_name(name)
 
     def operate(tt):
@@ -77,7 +81,7 @@ def refresh(ctx):
 
 def load_timetable(ctx):
     def load_timetable():
-        name = ctx.obj[tk.NAME]
+        name = ctx.obj[clk.NAME]
         return cache.load_cached_timetable(name)
     return load_timetable
 
@@ -105,6 +109,15 @@ def list_dates(ctx):
     operate_timetable(load_timetable(ctx), operate)
 
 
+def format_time(time, hours):
+    if hours:
+        fmt = '%-I:%M %P'
+        return time.strftime(fmt).rjust(8, ' ')
+    else:
+        fmt = '%H:%M'
+        return time.strftime(fmt)
+
+
 @main.command(name='show-day')
 @click.pass_context
 @click.option('--date', '-d', 'requested_date',
@@ -121,7 +134,8 @@ def show_day(ctx, requested_date, timezone):
                    f'{dt.isoformat()}:')
         for name, time in day[tk.TIMES].items():
             local_time = time.astimezone(pytz.timezone(timezone))
-            click.echo(f'{name}: {local_time.strftime("%-H:%M")}')
+            click.echo(f'{name}:\t' +
+                       f'{format_time(local_time, ctx.obj[clk.HOURS])}')
 
     operate_timetable(load_timetable(ctx), operate)
 
