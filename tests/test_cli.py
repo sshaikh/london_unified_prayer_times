@@ -23,6 +23,7 @@ def assert_cli(args, expected):
     result = runner.invoke(cli.main, args)
     assert result.exit_code == 0
     assert expected in result.output
+    return result
 
 
 def test_init(cache_mock):
@@ -41,7 +42,7 @@ def test_refresh(cache_mock):
 
 def test_list_times(cache_mock):
     assert_cli(['list-times'],
-               'Default timetable contains times for:\nfajrbegins')
+               'Default timetable contains times for:\n\nfajrbegins')
 
 
 def test_list_dates(cache_mock):
@@ -52,21 +53,24 @@ def test_list_dates(cache_mock):
 
 def test_show_day(cache_mock):
     assert_cli(['show-day', '--date', '2020-10-01'],
-               'Default timetable for 2020-10-01:\nfajrbegins:\t04:31')
+               'Default timetable for 2020-10-01:\n\nfajrbegins:\t05:31')
 
 
 def test_show_day_am(cache_mock):
     assert_cli(['--12h', 'show-day', '--date', '2020-10-01'],
-               'Default timetable for 2020-10-01:\nfajrbegins:\t 4:31 am')
+               'Default timetable for 2020-10-01:\n\nfajrbegins:\t 5:31 am')
 
 
 def test_show_day_tz(cache_mock):
-    assert_cli(['show-day', '--date', '2020-10-01', '--timezone', 'CET'],
-               'Default timetable for 2020-10-01:\nfajrbegins:\t06:31')
+    assert_cli(['--timezone', 'CET', 'show-day', '--date', '2020-10-01'],
+               'Default timetable for 2020-10-01:\n\nfajrbegins:\t06:31')
 
 
-def test_show_calendar():
-    pass
+def test_show_calendar(cache_mock):
+    result = assert_cli(['show-calendar', '--year', '2020', '--month', '10'],
+               'Default timetable for 2020-10:\n\n'+
+               'date\tislamic date\tfajrbegins')
+    assert ' 2\t15 Safar\t04:32' in result.output
 
 
 def test_show_calendar_tz():

@@ -27,3 +27,8 @@ def get_time(timetable, date, time):
 
 def get_day(timetable, date):
     return timetable[tk.DATES][date]
+
+
+def get_month(timetable, date):
+    return {k: v for (k, v) in timetable[tk.DATES].items()
+            if (k.month == date.month and k.year == date.year)}

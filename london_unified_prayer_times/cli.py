@@ -4,6 +4,7 @@ import click
 from click_default_group import DefaultGroup
 from datetime import date
 from datetime import datetime
+from tzlocal import get_localzone
 import pytz
 
 from . import cache
@@ -17,17 +18,31 @@ ck = constants.ConfigKeys
 clk = constants.ClickKeys
 
 
+def get_time_format_function(hours):
+    def twelve_hours(time):
+        return time.strftime('%-I:%M %P').rjust(8, ' ')
+    def twenty_four_hours(time):
+        return time.strftime('%H:%M')
+    if hours:
+        return twelve_hours
+    return twenty_four_hours
+
+
 @click.group(cls=DefaultGroup, default='show-day', default_if_no_args=True)
 @click.option('--timetable', '-t', default=constants.PICKLE_FILENAME,
               help='Name of the local timetable to use')
 @click.option('--12h/--24h', 'hours', default=False,
               help='Render times in 24h or 12h')
+@click.option('--timezone', '-tz',
+              default=get_localzone().zone,
+              help='Timezone to render times in')
 @click.pass_context
-def main(ctx, timetable, hours):
+def main(ctx, timetable, hours, timezone):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
-    ctx.obj[clk.HOURS] = hours
+    ctx.obj[clk.HOURS] = get_time_format_function(hours)
+    ctx.obj[clk.TIMEZONE] = pytz.timezone(timezone)
     return 0
 
 
@@ -90,7 +105,7 @@ def load_timetable(ctx):
 @click.pass_context
 def list_times(ctx):
     def operate(tt):
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains times for:')
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains times for:\n')
         for time in query.get_available_times(tt):
             click.echo(time)
 
@@ -109,33 +124,46 @@ def list_dates(ctx):
     operate_timetable(load_timetable(ctx), operate)
 
 
-def format_time(time, hours):
-    if hours:
-        fmt = '%-I:%M %P'
-        return time.strftime(fmt).rjust(8, ' ')
-    else:
-        fmt = '%H:%M'
-        return time.strftime(fmt)
-
-
 @main.command(name='show-day')
 @click.pass_context
 @click.option('--date', '-d', 'requested_date',
               default=date.today().isoformat(),
               help='Date to show times for (defaults to today)')
-@click.option('--timezone', '-t',
-              default=str(datetime.utcnow().astimezone().tzinfo),
-              help='Timezone to render times in')
-def show_day(ctx, requested_date, timezone):
+def show_day(ctx, requested_date):
     def operate(tt):
         dt = date.fromisoformat(requested_date)
         day = query.get_day(tt, dt)
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
-                   f'{dt.isoformat()}:')
+                   f'{dt.isoformat()}:\n')
         for name, time in day[tk.TIMES].items():
-            local_time = time.astimezone(pytz.timezone(timezone))
+            local_time = time.astimezone(ctx.obj[clk.TIMEZONE])
             click.echo(f'{name}:\t' +
-                       f'{format_time(local_time, ctx.obj[clk.HOURS])}')
+                       f'{ctx.obj[clk.HOURS](local_time)}')
+
+    operate_timetable(load_timetable(ctx), operate)
+
+
+@main.command(name='show-calendar')
+@click.pass_context
+@click.option('--year', '-y',
+              default=date.today().year,
+              help='Year to render calendar for')
+@click.option('--month', '-m',
+              default=date.today().month,
+              help='Month number to render calendar for')
+def show_calendar(ctx, year, month):
+    def operate(tt):
+        dt = date(year, month, 1)
+        days = query.get_month(tt, dt)
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
+                   f'{year}-{month}:\n')
+        header = 'date\tislamic date'
+        for time in tt[tk.SETUP][tk.CONFIG][ck.TIMES]:
+            header = header + f'\t{time}'
+        click.echo(header)
+        for k, v in days.items():
+            pass
+
 
     operate_timetable(load_timetable(ctx), operate)
 
