@@ -140,8 +140,10 @@ def show_day(ctx, requested_date):
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
                    f'{dt.isoformat()}:\n')
         format_time = ctx.obj[clk.FORMAT_TIME]
+        times = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
+        width = len(max(times, key=len)) + 4
         for name, time in day[tk.TIMES].items():
-            click.echo(f'{name}:\t' +
+            click.echo(f'{name}:'.ljust(width, " ") +
                        f'{format_time(time)}')
 
     operate_timetable(load_timetable(ctx), operate)
