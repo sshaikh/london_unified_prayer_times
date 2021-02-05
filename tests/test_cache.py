@@ -1,7 +1,6 @@
 import datetime
 import appdirs
 import os
-import shutil
 import pickle
 from london_unified_prayer_times import cache
 from london_unified_prayer_times import config
@@ -11,7 +10,7 @@ from . import test_timetable
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
-pickle_filename = constants.PICKLE_FILENAME
+pickle_filename = 'pytest'
 
 
 def assert_timetable_components(data, name, url, size):
@@ -37,14 +36,10 @@ def assert_timetable(data, timetable):
 def test_cache_timetable(three_day_timetable):
     appname = "london_unified_prayer_times"
     cache_dir = appdirs.user_cache_dir(appname)
-    try:
-        shutil.rmtree(cache_dir)
-    except OSError as e:
-        print("Error: %s - %s." % (e.filename, e.strerror))
 
     cache.cache_timetable(three_day_timetable)
 
-    cache_file = cache_dir + '/default.pickle'
+    cache_file = cache_dir + '/pytest.pickle'
     with open(cache_file, 'rb') as cache_json:
         data = pickle.load(cache_json)
 
@@ -63,7 +58,7 @@ def test_read_cached_timetable(three_day_timetable):
     assert_timetable(data, three_day_timetable)
 
     appname = "london_unified_prayer_times"
-    cache_file = appdirs.user_cache_dir(appname) + '/default.pickle'
+    cache_file = appdirs.user_cache_dir(appname) + '/pytest.pickle'
     try:
         os.remove(cache_file)
     except OSError as e:

@@ -28,8 +28,7 @@ class ConfigKeys(Enum):
 
 class ClickKeys(Enum):
     NAME = 'name'
-    HOURS = 'hours'
-    TIMEZONE = 'timezone'
+    FORMAT_TIME = 'format_time'
 
 
 JSON_DATA = 'data'
@@ -37,4 +36,4 @@ JSON_GREGORIAN_DATE = 'gregoriandate'
 JSON_ISLAMIC_DAY = 'islamicday'
 JSON_ISLAMIC_MONTH = 'islamicmonth'
 JSON_ISLAMIC_YEAR = 'islamicyear'
-PICKLE_FILENAME = 'default'
+DEFAULT_TIMETABLE = 'default'

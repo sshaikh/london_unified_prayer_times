@@ -1,9 +1,9 @@
 """Console script for london_unified_prayer_times."""
 import sys
 import click
+import calendar
 from click_default_group import DefaultGroup
 from datetime import date
-from datetime import datetime
 from tzlocal import get_localzone
 import pytz
 
@@ -18,18 +18,22 @@ ck = constants.ConfigKeys
 clk = constants.ClickKeys
 
 
-def get_time_format_function(hours):
+def get_time_format_function(hours, timezone):
+    tz = pytz.timezone(timezone)
+
     def twelve_hours(time):
-        return time.strftime('%-I:%M %P').rjust(8, ' ')
+        return time.astimezone(tz).strftime('%-I:%M %P').rjust(8, ' ')
+
     def twenty_four_hours(time):
-        return time.strftime('%H:%M')
+        return time.astimezone(tz).strftime('%H:%M')
+
     if hours:
         return twelve_hours
     return twenty_four_hours
 
 
 @click.group(cls=DefaultGroup, default='show-day', default_if_no_args=True)
-@click.option('--timetable', '-t', default=constants.PICKLE_FILENAME,
+@click.option('--timetable', '-t', default=constants.DEFAULT_TIMETABLE,
               help='Name of the local timetable to use')
 @click.option('--12h/--24h', 'hours', default=False,
               help='Render times in 24h or 12h')
@@ -41,8 +45,7 @@ def main(ctx, timetable, hours, timezone):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
-    ctx.obj[clk.HOURS] = get_time_format_function(hours)
-    ctx.obj[clk.TIMEZONE] = pytz.timezone(timezone)
+    ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, timezone)
     return 0
 
 
@@ -105,7 +108,8 @@ def load_timetable(ctx):
 @click.pass_context
 def list_times(ctx):
     def operate(tt):
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains times for:\n')
+        click.echo(f'{tt[tk.NAME].capitalize()} timetable ' +
+                   'contains times for:\n')
         for time in query.get_available_times(tt):
             click.echo(time)
 
@@ -135,10 +139,10 @@ def show_day(ctx, requested_date):
         day = query.get_day(tt, dt)
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
                    f'{dt.isoformat()}:\n')
+        format_time = ctx.obj[clk.FORMAT_TIME]
         for name, time in day[tk.TIMES].items():
-            local_time = time.astimezone(ctx.obj[clk.TIMEZONE])
             click.echo(f'{name}:\t' +
-                       f'{ctx.obj[clk.HOURS](local_time)}')
+                       f'{format_time(time)}')
 
     operate_timetable(load_timetable(ctx), operate)
 
@@ -155,15 +159,33 @@ def show_calendar(ctx, year, month):
     def operate(tt):
         dt = date(year, month, 1)
         days = query.get_month(tt, dt)
+        first_day = next(iter(days.values()))
+        (islamic_y, islamic_m, _) = first_day[tk.ISLAMIC_DATES][tk.TODAY]
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
-                   f'{year}-{month}:\n')
-        header = 'date\tislamic date'
-        for time in tt[tk.SETUP][tk.CONFIG][ck.TIMES]:
-            header = header + f'\t{time}'
-        click.echo(header)
-        for k, v in days.items():
-            pass
+                   f'{calendar.month_name[month]} {year} ' +
+                   f'({islamic_m} {islamic_y}):\n')
 
+        times = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
+        width = len(max(times, key=len)) + 4
+        header = 'date'.ljust(8, " ") + 'islamic date'.ljust(24, " ")
+        for time in tt[tk.SETUP][tk.CONFIG][ck.TIMES]:
+            header = header + f'{time.ljust(width, " ")}'
+        click.echo(header)
+        format_time = ctx.obj[clk.FORMAT_TIME]
+        tday = date.today()
+        for k, v in days.items():
+            (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
+            day_string = str(k.day)
+            if k == tday:
+                day_string = '*' + day_string.rjust(3, " ")
+            line = (f'{day_string.rjust(4, " ")}    '
+                    f'{str(islamic_d).rjust(2, " ")} '
+                    f'{islamic_m.ljust(21, " ")}')
+
+            ptimes = v[tk.TIMES]
+            for time in times:
+                line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
+            click.echo(line)
 
     operate_timetable(load_timetable(ctx), operate)
 

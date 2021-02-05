@@ -6,13 +6,6 @@ from london_unified_prayer_times import cli
 def test_command_line_interface():
     """Test the CLI."""
     runner = CliRunner()
-    result = runner.invoke(cli.main)
-
-    # default command tries to show-day for today, so will fail
-    # as probably not in test data. Expect this instead of
-    # mocking today()
-    assert result.exit_code == 1
-
     help_result = runner.invoke(cli.main, ['--help'])
     assert help_result.exit_code == 0
     assert 'Show this message and exit.' in help_result.output
@@ -31,50 +24,46 @@ def test_init(cache_mock):
                 '--url', 'test_source',
                 '--config', 'config',
                 '--schema', 'schema'],
-               'Successfully initialised default timetable ' +
+               'Successfully initialised pytest timetable ' +
                'with 3 dates from conftest.py')
 
 
 def test_refresh(cache_mock):
     assert_cli(['refresh'],
-               'Successfully refreshed default timetable with 3 dates')
+               'Successfully refreshed pytest timetable with 3 dates')
 
 
 def test_list_times(cache_mock):
     assert_cli(['list-times'],
-               'Default timetable contains times for:\n\nfajrbegins')
+               'Pytest timetable contains times for:\n\nfajrbegins')
 
 
 def test_list_dates(cache_mock):
     assert_cli(['list-dates'],
-               'Default timetable contains 3 dates between ' +
+               'Pytest timetable contains 3 dates between ' +
                '2020-10-01 and 2020-10-03')
 
 
 def test_show_day(cache_mock):
     assert_cli(['show-day', '--date', '2020-10-01'],
-               'Default timetable for 2020-10-01:\n\nfajrbegins:\t05:31')
+               'Pytest timetable for 2020-10-01:\n\nfajrbegins:\t05:31')
 
 
 def test_show_day_am(cache_mock):
     assert_cli(['--12h', 'show-day', '--date', '2020-10-01'],
-               'Default timetable for 2020-10-01:\n\nfajrbegins:\t 5:31 am')
+               'Pytest timetable for 2020-10-01:\n\nfajrbegins:\t 5:31 am')
 
 
 def test_show_day_tz(cache_mock):
     assert_cli(['--timezone', 'CET', 'show-day', '--date', '2020-10-01'],
-               'Default timetable for 2020-10-01:\n\nfajrbegins:\t06:31')
+               'Pytest timetable for 2020-10-01:\n\nfajrbegins:\t06:31')
 
 
 def test_show_calendar(cache_mock):
     result = assert_cli(['show-calendar', '--year', '2020', '--month', '10'],
-               'Default timetable for 2020-10:\n\n'+
-               'date\tislamic date\tfajrbegins')
-    assert ' 2\t15 Safar\t04:32' in result.output
-
-
-def test_show_calendar_tz():
-    pass
+                        ('Pytest timetable for October 2020 (Safar 1442):\n\n'
+                         'date    islamic date            fajrbegins'))
+    assert '   2    15 Safar                05:32' in result.output
 
 
 def test_now_next():

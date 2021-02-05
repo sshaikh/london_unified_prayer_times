@@ -2,7 +2,6 @@ import pytest
 import json
 from london_unified_prayer_times import config
 from london_unified_prayer_times import timetable
-from london_unified_prayer_times import constants
 
 
 @pytest.fixture
@@ -128,7 +127,7 @@ def three_unsorted_days():
 @pytest.fixture
 def three_day_timetable(three_unsorted_days):
     prayers_config = config.default_config
-    return timetable.build_timetable(constants.PICKLE_FILENAME,
+    return timetable.build_timetable('pytest',
                                      'conftest.py',
                                      prayers_config,
                                      config.lupt_schema,
