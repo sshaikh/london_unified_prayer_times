@@ -68,8 +68,8 @@ def test_show_day_tz(cache_mock):
 def test_show_calendar(cache_mock):
     result = assert_cli(['show-calendar', '--year', '2020', '--month', '10'],
                         ('Pytest timetable for October 2020 (Safar 1442):\n\n'
-                         'date    islamic date            fajrbegins'))
-    assert '   2    15 Safar                05:32' in result.output
+                         'date    islamic date       fajrbegins'))
+    assert '   2    15 Safar           05:32' in result.output
 
 
 def test_now_next(cache_mock):

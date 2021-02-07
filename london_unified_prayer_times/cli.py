@@ -136,10 +136,14 @@ def list_dates(ctx):
 
 
 def extract_times(ctx, tt):
-    times = ctx.obj[clk.USE_TIMES]
-    if len(times) == 0:
-        times = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
-    return times
+    passed_times = ctx.obj[clk.USE_TIMES]
+    ret = []
+    if not passed_times:
+        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
+    else:
+        available_times = query.get_available_times(tt)
+        ret = [x for x in passed_times if x in available_times]
+    return ret
 
 
 @main.command(name='show-day')
@@ -182,9 +186,22 @@ def show_calendar(ctx, year, month):
                    f'{calendar.month_name[month]} {year} ' +
                    f'({islamic_m} {islamic_y}):\n')
 
+        col_padding = 4
+        num_padding = 2
         times = extract_times(ctx, tt)
-        width = len(max(times, key=len)) + 4
-        header = 'date'.ljust(8, " ") + 'islamic date'.ljust(24, " ")
+        width = len(max(times, key=len)) + col_padding
+        header_date = 'date'
+        dt_width = max(len(header_date), 4) + col_padding
+        header_islamic_date = 'islamic date'
+        islamic_months = set()
+        for day in days.values():
+            islamic_months.add(day[tk.ISLAMIC_DATES][tk.TODAY][1])
+        max_month = len(max(islamic_months, key=len))
+        im_width = (max(len(header_islamic_date), max_month) +
+                    num_padding + 1 + col_padding)
+        header = (str(header_date.ljust(dt_width, " ")) +
+                  str(header_islamic_date.ljust(im_width, " ")))
+
         for time in times:
             header = header + f'{time.ljust(width, " ")}'
         click.echo(header)
@@ -194,10 +211,10 @@ def show_calendar(ctx, year, month):
             (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
             day_string = str(k.day)
             if k == tday:
-                day_string = '*' + day_string.rjust(3, " ")
-            line = (f'{day_string.rjust(4, " ")}    '
-                    f'{str(islamic_d).rjust(2, " ")} '
-                    f'{islamic_m.ljust(21, " ")}')
+                day_string = '*' + day_string.rjust(num_padding + 1, " ")
+            line = (f'{day_string.rjust(col_padding, " ")}    '
+                    f'{str(islamic_d).rjust(num_padding, " ")} '
+                    f'{islamic_m.ljust(im_width - num_padding - 1, " ")}')
 
             ptimes = v[tk.TIMES]
             for time in times:
@@ -226,8 +243,8 @@ def humanize_iso(time, when, verb, iso, format_time):
 def now_and_next(ctx, time, iso):
     def operate(tt):
         safe_filter = extract_times(ctx, tt)
-        safe_time = datetime.fromisoformat(time) \
-                            .astimezone(ctx.obj[clk.TIMEZONE])
+        safe_time = (datetime.fromisoformat(time)
+                     .astimezone(ctx.obj[clk.TIMEZONE]))
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
         format_time = ctx.obj[clk.FORMAT_TIME]
         if ret[0]:

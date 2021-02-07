@@ -52,6 +52,7 @@ def create_empty_timetable(name, source, config, schema):
     results[tk.STATS][tk.NUMBER_OF_DATES] = 0
     results[tk.STATS][tk.MIN_DATE] = None
     results[tk.STATS][tk.MAX_DATE] = None
+    results[tk.STATS][tk.ISLAMIC_MONTHS] = []
     results[tk.DATES] = {}
     return results
 
@@ -62,6 +63,7 @@ def build_timetable(name, source, config, schema, json):
     data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])
 
     yesterday = None
+    islamic_months = set()
 
     for day in data:
         dt = fix_gregorian_date(day[c.JSON_GREGORIAN_DATE],
@@ -71,8 +73,11 @@ def build_timetable(name, source, config, schema, json):
         islamicdates = {}
         day_entry[tk.ISLAMIC_DATES] = islamicdates
 
+        islamic_month = day[c.JSON_ISLAMIC_MONTH]
+        islamic_months.add(islamic_month)
+
         today = (int(day[c.JSON_ISLAMIC_YEAR]),
-                 day[c.JSON_ISLAMIC_MONTH],
+                 islamic_month,
                  int(day[c.JSON_ISLAMIC_DAY]))
         islamicdates[tk.TODAY] = today
         if yesterday is not None:
@@ -93,5 +98,6 @@ def build_timetable(name, source, config, schema, json):
     results[tk.STATS][tk.NUMBER_OF_DATES] = len(dates)
     results[tk.STATS][tk.MIN_DATE] = min(dates.keys())
     results[tk.STATS][tk.MAX_DATE] = max(dates.keys())
+    results[tk.STATS][tk.ISLAMIC_MONTHS] = list(islamic_months)
 
     return results

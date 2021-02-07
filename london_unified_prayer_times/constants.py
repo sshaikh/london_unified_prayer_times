@@ -16,6 +16,7 @@ class TimetableKeys(Enum):
     STATS = 'stats'
     MIN_DATE = 'min_date'
     MAX_DATE = 'max_date'
+    ISLAMIC_MONTHS = 'islamic_months'
 
 
 class ConfigKeys(Enum):

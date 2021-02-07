@@ -152,6 +152,7 @@ def test_new_timetable():
     assert new_timetable[tk.STATS][tk.NUMBER_OF_DATES] == 0
     assert new_timetable[tk.STATS][tk.MIN_DATE] is None
     assert new_timetable[tk.STATS][tk.MAX_DATE] is None
+    assert len(new_timetable[tk.STATS][tk.ISLAMIC_MONTHS]) == 0
     assert new_timetable[tk.SETUP][tk.SOURCE] is source
     assert new_timetable[tk.NAME] is name
     assert new_timetable[tk.SETUP][tk.SCHEMA] is schema
@@ -189,3 +190,7 @@ def test_min_max_dates(three_day_timetable):
             datetime.date(2020, 10, 1))
     assert (three_day_timetable[tk.STATS][tk.MAX_DATE] ==
             datetime.date(2020, 10, 3))
+
+
+def test_months(three_day_timetable):
+    assert len(three_day_timetable[tk.STATS][tk.ISLAMIC_MONTHS]) == 1
