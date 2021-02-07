@@ -194,16 +194,27 @@ def show_calendar(ctx, year, month):
     operate_timetable(load_timetable(ctx), operate)
 
 
+def humanize_iso(time, when, verb, iso, format_time):
+    ret = format_time(time)
+    if not iso:
+        ret = verb + ' ' + humanize.naturaltime(time, when=when)
+    return ret
+
+
 @main.command(name='now-and-next')
 @click.pass_context
 @click.option('--time', '-t',
               default=str(datetime.now()),
               help='Current time')
+@click.option('--iso', '-i',
+              default=False,
+              is_flag=True,
+              help='Display times in ISO format')
 @click.option('--time-filter', '-tf', 'time_filter',
               multiple=True,
               default=[],
               help="Times to consider")
-def now_and_next(ctx, time, time_filter):
+def now_and_next(ctx, time, iso, time_filter):
     def operate(tt):
         safe_filter = list(time_filter)
         safe_time = datetime.fromisoformat(time) \
@@ -211,12 +222,15 @@ def now_and_next(ctx, time, time_filter):
         if len(time_filter) == 0:
             safe_filter = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
+        format_time = ctx.obj[clk.FORMAT_TIME]
         if ret[0]:
-            humanized = humanize.naturaltime(ret[0][1], when=safe_time)
-            click.echo(f'{ret[0][0]} was {humanized}')
+            humanized = humanize_iso(ret[0][1], safe_time,
+                                     'was', iso, format_time)
+            click.echo(f'{ret[0][0]} {humanized}')
         if ret[1]:
-            humanized = humanize.naturaltime(ret[1][1], when=safe_time)
-            click.echo(f'{ret[1][0]} is {humanized}')
+            humanized = humanize_iso(ret[1][1], safe_time,
+                                     'is', iso, format_time)
+            click.echo(f'{ret[1][0]} {humanized}')
 
     operate_timetable(load_timetable(ctx), operate)
 

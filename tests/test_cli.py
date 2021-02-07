@@ -74,5 +74,15 @@ def test_now_next(cache_mock):
                 'zuhrbegins is 6 hours from now'))
 
 
+def test_now_next_iso(cache_mock):
+    assert_cli(['now-and-next',
+                '--time', '2020-10-02 06:00',
+                '--iso',
+                '--time-filter', 'fajrbegins',
+                '--time-filter', 'zuhrbegins'],
+               ('fajrbegins 05:32\n'
+                'zuhrbegins 12:55'))
+
+
 def test_dump():
     pass
