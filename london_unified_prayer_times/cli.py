@@ -40,14 +40,19 @@ def get_time_format_function(hours, tz):
 @click.option('--timezone', '-tz',
               default=get_localzone().zone,
               help='Timezone to render times in')
+@click.option('--use-time', '-ut', 'time_filter',
+              multiple=True,
+              default=[],
+              help="Times to consider")
 @click.pass_context
-def main(ctx, timetable, hours, timezone):
+def main(ctx, timetable, hours, timezone, time_filter):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
     tz = pytz.timezone(timezone)
     ctx.obj[clk.TIMEZONE] = tz
     ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, tz)
+    ctx.obj[clk.USE_TIMES] = time_filter
     return 0
 
 
@@ -130,6 +135,13 @@ def list_dates(ctx):
     operate_timetable(load_timetable(ctx), operate)
 
 
+def extract_times(ctx, tt):
+    times = ctx.obj[clk.USE_TIMES]
+    if len(times) == 0:
+        times = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
+    return times
+
+
 @main.command(name='show-day')
 @click.pass_context
 @click.option('--date', '-d', 'requested_date',
@@ -141,12 +153,13 @@ def show_day(ctx, requested_date):
         day = query.get_day(tt, dt)
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
                    f'{dt.isoformat()}:\n')
+        times = extract_times(ctx, tt)
         format_time = ctx.obj[clk.FORMAT_TIME]
-        times = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
         width = len(max(times, key=len)) + 4
-        for name, time in day[tk.TIMES].items():
-            click.echo(f'{name}:'.ljust(width, " ") +
-                       f'{format_time(time)}')
+        for time in times:
+            raw_time = day[tk.TIMES][time]
+            click.echo(f'{time}:'.ljust(width, " ") +
+                       f'{format_time(raw_time)}')
 
     operate_timetable(load_timetable(ctx), operate)
 
@@ -169,10 +182,10 @@ def show_calendar(ctx, year, month):
                    f'{calendar.month_name[month]} {year} ' +
                    f'({islamic_m} {islamic_y}):\n')
 
-        times = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
+        times = extract_times(ctx, tt)
         width = len(max(times, key=len)) + 4
         header = 'date'.ljust(8, " ") + 'islamic date'.ljust(24, " ")
-        for time in tt[tk.SETUP][tk.CONFIG][ck.TIMES]:
+        for time in times:
             header = header + f'{time.ljust(width, " ")}'
         click.echo(header)
         format_time = ctx.obj[clk.FORMAT_TIME]
@@ -210,17 +223,11 @@ def humanize_iso(time, when, verb, iso, format_time):
               default=False,
               is_flag=True,
               help='Display times in ISO format')
-@click.option('--time-filter', '-tf', 'time_filter',
-              multiple=True,
-              default=[],
-              help="Times to consider")
-def now_and_next(ctx, time, iso, time_filter):
+def now_and_next(ctx, time, iso):
     def operate(tt):
-        safe_filter = list(time_filter)
+        safe_filter = extract_times(ctx, tt)
         safe_time = datetime.fromisoformat(time) \
                             .astimezone(ctx.obj[clk.TIMEZONE])
-        if len(time_filter) == 0:
-            safe_filter = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
         format_time = ctx.obj[clk.FORMAT_TIME]
         if ret[0]:

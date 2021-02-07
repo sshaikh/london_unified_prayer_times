@@ -24,12 +24,14 @@ class ConfigKeys(Enum):
     AMBIGIOUS_TIMES = 'ambigious_times'
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
+    DEFAULT_TIMES = 'default_times'
 
 
 class ClickKeys(Enum):
     NAME = 'name'
     FORMAT_TIME = 'format_time'
     TIMEZONE = 'timezone'
+    USE_TIMES = 'use_times'
 
 
 JSON_DATA = 'data'

@@ -49,6 +49,12 @@ def test_show_day(cache_mock):
                'Pytest timetable for 2020-10-01:\n\nfajrbegins:      05:31')
 
 
+def test_show_day_time_filter(cache_mock):
+    assert_cli(['--use-time', 'zuhrbegins',
+                'show-day', '--date', '2020-10-01'],
+               'Pytest timetable for 2020-10-01:\n\nzuhrbegins:')
+
+
 def test_show_day_am(cache_mock):
     assert_cli(['--12h', 'show-day', '--date', '2020-10-01'],
                'Pytest timetable for 2020-10-01:\n\nfajrbegins:       5:31 am')
@@ -67,19 +73,18 @@ def test_show_calendar(cache_mock):
 
 
 def test_now_next(cache_mock):
-    assert_cli(['now-and-next', '--time', '2020-10-02 06:00',
-                '--time-filter', 'fajrbegins',
-                '--time-filter', 'zuhrbegins'],
+    assert_cli(['--use-time', 'fajrbegins',
+                '--use-time', 'zuhrbegins',
+                'now-and-next', '--time', '2020-10-02 06:00'],
                ('fajrbegins was 28 minutes ago\n'
                 'zuhrbegins is 6 hours from now'))
 
 
 def test_now_next_iso(cache_mock):
-    assert_cli(['now-and-next',
-                '--time', '2020-10-02 06:00',
-                '--iso',
-                '--time-filter', 'fajrbegins',
-                '--time-filter', 'zuhrbegins'],
+    assert_cli(['--use-time', 'fajrbegins',
+                '--use-time', 'zuhrbegins',
+                'now-and-next', '--time', '2020-10-02 06:00',
+                '--iso'],
                ('fajrbegins 05:32\n'
                 'zuhrbegins 12:55'))
 

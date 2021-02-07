@@ -8,10 +8,17 @@
                 "ishābegins", "ishājamāah"],
 	"pm_times": [
 		"asrmithl1", "asrmithl2", "asrjamāah",
-                   "maghribbegins", "maghribjamāah",
-                   "ishābegins", "ishājamāah"],
+                "maghribbegins", "maghribjamāah",
+                "ishābegins", "ishājamāah"],
 	"ambigious_times": [
 		"zuhrbegins", "zuhrjamāah"],
 	"ambigious_threshold": 4,
-	"timezone": "Europe/London"
+ 	"timezone": "Europe/London",
+	"default_times": [
+		"fajrbegins", 
+		"sunrise",
+                "zuhrbegins",
+                "asrmithl1",
+                "maghribbegins",
+                "ishābegins"]
 }
