@@ -61,7 +61,9 @@ def test_get_month(three_day_timetable):
 def help_test_current_time(tt, times, query_time, expected):
     ret = query.get_now_and_next(tt, times, query_time)
     assert expected[0][0] == ret[0][0]
+    assert expected[0][1] == ret[0][1]
     assert expected[1][0] == ret[1][0]
+    assert expected[1][1] == ret[1][1]
 
 
 def test_get_now_and_next(three_day_timetable):
@@ -70,30 +72,30 @@ def test_get_now_and_next(three_day_timetable):
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               5, 0),
                            (('fajrbegins',
-                             timedelta(hours=1)),
+                             timedelta(minutes=-28)),
                             ('zuhrbegins',
-                             None)))
+                             timedelta(hours=6, minutes=55))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               14, 0),
                            (('zuhrbegins',
-                             timedelta(hours=1)),
+                             timedelta(hours=-2, minutes=-5)),
                             ('maghribbegins',
-                             None)))
+                             timedelta(hours=3, minutes=38))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               18, 0),
                            (('maghribbegins',
-                             timedelta(hours=1)),
+                             timedelta(minutes=-22)),
                             ('fajrbegins',
-                             None)))
+                             timedelta(hours=10, minutes=34))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               4, 0),
                            (('maghribbegins',
-                             timedelta(hours=1)),
+                             timedelta(hours=-10, minutes=-20)),
                             ('fajrbegins',
-                             None)))
+                             timedelta(minutes=32))))
