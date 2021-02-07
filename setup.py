@@ -15,7 +15,8 @@ requirements = ['Click>=7.1.2',
                 'jsonschema>=3.2.0',
                 'python-dateutil>=2.8.1',
                 'appdirs>=1.4.4',
-                'tzlocal>=2.1']
+                'tzlocal>=2.1',
+                'humanize>=3.2.0']
 
 setup_requirements = ['pytest-runner', ]
 

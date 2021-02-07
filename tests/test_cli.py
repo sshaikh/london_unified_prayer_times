@@ -66,8 +66,12 @@ def test_show_calendar(cache_mock):
     assert '   2    15 Safar                05:32' in result.output
 
 
-def test_now_next():
-    pass
+def test_now_next(cache_mock):
+    assert_cli(['now-and-next', '--time', '2020-10-02 06:00',
+                '--time-filter', 'fajrbegins',
+                '--time-filter', 'zuhrbegins'],
+               ('fajrbegins was 28 minutes ago\n'
+                'zuhrbegins is 6 hours from now'))
 
 
 def test_dump():

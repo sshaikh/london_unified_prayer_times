@@ -76,5 +76,5 @@ def get_now_and_next(timetable, time_filter, query_time):
         now_time = ordered_times[index - 1]
         next_time = ordered_times[index]
 
-    return ((now_time[1], now_time[0] - query_time),
-            (next_time[1], next_time[0] - query_time))
+    return ((now_time[1], now_time[0]),
+            (next_time[1], next_time[0]))

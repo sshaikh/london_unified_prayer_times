@@ -1,5 +1,4 @@
 from datetime import date
-from datetime import timedelta
 from london_unified_prayer_times import query
 from london_unified_prayer_times import constants
 from london_unified_prayer_times import timetable
@@ -72,30 +71,38 @@ def test_get_now_and_next(three_day_timetable):
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               5, 0),
                            (('fajrbegins',
-                             timedelta(minutes=-28)),
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                4, 32)),
                             ('zuhrbegins',
-                             timedelta(hours=6, minutes=55))))
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                11, 55))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               14, 0),
                            (('zuhrbegins',
-                             timedelta(hours=-2, minutes=-5)),
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                11, 55)),
                             ('maghribbegins',
-                             timedelta(hours=3, minutes=38))))
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                17, 38))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               18, 0),
                            (('maghribbegins',
-                             timedelta(minutes=-22)),
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                17, 38)),
                             ('fajrbegins',
-                             timedelta(hours=10, minutes=34))))
+                             test_timetable.create_utc_datetime(2020, 10, 3,
+                                                                4, 34))))
     help_test_current_time(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               4, 0),
                            (('maghribbegins',
-                             timedelta(hours=-10, minutes=-20)),
+                             test_timetable.create_utc_datetime(2020, 10, 1,
+                                                                17, 40)),
                             ('fajrbegins',
-                             timedelta(minutes=32))))
+                             test_timetable.create_utc_datetime(2020, 10, 2,
+                                                                4, 32))))

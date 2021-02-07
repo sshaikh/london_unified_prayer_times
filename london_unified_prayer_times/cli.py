@@ -4,8 +4,10 @@ import click
 import calendar
 from click_default_group import DefaultGroup
 from datetime import date
+from datetime import datetime
 from tzlocal import get_localzone
 import pytz
+import humanize
 
 from . import cache
 from . import config
@@ -18,9 +20,7 @@ ck = constants.ConfigKeys
 clk = constants.ClickKeys
 
 
-def get_time_format_function(hours, timezone):
-    tz = pytz.timezone(timezone)
-
+def get_time_format_function(hours, tz):
     def twelve_hours(time):
         return time.astimezone(tz).strftime('%-I:%M %P').rjust(8, ' ')
 
@@ -45,7 +45,9 @@ def main(ctx, timetable, hours, timezone):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
-    ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, timezone)
+    tz = pytz.timezone(timezone)
+    ctx.obj[clk.TIMEZONE] = tz
+    ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, tz)
     return 0
 
 
@@ -188,6 +190,33 @@ def show_calendar(ctx, year, month):
             for time in times:
                 line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
             click.echo(line)
+
+    operate_timetable(load_timetable(ctx), operate)
+
+
+@main.command(name='now-and-next')
+@click.pass_context
+@click.option('--time', '-t',
+              default=str(datetime.now()),
+              help='Current time')
+@click.option('--time-filter', '-tf', 'time_filter',
+              multiple=True,
+              default=[],
+              help="Times to consider")
+def now_and_next(ctx, time, time_filter):
+    def operate(tt):
+        safe_filter = list(time_filter)
+        safe_time = datetime.fromisoformat(time) \
+                            .astimezone(ctx.obj[clk.TIMEZONE])
+        if len(time_filter) == 0:
+            safe_filter = tt[tk.SETUP][tk.CONFIG][ck.TIMES]
+        ret = query.get_now_and_next(tt, safe_filter, safe_time)
+        if ret[0]:
+            humanized = humanize.naturaltime(ret[0][1], when=safe_time)
+            click.echo(f'{ret[0][0]} was {humanized}')
+        if ret[1]:
+            humanized = humanize.naturaltime(ret[1][1], when=safe_time)
+            click.echo(f'{ret[1][0]} is {humanized}')
 
     operate_timetable(load_timetable(ctx), operate)
 

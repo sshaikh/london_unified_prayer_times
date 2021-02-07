@@ -29,6 +29,7 @@ class ConfigKeys(Enum):
 class ClickKeys(Enum):
     NAME = 'name'
     FORMAT_TIME = 'format_time'
+    TIMEZONE = 'timezone'
 
 
 JSON_DATA = 'data'
