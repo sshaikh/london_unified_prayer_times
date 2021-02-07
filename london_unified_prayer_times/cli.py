@@ -32,7 +32,7 @@ def get_time_format_function(hours, tz):
     return twenty_four_hours
 
 
-@click.group(cls=DefaultGroup, default='show-day', default_if_no_args=True)
+@click.group(cls=DefaultGroup, default='now-and-next', default_if_no_args=True)
 @click.option('--timetable', '-t', default=constants.DEFAULT_TIMETABLE,
               help='Name of the local timetable to use')
 @click.option('--12h/--24h', 'hours', default=False,
