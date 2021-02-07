@@ -59,8 +59,8 @@ def create_empty_timetable(name, source, config, schema):
 def build_timetable(name, source, config, schema, json):
     results = create_empty_timetable(name, source, config, schema)
     dates = results[tk.DATES]
-
     data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])
+
     yesterday = None
 
     for day in data:
@@ -79,7 +79,6 @@ def build_timetable(name, source, config, schema, json):
             yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today
 
         prayers = {}
-        day_entry[tk.TIMES] = prayers
 
         for prayer in config[ck.TIMES]:
             prayer_time = unaware_prayer_time_to_utc(day[prayer],
@@ -87,6 +86,8 @@ def build_timetable(name, source, config, schema, json):
                                                      config)
             prayers[prayer] = prayer_time
 
+        day_entry[tk.TIMES] = {k: v for k, v in
+                               sorted(prayers.items(), key=lambda k: k[1])}
         yesterday = day_entry
 
     results[tk.STATS][tk.NUMBER_OF_DATES] = len(dates)
