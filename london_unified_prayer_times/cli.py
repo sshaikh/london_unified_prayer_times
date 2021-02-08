@@ -155,8 +155,10 @@ def show_day(ctx, requested_date):
     def operate(tt):
         dt = date.fromisoformat(requested_date)
         day = query.get_day(tt, dt)
+        (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
-                   f'{dt.isoformat()}:\n')
+                   f'{humanize.naturaldate(dt)} ' +
+                   f'({islamic_d} {islamic_m} {islamic_y}):\n')
         times = extract_times(ctx, tt)
         format_time = ctx.obj[clk.FORMAT_TIME]
         width = len(max(times, key=len)) + 4

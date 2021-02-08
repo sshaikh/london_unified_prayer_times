@@ -46,23 +46,26 @@ def test_list_dates(cache_mock):
 
 def test_show_day(cache_mock):
     assert_cli(['show-day', '--date', '2020-10-01'],
-               'Pytest timetable for 2020-10-01:\n\nfajrbegins:      05:31')
+               ('Pytest timetable for Oct 01 (14 Safar 1442):\n\n'
+               'fajrbegins:      05:31'))
 
 
 def test_show_day_time_filter(cache_mock):
     assert_cli(['--use-time', 'zuhrbegins',
                 'show-day', '--date', '2020-10-01'],
-               'Pytest timetable for 2020-10-01:\n\nzuhrbegins:')
+               'Pytest timetable for Oct 01 (14 Safar 1442):\n\nzuhrbegins:')
 
 
 def test_show_day_am(cache_mock):
     assert_cli(['--12h', 'show-day', '--date', '2020-10-01'],
-               'Pytest timetable for 2020-10-01:\n\nfajrbegins:       5:31 am')
+               ('Pytest timetable for Oct 01 (14 Safar 1442):\n\n'
+               'fajrbegins:       5:31 am'))
 
 
 def test_show_day_tz(cache_mock):
     assert_cli(['--timezone', 'CET', 'show-day', '--date', '2020-10-01'],
-               'Pytest timetable for 2020-10-01:\n\nfajrbegins:      06:31')
+               ('Pytest timetable for Oct 01 (14 Safar 1442):\n\n'
+                'fajrbegins:      06:31'))
 
 
 def test_show_calendar(cache_mock):
