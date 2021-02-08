@@ -26,6 +26,13 @@ class ConfigKeys(Enum):
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
     DEFAULT_TIMES = 'default_times'
+    JSON_DATA = 'json_data'
+    JSON_GREGORIAN_DATE = 'json_gregorian_date'
+    JSON_ISLAMIC_DAY = 'json_islamic_day'
+    JSON_ISLAMIC_MONTH = 'json_islamic_month'
+    JSON_ISLAMIC_YEAR = 'json_islamic_year'
+    COLUMN_PADDING = 'column_padding'
+    DIGIT_PADDING = 'digit_padding'
 
 
 class ClickKeys(Enum):
@@ -35,9 +42,4 @@ class ClickKeys(Enum):
     USE_TIMES = 'use_times'
 
 
-JSON_DATA = 'data'
-JSON_GREGORIAN_DATE = 'gregoriandate'
-JSON_ISLAMIC_DAY = 'islamicday'
-JSON_ISLAMIC_MONTH = 'islamicmonth'
-JSON_ISLAMIC_YEAR = 'islamicyear'
 DEFAULT_TIMETABLE = 'default'

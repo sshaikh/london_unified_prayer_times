@@ -1,11 +1,11 @@
 import dateutil.parser
 import pytz
 import datetime
-from . import constants as c
+from . import constants
 
 
-tk = c.TimetableKeys
-ck = c.ConfigKeys
+tk = constants.TimetableKeys
+ck = constants.ConfigKeys
 
 
 def fix_gregorian_date(from_json, timezone):
@@ -60,25 +60,26 @@ def create_empty_timetable(name, source, config, schema):
 def build_timetable(name, source, config, schema, json):
     results = create_empty_timetable(name, source, config, schema)
     dates = results[tk.DATES]
-    data = sorted(json[c.JSON_DATA], key=lambda k: k[c.JSON_GREGORIAN_DATE])
+    data = (sorted(json[config[ck.JSON_DATA]],
+                   key=lambda k: k[config[ck.JSON_GREGORIAN_DATE]]))
 
     yesterday = None
     islamic_months = set()
 
     for day in data:
-        dt = fix_gregorian_date(day[c.JSON_GREGORIAN_DATE],
+        dt = fix_gregorian_date(day[config[ck.JSON_GREGORIAN_DATE]],
                                 config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
         day_entry[tk.ISLAMIC_DATES] = islamicdates
 
-        islamic_month = day[c.JSON_ISLAMIC_MONTH]
+        islamic_month = day[config[ck.JSON_ISLAMIC_MONTH]]
         islamic_months.add(islamic_month)
 
-        today = (int(day[c.JSON_ISLAMIC_YEAR]),
+        today = (int(day[config[ck.JSON_ISLAMIC_YEAR]]),
                  islamic_month,
-                 int(day[c.JSON_ISLAMIC_DAY]))
+                 int(day[config[ck.JSON_ISLAMIC_DAY]]))
         islamicdates[tk.TODAY] = today
         if yesterday is not None:
             yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today

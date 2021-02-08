@@ -161,7 +161,8 @@ def show_day(ctx, requested_date):
                    f'({islamic_d} {islamic_m} {islamic_y}):\n')
         times = extract_times(ctx, tt)
         format_time = ctx.obj[clk.FORMAT_TIME]
-        width = len(max(times, key=len)) + 4
+        width = (len(max(times, key=len)) +
+                 tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING])
         for time in times:
             raw_time = day[tk.TIMES][time]
             click.echo(f'{time}:'.ljust(width, " ") +
@@ -188,12 +189,15 @@ def show_calendar(ctx, year, month):
                    f'{calendar.month_name[month]} {year} ' +
                    f'({islamic_m} {islamic_y}):\n')
 
-        col_padding = 4
-        num_padding = 2
+        col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
+        num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
+        today_mark = '*'
         times = extract_times(ctx, tt)
         width = len(max(times, key=len)) + col_padding
         header_date = 'date'
-        dt_width = max(len(header_date), 4) + col_padding
+        dt_width = (max(len(header_date),
+                        num_padding + len(today_mark) + 1)
+                    + col_padding)
         header_islamic_date = 'islamic date'
         islamic_months = set()
         for day in days.values():
@@ -213,7 +217,8 @@ def show_calendar(ctx, year, month):
             (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
             day_string = str(k.day)
             if k == tday:
-                day_string = '*' + day_string.rjust(num_padding + 1, " ")
+                day_string = (today_mark + ' ' +
+                              day_string.rjust(num_padding, " "))
             line = (f'{day_string.rjust(col_padding, " ")}    '
                     f'{str(islamic_d).rjust(num_padding, " ")} '
                     f'{islamic_m.ljust(im_width - num_padding - 1, " ")}')
