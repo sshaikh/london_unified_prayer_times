@@ -10,17 +10,17 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['Click>=7.1.2',
-                'click-default-group>=1.2.2',
-                'jsonschema>=3.2.0',
-                'python-dateutil>=2.8.1',
-                'appdirs>=1.4.4',
-                'tzlocal>=2.1',
-                'humanize>=3.2.0']
+requirements = ['Click',
+                'click-default-group',
+                'jsonschema',
+                'python-dateutil',
+                'appdirs',
+                'tzlocal',
+                'humanize']
 
 setup_requirements = ['pytest-runner', ]
 
-test_requirements = ['pytest>=3', ]
+test_requirements = ['pytest', ]
 
 setup(
     author="Shakil Shaikh",
@@ -54,6 +54,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/sshaikh/london_unified_prayer_times',
-    version='0.1.0',
+    version='1.0.0',
     zip_safe=False,
 )
