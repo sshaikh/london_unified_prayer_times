@@ -33,15 +33,11 @@ def test_refresh(cache_mock):
                'Successfully refreshed pytest timetable with 3 dates')
 
 
-def test_list_times(cache_mock):
-    assert_cli(['list-times'],
-               'Pytest timetable contains times for:\n\nfajrbegins')
-
-
-def test_list_dates(cache_mock):
-    assert_cli(['list-dates'],
-               'Pytest timetable contains 3 dates between ' +
-               '2020-10-01 and 2020-10-03')
+def test_timetable_info(cache_mock):
+    ret = assert_cli(['show-info'],
+                     '3 dates available between ' +
+                     '2020-10-01 and 2020-10-03')
+    assert 'the following times:\n\nfajrbegins' in ret.output
 
 
 def test_show_day(cache_mock):
@@ -90,7 +86,3 @@ def test_now_next_iso(cache_mock):
                 '--iso'],
                ('fajrbegins 05:32\n'
                 'zuhrbegins 12:55'))
-
-
-def test_dump():
-    pass

@@ -1,4 +1,5 @@
 import click
+import json
 import humanize
 import calendar
 from datetime import date
@@ -30,6 +31,36 @@ def load_timetable(ctx):
         name = ctx.obj[clk.NAME]
         return cache.load_cached_timetable(name)
     return load_timetable
+
+
+def generate_heading(heading):
+    click.echo(f'=== {heading} ===\n')
+
+
+def generate_sub_heading(heading):
+    click.echo(f'- {heading}\n')
+
+
+def show_info(tt):
+    generate_heading(f'{tt[tk.NAME].capitalize()} timetable')
+
+    click.echo(f'Downloaded from {tt[tk.SETUP][tk.SOURCE]}')
+    click.echo()
+
+    click.echo(f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates available between ' +
+               f'{tt[tk.STATS][tk.MIN_DATE]} and ' +
+               f'{tt[tk.STATS][tk.MAX_DATE]} with the following times:\n')
+
+    for time in query.get_available_times(tt):
+        click.echo(time)
+    click .echo()
+
+    click.echo('Config:\n')
+    click.echo(tt[tk.SETUP][tk.CONFIG])
+    click.echo()
+
+    click.echo('Schema:\n')
+    click.echo(json.dumps(tt[tk.SETUP][tk.SCHEMA]))
 
 
 def extract_times(ctx, tt):

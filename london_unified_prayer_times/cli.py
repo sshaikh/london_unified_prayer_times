@@ -10,7 +10,6 @@ import pytz
 from . import cache
 from . import config
 from . import constants
-from . import query
 from . import cli_helper
 
 
@@ -91,28 +90,11 @@ def refresh(ctx):
     operate_timetable(setup, operate)
 
 
-@main.command(name='list-times')
+@main.command(name='show-info')
 @click.pass_context
-def list_times(ctx):
-    def operate(tt):
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable ' +
-                   'contains times for:\n')
-        for time in query.get_available_times(tt):
-            click.echo(time)
-
-    operate_timetable(cli_helper.load_timetable(ctx), operate)
-
-
-@main.command(name='list-dates')
-@click.pass_context
-def list_dates(ctx):
-    def operate(tt):
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable contains ' +
-                   f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates between ' +
-                   f'{tt[tk.STATS][tk.MIN_DATE]} and ' +
-                   f'{tt[tk.STATS][tk.MAX_DATE]}')
-
-    operate_timetable(cli_helper.load_timetable(ctx), operate)
+def show_info(ctx):
+    operate_timetable(cli_helper.load_timetable(ctx),
+                      cli_helper.show_info)
 
 
 @main.command(name='show-day')
