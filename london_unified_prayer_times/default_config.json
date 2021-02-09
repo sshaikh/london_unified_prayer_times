@@ -21,7 +21,7 @@
                 "asrmithl1",
                 "maghribbegins",
                 "ishābegins"],
-	"json_data": "data",
+	"json_data_path": ["data"],
 	"json_gregorian_date": "gregoriandate",
 	"json_islamic_day": "islamicday",
 	"json_islamic_month": "islamicmonth",

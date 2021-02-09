@@ -57,10 +57,17 @@ def create_empty_timetable(name, source, config, schema):
     return results
 
 
+def resolve_dict(dic, path):
+    ret = dic
+    for p in path:
+        ret = ret[p]
+    return ret
+
+
 def build_timetable(name, source, config, schema, json):
     results = create_empty_timetable(name, source, config, schema)
     dates = results[tk.DATES]
-    data = (sorted(json[config[ck.JSON_DATA]],
+    data = (sorted(resolve_dict(json, config[ck.JSON_DATA_PATH]),
                    key=lambda k: k[config[ck.JSON_GREGORIAN_DATE]]))
 
     yesterday = None

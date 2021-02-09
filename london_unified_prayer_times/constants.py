@@ -26,7 +26,7 @@ class ConfigKeys(Enum):
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
     DEFAULT_TIMES = 'default_times'
-    JSON_DATA = 'json_data'
+    JSON_DATA_PATH = 'json_data_path'
     JSON_GREGORIAN_DATE = 'json_gregorian_date'
     JSON_ISLAMIC_DAY = 'json_islamic_day'
     JSON_ISLAMIC_MONTH = 'json_islamic_month'
