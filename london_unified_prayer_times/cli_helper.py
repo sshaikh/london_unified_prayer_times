@@ -4,6 +4,8 @@ import humanize
 import calendar
 from datetime import date
 from datetime import datetime
+from datetime import timedelta
+import pytz
 
 from . import constants
 from . import cache
@@ -47,9 +49,16 @@ def extract_replace_strings(ctx, tt):
 def load_timetable(ctx):
     def load_timetable():
         name = ctx.obj[clk.NAME]
-        tt = cache.load_cached_timetable(name)
+        cache_expiry = ctx.obj[clk.CACHE_EXPIRY]
+        expiry = (timedelta(weeks=cache_expiry)
+                  if cache_expiry else None)
+        tt = cache.load_timetable(name, expiry)
         ctx.obj[clk.USE_TIMES] = extract_times(ctx, tt)
         ctx.obj[clk.REPLACE_STRINGS] = extract_replace_strings(ctx, tt)
+        hours = ctx.obj[clk.HOURS]
+        tz = pytz.timezone(ctx.obj[clk.TIMEZONE])
+        ctx.obj[clk.TIMEZONE] = tz
+        ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, tz)
         return tt
     return load_timetable
 
@@ -58,14 +67,15 @@ def generate_heading(heading):
     click.echo(f'=== {heading} ===\n')
 
 
-def generate_sub_heading(heading):
-    click.echo(f'- {heading}\n')
-
-
 def show_info(tt):
     generate_heading(f'{tt[tk.NAME].capitalize()} timetable')
 
     click.echo(f'Downloaded from {tt[tk.SETUP][tk.SOURCE]}')
+    click.echo()
+    cache_expiry = tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]
+    cache_string = humanize.naturaldelta(cache_expiry)
+    click.echo(f'Last updated on {tt[tk.STATS][tk.LAST_UPDATED]}')
+    click.echo(f'Default cache expiry set to {cache_string}')
     click.echo()
 
     click.echo(f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates available between ' +

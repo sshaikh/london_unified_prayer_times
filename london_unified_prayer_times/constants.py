@@ -35,6 +35,7 @@ class ConfigKeys(Enum):
     JSON_ISLAMIC_YEAR = 'json_islamic_year'
     COLUMN_PADDING = 'column_padding'
     DIGIT_PADDING = 'digit_padding'
+    CACHE_EXPIRY = 'cache_expiry'
 
 
 class ClickKeys(Enum):
@@ -43,6 +44,7 @@ class ClickKeys(Enum):
     HOURS = 'hours'
     TIMEZONE = 'timezone'
     USE_TIMES = 'use_times'
+    CACHE_EXPIRY = 'cache_expiry'
     REPLACE_STRINGS = 'replace_strings'
 
 

@@ -5,7 +5,6 @@ from click_default_group import DefaultGroup
 from datetime import date
 from datetime import datetime
 from tzlocal import get_localzone
-import pytz
 
 from . import cache
 from . import config
@@ -35,17 +34,21 @@ clk = constants.ClickKeys
               multiple=True,
               default=[],
               help="Replace strings")
+@click.option('--cache-expiry', '-c',
+              type=int,
+              default=None,
+              help='Override configured cache expiry (weeks)')
 @click.pass_context
-def main(ctx, timetable, hours, timezone, time_filter, replace_strings):
+def main(ctx, timetable, hours, timezone, time_filter,
+         replace_strings, cache_expiry):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
-    tz = pytz.timezone(timezone)
-    ctx.obj[clk.TIMEZONE] = tz
-    ctx.obj[clk.FORMAT_TIME] = cli_helper.get_time_format_function(hours, tz)
+    ctx.obj[clk.TIMEZONE] = timezone
     ctx.obj[clk.HOURS] = hours
     ctx.obj[clk.USE_TIMES] = time_filter
     ctx.obj[clk.REPLACE_STRINGS] = replace_strings
+    ctx.obj[clk.CACHE_EXPIRY] = cache_expiry
     return 0
 
 

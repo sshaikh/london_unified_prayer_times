@@ -2,6 +2,7 @@ import json
 import importlib.resources as pkg_resources
 from . import constants
 import pytz
+import datetime
 
 
 ck = constants.ConfigKeys
@@ -12,6 +13,8 @@ def build_config(json):
     for k in ck:
         config[k] = json[k.value]
     config[ck.TIMEZONE] = pytz.timezone(json[ck.TIMEZONE.value])
+    config[ck.CACHE_EXPIRY] = datetime.timedelta(
+        weeks=json[ck.CACHE_EXPIRY.value])
     return config
 
 

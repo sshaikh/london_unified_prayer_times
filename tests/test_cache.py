@@ -117,3 +117,15 @@ def test_no_refresh_timetable_on_load(three_day_timetable,
     cache.load_timetable('test', delta)
 
     assert not cache.refresh_timetable.called
+
+
+@freeze_time("2020-10-15 15:15:15")
+def test_default_refresh_timetable_on_load(three_day_timetable,
+                                           cached_timetable_mock,
+                                           refresh_cached_timetable_mock):
+
+    help_auto_refresh(three_day_timetable, -1)
+
+    cache.load_timetable('test', None)
+
+    assert not cache.refresh_timetable.called

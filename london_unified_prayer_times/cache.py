@@ -8,6 +8,7 @@ from . import constants
 
 
 tk = constants.TimetableKeys
+ck = constants.ConfigKeys
 
 
 def get_cache_fileinfo(pickle_filename):
@@ -39,8 +40,13 @@ def load_cached_timetable(pickle_filename):
 
 def load_timetable(name, refresh_delta):
     tt = load_cached_timetable(name)
+
+    delta = refresh_delta
+    if not delta:
+        delta = tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]
+
     last_updated = tt[tk.STATS][tk.LAST_UPDATED]
-    cutoff = datetime.datetime.utcnow() - refresh_delta
+    cutoff = datetime.datetime.utcnow() - delta
 
     if last_updated < cutoff:
         tt = refresh_timetable(tt)
@@ -63,7 +69,10 @@ def refresh_timetable(timetable):
     schema = setup[tk.SCHEMA]
     config = setup[tk.CONFIG]
     name = timetable[tk.NAME]
-    return init_timetable(name, url, config, schema)
+    try:
+        return init_timetable(name, url, config, schema)
+    except Exception:
+        return load_cached_timetable(name)
 
 
 def refresh_timetable_by_name(name):
