@@ -64,14 +64,35 @@ def show_info(tt):
 
 
 def extract_times(ctx, tt):
-    passed_times = ctx.obj[clk.USE_TIMES]
-    ret = []
-    if not passed_times:
+    ret = ctx.obj[clk.USE_TIMES]
+
+    if not ret:
         ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
-    else:
-        available_times = query.get_available_times(tt)
-        ret = [x for x in passed_times if x in available_times]
+
+    available_times = query.get_available_times(tt)
+    ret = [x for x in ret if x in available_times]
     return ret
+
+
+def extract_replace_strings(ctx, tt):
+    ret = ctx.obj[clk.REPLACE_STRINGS]
+    if not ret:
+        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_REPLACE_STRINGS]
+    return ret
+
+
+def replace_strings(string, replace_strings):
+    ret = string
+    for (s, g) in replace_strings:
+        ret = ret.replace(s, g)
+    return ret
+
+
+def calculate_time_width(times, rs, padding):
+    replaced = []
+    for time in times:
+        replaced.append(replace_strings(time, rs))
+    return len(max(replaced, key=len)) + padding
 
 
 def show_day(ctx, requested_date):
@@ -84,11 +105,12 @@ def show_day(ctx, requested_date):
                    f'({islamic_d} {islamic_m} {islamic_y}):\n')
         times = extract_times(ctx, tt)
         format_time = ctx.obj[clk.FORMAT_TIME]
-        width = (len(max(times, key=len)) +
-                 tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING])
+        rs = extract_replace_strings(ctx, tt)
+        padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
+        width = calculate_time_width(times, rs, padding)
         for time in times:
             raw_time = day[tk.TIMES][time]
-            click.echo(f'{time}:'.ljust(width, " ") +
+            click.echo(f'{replace_strings(time, rs)}:'.ljust(width, " ") +
                        f'{format_time(raw_time)}')
     return show_day
 
@@ -107,7 +129,10 @@ def show_calendar(ctx, year, month):
         num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
         today_mark = '*'
         times = extract_times(ctx, tt)
-        width = len(max(times, key=len)) + col_padding
+        rs = extract_replace_strings(ctx, tt)
+        clock_width = 8 if ctx.obj[clk.HOURS] else 5
+        width = max(calculate_time_width(times, rs, col_padding),
+                    clock_width + col_padding)
         header_date = 'date'
         dt_width = (max(len(header_date),
                         num_padding + len(today_mark) + 1)
@@ -123,7 +148,7 @@ def show_calendar(ctx, year, month):
                   str(header_islamic_date.ljust(im_width, " ")))
 
         for time in times:
-            header = header + f'{time.ljust(width, " ")}'
+            header = header + f'{replace_strings(time, rs).ljust(width, " ")}'
         click.echo(header)
         format_time = ctx.obj[clk.FORMAT_TIME]
         tday = date.today()
@@ -158,12 +183,13 @@ def now_and_next(ctx, time, iso):
                      .astimezone(ctx.obj[clk.TIMEZONE]))
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
         format_time = ctx.obj[clk.FORMAT_TIME]
+        rs = extract_replace_strings(ctx, tt)
         if ret[0]:
             humanized = humanize_iso(ret[0][1], safe_time,
                                      'was', iso, format_time)
-            click.echo(f'{ret[0][0]} {humanized}')
+            click.echo(f'{replace_strings(ret[0][0], rs)} {humanized}')
         if ret[1]:
             humanized = humanize_iso(ret[1][1], safe_time,
                                      'is', iso, format_time)
-            click.echo(f'{ret[1][0]} {humanized}')
+            click.echo(f'{replace_strings(ret[1][0], rs)} {humanized}')
     return now_and_next

@@ -26,6 +26,7 @@ class ConfigKeys(Enum):
     AMBIGIOUS_THRESHOLD = 'ambigious_threshold'
     TIMEZONE = 'timezone'
     DEFAULT_TIMES = 'default_times'
+    DEFAULT_REPLACE_STRINGS = 'default_replace_strings'
     JSON_DATA_PATH = 'json_data_path'
     JSON_GREGORIAN_DATE = 'json_gregorian_date'
     JSON_ISLAMIC_DAY = 'json_islamic_day'
@@ -38,8 +39,10 @@ class ConfigKeys(Enum):
 class ClickKeys(Enum):
     NAME = 'name'
     FORMAT_TIME = 'format_time'
+    HOURS = 'hours'
     TIMEZONE = 'timezone'
     USE_TIMES = 'use_times'
+    REPLACE_STRINGS = 'replace_strings'
 
 
 DEFAULT_TIMETABLE = 'default'

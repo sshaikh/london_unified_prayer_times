@@ -21,6 +21,10 @@
                 "asrmithl1",
                 "maghribbegins",
                 "ishābegins"],
+	"default_replace_strings": [
+		["begins", ""],
+		["mithl1", ""],
+		["jamāah", " jamāah"]],
 	"json_data_path": ["data"],
 	"json_gregorian_date": "gregoriandate",
 	"json_islamic_day": "islamicday",

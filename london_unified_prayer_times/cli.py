@@ -30,15 +30,22 @@ clk = constants.ClickKeys
               multiple=True,
               default=[],
               help="Times to consider")
+@click.option('--replace', '-r', 'replace_strings',
+              nargs=2, type=str,
+              multiple=True,
+              default=[],
+              help="Replace strings")
 @click.pass_context
-def main(ctx, timetable, hours, timezone, time_filter):
+def main(ctx, timetable, hours, timezone, time_filter, replace_strings):
     """Console script for london_unified_prayer_times."""
     ctx.ensure_object(dict)
     ctx.obj[clk.NAME] = timetable
     tz = pytz.timezone(timezone)
     ctx.obj[clk.TIMEZONE] = tz
     ctx.obj[clk.FORMAT_TIME] = cli_helper.get_time_format_function(hours, tz)
+    ctx.obj[clk.HOURS] = hours
     ctx.obj[clk.USE_TIMES] = time_filter
+    ctx.obj[clk.REPLACE_STRINGS] = replace_strings
     return 0
 
 
