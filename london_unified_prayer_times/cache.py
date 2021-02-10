@@ -1,6 +1,7 @@
 import appdirs
 import os
 import pickle
+import datetime
 from . import remote_data
 from . import timetable
 from . import constants
@@ -34,6 +35,17 @@ def load_cached_timetable(pickle_filename):
 
     with open(cache_file, 'rb') as cached_pickle:
         return pickle.load(cached_pickle)
+
+
+def load_timetable(name, refresh_delta):
+    tt = load_cached_timetable(name)
+    last_updated = tt[tk.STATS][tk.LAST_UPDATED]
+    cutoff = datetime.datetime.utcnow() - refresh_delta
+
+    if last_updated < cutoff:
+        tt = refresh_timetable(tt)
+
+    return tt
 
 
 def init_timetable(name, source, config, schema):

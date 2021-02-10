@@ -2,6 +2,7 @@ import datetime
 import appdirs
 import os
 import pickle
+from freezegun import freeze_time
 from london_unified_prayer_times import cache
 from london_unified_prayer_times import config
 from london_unified_prayer_times import constants
@@ -84,3 +85,35 @@ def test_refresh_timetable_by_name(three_day_timetable,
                                    cached_timetable_mock):
     data = cache.refresh_timetable_by_name(three_day_timetable[tk.NAME])
     assert_timetable(data, three_day_timetable)
+
+
+def help_auto_refresh(tt, week_delta):
+    faketime = (datetime.datetime(2020, 10, 15, 15, 15, 15) +
+                datetime.timedelta(weeks=week_delta))
+    tt[tk.STATS][tk.LAST_UPDATED] = faketime
+
+
+@freeze_time("2020-10-15 15:15:15")
+def test_refresh_timetable_on_load(three_day_timetable,
+                                   cached_timetable_mock,
+                                   refresh_cached_timetable_mock):
+
+    help_auto_refresh(three_day_timetable, -4)
+
+    delta = datetime.timedelta(weeks=2)
+    cache.load_timetable('test', delta)
+
+    assert cache.refresh_timetable.called
+
+
+@freeze_time("2020-10-15 15:15:15")
+def test_no_refresh_timetable_on_load(three_day_timetable,
+                                      cached_timetable_mock,
+                                      refresh_cached_timetable_mock):
+
+    help_auto_refresh(three_day_timetable, -1)
+
+    delta = datetime.timedelta(weeks=2)
+    cache.load_timetable('test', delta)
+
+    assert not cache.refresh_timetable.called

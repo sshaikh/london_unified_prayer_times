@@ -1,3 +1,4 @@
+from freezegun import freeze_time
 import datetime
 import pytz
 from london_unified_prayer_times import config
@@ -137,6 +138,7 @@ def test_zuhr_am_pm_after_1pm_bst():
     help_test_auto_am_pm(sample_time, sample_date, prayer, expected)
 
 
+@freeze_time("2020-10-15 15:15:15")
 def test_new_timetable():
     name = 'test_timetable'
     source = 'test_source'
@@ -157,6 +159,8 @@ def test_new_timetable():
     assert new_timetable[tk.NAME] is name
     assert new_timetable[tk.SETUP][tk.SCHEMA] is schema
     assert new_timetable[tk.SETUP][tk.CONFIG] is dconfig
+    assert (new_timetable[tk.STATS][tk.LAST_UPDATED] ==
+            datetime.datetime.fromisoformat("2020-10-15 15:15:15"))
 
 
 def test_get_list_of_date_items(three_day_timetable):

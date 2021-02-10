@@ -147,6 +147,12 @@ def cached_timetable_mock(three_day_timetable, mocker):
 
 
 @pytest.fixture
+def refresh_cached_timetable_mock(three_day_timetable, mocker):
+    mocker.patch('london_unified_prayer_times.cache.refresh_timetable',
+                 return_value=three_day_timetable)
+
+
+@pytest.fixture
 def cache_mock(three_day_timetable, mocker):
     mocker.patch('london_unified_prayer_times.cli.cache.' +
                  'init_timetable',
