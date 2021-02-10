@@ -26,10 +26,31 @@ def get_time_format_function(hours, tz):
     return twenty_four_hours
 
 
+def extract_times(ctx, tt):
+    ret = ctx.obj[clk.USE_TIMES]
+
+    if not ret:
+        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
+
+    available_times = query.get_available_times(tt)
+    ret = [x for x in ret if x in available_times]
+    return ret
+
+
+def extract_replace_strings(ctx, tt):
+    ret = ctx.obj[clk.REPLACE_STRINGS]
+    if not ret:
+        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_REPLACE_STRINGS]
+    return ret
+
+
 def load_timetable(ctx):
     def load_timetable():
         name = ctx.obj[clk.NAME]
-        return cache.load_cached_timetable(name)
+        tt = cache.load_cached_timetable(name)
+        ctx.obj[clk.USE_TIMES] = extract_times(ctx, tt)
+        ctx.obj[clk.REPLACE_STRINGS] = extract_replace_strings(ctx, tt)
+        return tt
     return load_timetable
 
 
@@ -63,24 +84,6 @@ def show_info(tt):
     click.echo(json.dumps(tt[tk.SETUP][tk.SCHEMA]))
 
 
-def extract_times(ctx, tt):
-    ret = ctx.obj[clk.USE_TIMES]
-
-    if not ret:
-        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
-
-    available_times = query.get_available_times(tt)
-    ret = [x for x in ret if x in available_times]
-    return ret
-
-
-def extract_replace_strings(ctx, tt):
-    ret = ctx.obj[clk.REPLACE_STRINGS]
-    if not ret:
-        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_REPLACE_STRINGS]
-    return ret
-
-
 def replace_strings(string, replace_strings):
     ret = string
     for (s, g) in replace_strings:
@@ -103,9 +106,9 @@ def show_day(ctx, requested_date):
         click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
                    f'{humanize.naturaldate(dt)} ' +
                    f'({islamic_d} {islamic_m} {islamic_y}):\n')
-        times = extract_times(ctx, tt)
+        times = ctx.obj[clk.USE_TIMES]
         format_time = ctx.obj[clk.FORMAT_TIME]
-        rs = extract_replace_strings(ctx, tt)
+        rs = ctx.obj[clk.REPLACE_STRINGS]
         padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
         width = calculate_time_width(times, rs, padding)
         for time in times:
@@ -128,8 +131,8 @@ def show_calendar(ctx, year, month):
         col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
         num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
         today_mark = '*'
-        times = extract_times(ctx, tt)
-        rs = extract_replace_strings(ctx, tt)
+        times = ctx.obj[clk.USE_TIMES]
+        rs = ctx.obj[clk.REPLACE_STRINGS]
         clock_width = 8 if ctx.obj[clk.HOURS] else 5
         width = max(calculate_time_width(times, rs, col_padding),
                     clock_width + col_padding)
@@ -178,12 +181,12 @@ def humanize_iso(time, when, verb, iso, format_time):
 
 def now_and_next(ctx, time, iso):
     def now_and_next(tt):
-        safe_filter = extract_times(ctx, tt)
+        safe_filter = ctx.obj[clk.USE_TIMES]
         safe_time = (datetime.fromisoformat(time)
                      .astimezone(ctx.obj[clk.TIMEZONE]))
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
         format_time = ctx.obj[clk.FORMAT_TIME]
-        rs = extract_replace_strings(ctx, tt)
+        rs = ctx.obj[clk.REPLACE_STRINGS]
         if ret[0]:
             humanized = humanize_iso(ret[0][1], safe_time,
                                      'was', iso, format_time)
