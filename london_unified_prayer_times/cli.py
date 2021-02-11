@@ -9,7 +9,7 @@ from tzlocal import get_localzone
 from . import cache
 from . import config
 from . import constants
-from . import cli_helper
+from . import report
 
 
 tk = constants.TimetableKeys
@@ -55,8 +55,7 @@ def main(ctx, timetable, hours, timezone, time_filter,
 def operate_timetable(setup, operate):
     tt = setup()
     if tt:
-        operate(tt)
-        return 0
+        return operate(tt)
     return -1
 
 
@@ -79,11 +78,12 @@ def init(ctx, url, config_file, schema_file):
                                     safe_schema)
 
     def operate(tt):
-        click.echo(f'Successfully initialised {tt[tk.NAME]} timetable' +
-                   f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates' +
-                   f' from {tt[tk.SETUP][tk.SOURCE]}')
+        return (f'Successfully initialised {tt[tk.NAME]} timetable'
+                f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates'
+                f' from {tt[tk.SETUP][tk.SOURCE]}')
 
-    operate_timetable(setup, operate)
+    ret = operate_timetable(setup, operate)
+    click.echo(ret)
 
 
 @main.command()
@@ -94,17 +94,19 @@ def refresh(ctx):
         return cache.refresh_timetable_by_name(name)
 
     def operate(tt):
-        click.echo(f'Successfully refreshed {tt[tk.NAME]} timetable' +
-                   f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates')
+        return (f'Successfully refreshed {tt[tk.NAME]} timetable'
+                f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates')
 
-    operate_timetable(setup, operate)
+    ret = operate_timetable(setup, operate)
+    click.echo(ret)
 
 
 @main.command(name='show-info')
 @click.pass_context
 def show_info(ctx):
-    operate_timetable(cli_helper.load_timetable(ctx),
-                      cli_helper.show_info)
+    ret = operate_timetable(report.load_timetable(ctx),
+                            report.show_info)
+    click.echo(ret)
 
 
 @main.command(name='show-day')
@@ -113,8 +115,9 @@ def show_info(ctx):
               default=date.today().isoformat(),
               help='Date to show times for (defaults to today)')
 def show_day(ctx, requested_date):
-    operate_timetable(cli_helper.load_timetable(ctx),
-                      cli_helper.show_day(ctx, requested_date))
+    ret = operate_timetable(report.load_timetable(ctx),
+                            report.show_day(ctx, requested_date))
+    click.echo(ret)
 
 
 @main.command(name='show-calendar')
@@ -126,8 +129,9 @@ def show_day(ctx, requested_date):
               default=date.today().month,
               help='Month number to render calendar for')
 def show_calendar(ctx, year, month):
-    operate_timetable(cli_helper.load_timetable(ctx),
-                      cli_helper.show_calendar(ctx, year, month))
+    ret = operate_timetable(report.load_timetable(ctx),
+                            report.show_calendar(ctx, year, month))
+    click.echo(ret)
 
 
 @main.command(name='now-and-next')
@@ -140,8 +144,9 @@ def show_calendar(ctx, year, month):
               is_flag=True,
               help='Display times in ISO format')
 def now_and_next(ctx, time, iso):
-    operate_timetable(cli_helper.load_timetable(ctx),
-                      cli_helper.now_and_next(ctx, time, iso))
+    ret = operate_timetable(report.load_timetable(ctx),
+                            report.now_and_next(ctx, time, iso))
+    click.echo(ret)
 
 
 if __name__ == "__main__":

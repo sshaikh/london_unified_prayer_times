@@ -1,4 +1,3 @@
-import click
 import json
 import humanize
 import calendar
@@ -64,34 +63,31 @@ def load_timetable(ctx):
 
 
 def generate_heading(heading):
-    click.echo(f'=== {heading} ===\n')
+    return f'=== {heading} ===\n\n'
 
 
 def show_info(tt):
-    generate_heading(f'{tt[tk.NAME].capitalize()} timetable')
+    ret = generate_heading(f'{tt[tk.NAME].capitalize()} timetable')
 
-    click.echo(f'Downloaded from {tt[tk.SETUP][tk.SOURCE]}')
-    click.echo()
+    ret += f'Downloaded from {tt[tk.SETUP][tk.SOURCE]}\n\n'
     cache_expiry = tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]
     cache_string = humanize.naturaldelta(cache_expiry)
-    click.echo(f'Last updated on {tt[tk.STATS][tk.LAST_UPDATED]}')
-    click.echo(f'Default cache expiry set to {cache_string}')
-    click.echo()
+    ret += f'Last updated on {tt[tk.STATS][tk.LAST_UPDATED]}\n'
+    ret += f'Default cache expiry set to {cache_string}\n\n'
 
-    click.echo(f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates available between ' +
-               f'{tt[tk.STATS][tk.MIN_DATE]} and ' +
-               f'{tt[tk.STATS][tk.MAX_DATE]} with the following times:\n')
+    ret += (f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates available between '
+            f'{tt[tk.STATS][tk.MIN_DATE]} and '
+            f'{tt[tk.STATS][tk.MAX_DATE]} with the following times:\n\n')
 
     for time in query.get_available_times(tt):
-        click.echo(time)
-    click .echo()
+        ret += time
 
-    click.echo('Config:\n')
-    click.echo(tt[tk.SETUP][tk.CONFIG])
-    click.echo()
+    ret += '\nConfig:\n\n'
+    ret += str(tt[tk.SETUP][tk.CONFIG])
 
-    click.echo('Schema:\n')
-    click.echo(json.dumps(tt[tk.SETUP][tk.SCHEMA]))
+    ret += '\nSchema:\n\n'
+    ret += json.dumps(tt[tk.SETUP][tk.SCHEMA])
+    return ret
 
 
 def replace_strings(string, replace_strings):
@@ -113,9 +109,9 @@ def show_day(ctx, requested_date):
         dt = date.fromisoformat(requested_date)
         day = query.get_day(tt, dt)
         (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
-                   f'{humanize.naturaldate(dt)} ' +
-                   f'({islamic_d} {islamic_m} {islamic_y}):\n')
+        ret = (f'{tt[tk.NAME].capitalize()} timetable for '
+               f'{humanize.naturaldate(dt)} '
+               f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
         times = ctx.obj[clk.USE_TIMES]
         format_time = ctx.obj[clk.FORMAT_TIME]
         rs = ctx.obj[clk.REPLACE_STRINGS]
@@ -123,8 +119,9 @@ def show_day(ctx, requested_date):
         width = calculate_time_width(times, rs, padding)
         for time in times:
             raw_time = day[tk.TIMES][time]
-            click.echo(f'{replace_strings(time, rs)}:'.ljust(width, " ") +
-                       f'{format_time(raw_time)}')
+            ret += f'{replace_strings(time, rs)}:'.ljust(width, " ")
+            ret += f'{format_time(raw_time)}\n'
+        return ret
     return show_day
 
 
@@ -134,9 +131,9 @@ def show_calendar(ctx, year, month):
         days = query.get_month(tt, dt)
         first_day = next(iter(days.values()))
         (islamic_y, islamic_m, _) = first_day[tk.ISLAMIC_DATES][tk.TODAY]
-        click.echo(f'{tt[tk.NAME].capitalize()} timetable for ' +
-                   f'{calendar.month_name[month]} {year} ' +
-                   f'({islamic_m} {islamic_y}):\n')
+        ret = (f'{tt[tk.NAME].capitalize()} timetable for '
+               f'{calendar.month_name[month]} {year} '
+               f'({islamic_m} {islamic_y}):\n\n')
 
         col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
         num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
@@ -162,7 +159,7 @@ def show_calendar(ctx, year, month):
 
         for time in times:
             header = header + f'{replace_strings(time, rs).ljust(width, " ")}'
-        click.echo(header)
+        ret += header
         format_time = ctx.obj[clk.FORMAT_TIME]
         tday = date.today()
         for k, v in days.items():
@@ -178,7 +175,8 @@ def show_calendar(ctx, year, month):
             ptimes = v[tk.TIMES]
             for time in times:
                 line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
-            click.echo(line)
+            ret += line
+        return ret
     return show_calendar
 
 
@@ -197,12 +195,14 @@ def now_and_next(ctx, time, iso):
         ret = query.get_now_and_next(tt, safe_filter, safe_time)
         format_time = ctx.obj[clk.FORMAT_TIME]
         rs = ctx.obj[clk.REPLACE_STRINGS]
+        ret_str = ""
         if ret[0]:
             humanized = humanize_iso(ret[0][1], safe_time,
                                      'was', iso, format_time)
-            click.echo(f'{replace_strings(ret[0][0], rs)} {humanized}')
+            ret_str += f'{replace_strings(ret[0][0], rs)} {humanized}\n'
         if ret[1]:
             humanized = humanize_iso(ret[1][1], safe_time,
                                      'is', iso, format_time)
-            click.echo(f'{replace_strings(ret[1][0], rs)} {humanized}')
+            ret_str += f'{replace_strings(ret[1][0], rs)} {humanized}\n'
+        return ret_str
     return now_and_next
