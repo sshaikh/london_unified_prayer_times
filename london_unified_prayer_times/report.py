@@ -3,11 +3,8 @@ import humanize
 import calendar
 from datetime import date
 from datetime import datetime
-from datetime import timedelta
-import pytz
 
 from . import constants
-from . import cache
 from . import query
 
 tk = constants.TimetableKeys
@@ -27,8 +24,8 @@ def get_time_format_function(hours, tz):
     return twenty_four_hours
 
 
-def extract_times(ctx, tt):
-    ret = ctx.obj[clk.USE_TIMES]
+def extract_times(tt, use_times):
+    ret = use_times
 
     if not ret:
         ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
@@ -38,28 +35,11 @@ def extract_times(ctx, tt):
     return ret
 
 
-def extract_replace_strings(ctx, tt):
-    ret = ctx.obj[clk.REPLACE_STRINGS]
+def extract_replace_strings(tt, replace_strings):
+    ret = replace_strings
     if not ret:
         ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_REPLACE_STRINGS]
     return ret
-
-
-def load_timetable(ctx):
-    def load_timetable():
-        name = ctx.obj[clk.NAME]
-        cache_expiry = ctx.obj[clk.CACHE_EXPIRY]
-        expiry = (timedelta(weeks=cache_expiry)
-                  if cache_expiry else None)
-        tt = cache.load_timetable(name, expiry)
-        ctx.obj[clk.USE_TIMES] = extract_times(ctx, tt)
-        ctx.obj[clk.REPLACE_STRINGS] = extract_replace_strings(ctx, tt)
-        hours = ctx.obj[clk.HOURS]
-        tz = pytz.timezone(ctx.obj[clk.TIMEZONE])
-        ctx.obj[clk.TIMEZONE] = tz
-        ctx.obj[clk.FORMAT_TIME] = get_time_format_function(hours, tz)
-        return tt
-    return load_timetable
 
 
 def generate_heading(heading):
@@ -80,17 +60,17 @@ def show_info(tt):
             f'{tt[tk.STATS][tk.MAX_DATE]} with the following times:\n\n')
 
     for time in query.get_available_times(tt):
-        ret += time
+        ret += time + '\n'
 
     ret += '\nConfig:\n\n'
     ret += str(tt[tk.SETUP][tk.CONFIG])
 
     ret += '\nSchema:\n\n'
-    ret += json.dumps(tt[tk.SETUP][tk.SCHEMA])
+    ret += json.dumps(tt[tk.SETUP][tk.SCHEMA]) + '\n'
     return ret
 
 
-def replace_strings(string, replace_strings):
+def perform_replace_strings(string, replace_strings):
     ret = string
     for (s, g) in replace_strings:
         ret = ret.replace(s, g)
@@ -100,84 +80,80 @@ def replace_strings(string, replace_strings):
 def calculate_time_width(times, rs, padding):
     replaced = []
     for time in times:
-        replaced.append(replace_strings(time, rs))
+        replaced.append(perform_replace_strings(time, rs))
     return len(max(replaced, key=len)) + padding
 
 
-def show_day(ctx, requested_date):
-    def show_day(tt):
-        dt = date.fromisoformat(requested_date)
-        day = query.get_day(tt, dt)
-        (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
-        ret = (f'{tt[tk.NAME].capitalize()} timetable for '
-               f'{humanize.naturaldate(dt)} '
-               f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
-        times = ctx.obj[clk.USE_TIMES]
-        format_time = ctx.obj[clk.FORMAT_TIME]
-        rs = ctx.obj[clk.REPLACE_STRINGS]
-        padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
-        width = calculate_time_width(times, rs, padding)
+def show_day(tt, requested_date, use_times, replace_strings, hours, tz):
+    times = extract_times(tt, use_times)
+    rs = extract_replace_strings(tt, replace_strings)
+    format_time = get_time_format_function(hours, tz)
+    dt = date.fromisoformat(requested_date)
+    day = query.get_day(tt, dt)
+    (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
+    ret = (f'{tt[tk.NAME].capitalize()} timetable for '
+           f'{humanize.naturaldate(dt)} '
+           f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
+    padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
+    width = calculate_time_width(times, rs, padding)
+    for time in times:
+        raw_time = day[tk.TIMES][time]
+        ret += f'{perform_replace_strings(time, rs)}:'.ljust(width, " ")
+        ret += f'{format_time(raw_time)}\n'
+    return ret
+
+
+def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
+    times = extract_times(tt, use_times)
+    rs = extract_replace_strings(tt, replace_strings)
+    format_time = get_time_format_function(hours, tz)
+    dt = date(year, month, 1)
+    days = query.get_month(tt, dt)
+    first_day = next(iter(days.values()))
+    (islamic_y, islamic_m, _) = first_day[tk.ISLAMIC_DATES][tk.TODAY]
+    ret = (f'{tt[tk.NAME].capitalize()} timetable for '
+           f'{calendar.month_name[month]} {year} '
+           f'({islamic_m} {islamic_y}):\n\n')
+
+    col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
+    num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
+    today_mark = '*'
+    clock_width = 8 if hours else 5
+    width = max(calculate_time_width(times, rs, col_padding),
+                clock_width + col_padding)
+    header_date = 'date'
+    dt_width = (max(len(header_date),
+                    num_padding + len(today_mark) + 1)
+                + col_padding)
+    header_islamic_date = 'islamic date'
+    islamic_months = set()
+    for day in days.values():
+        islamic_months.add(day[tk.ISLAMIC_DATES][tk.TODAY][1])
+    max_month = len(max(islamic_months, key=len))
+    im_width = (max(len(header_islamic_date), max_month) +
+                num_padding + 1 + col_padding)
+    header = (str(header_date.ljust(dt_width, " ")) +
+              str(header_islamic_date.ljust(im_width, " ")))
+
+    for time in times:
+        header += f'{perform_replace_strings(time, rs).ljust(width, " ")}'
+    ret += header + '\n'
+    tday = date.today()
+    for k, v in days.items():
+        (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
+        day_string = str(k.day)
+        if k == tday:
+            day_string = (today_mark + ' ' +
+                          day_string.rjust(num_padding, " "))
+        line = (f'{day_string.rjust(col_padding, " ")}    '
+                f'{str(islamic_d).rjust(num_padding, " ")} '
+                f'{islamic_m.ljust(im_width - num_padding - 1, " ")}')
+
+        ptimes = v[tk.TIMES]
         for time in times:
-            raw_time = day[tk.TIMES][time]
-            ret += f'{replace_strings(time, rs)}:'.ljust(width, " ")
-            ret += f'{format_time(raw_time)}\n'
-        return ret
-    return show_day
-
-
-def show_calendar(ctx, year, month):
-    def show_calendar(tt):
-        dt = date(year, month, 1)
-        days = query.get_month(tt, dt)
-        first_day = next(iter(days.values()))
-        (islamic_y, islamic_m, _) = first_day[tk.ISLAMIC_DATES][tk.TODAY]
-        ret = (f'{tt[tk.NAME].capitalize()} timetable for '
-               f'{calendar.month_name[month]} {year} '
-               f'({islamic_m} {islamic_y}):\n\n')
-
-        col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
-        num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
-        today_mark = '*'
-        times = ctx.obj[clk.USE_TIMES]
-        rs = ctx.obj[clk.REPLACE_STRINGS]
-        clock_width = 8 if ctx.obj[clk.HOURS] else 5
-        width = max(calculate_time_width(times, rs, col_padding),
-                    clock_width + col_padding)
-        header_date = 'date'
-        dt_width = (max(len(header_date),
-                        num_padding + len(today_mark) + 1)
-                    + col_padding)
-        header_islamic_date = 'islamic date'
-        islamic_months = set()
-        for day in days.values():
-            islamic_months.add(day[tk.ISLAMIC_DATES][tk.TODAY][1])
-        max_month = len(max(islamic_months, key=len))
-        im_width = (max(len(header_islamic_date), max_month) +
-                    num_padding + 1 + col_padding)
-        header = (str(header_date.ljust(dt_width, " ")) +
-                  str(header_islamic_date.ljust(im_width, " ")))
-
-        for time in times:
-            header = header + f'{replace_strings(time, rs).ljust(width, " ")}'
-        ret += header
-        format_time = ctx.obj[clk.FORMAT_TIME]
-        tday = date.today()
-        for k, v in days.items():
-            (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
-            day_string = str(k.day)
-            if k == tday:
-                day_string = (today_mark + ' ' +
-                              day_string.rjust(num_padding, " "))
-            line = (f'{day_string.rjust(col_padding, " ")}    '
-                    f'{str(islamic_d).rjust(num_padding, " ")} '
-                    f'{islamic_m.ljust(im_width - num_padding - 1, " ")}')
-
-            ptimes = v[tk.TIMES]
-            for time in times:
-                line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
-            ret += line
-        return ret
-    return show_calendar
+            line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
+        ret += line + '\n'
+    return ret
 
 
 def humanize_iso(time, when, verb, iso, format_time):
@@ -187,22 +163,19 @@ def humanize_iso(time, when, verb, iso, format_time):
     return ret
 
 
-def now_and_next(ctx, time, iso):
-    def now_and_next(tt):
-        safe_filter = ctx.obj[clk.USE_TIMES]
-        safe_time = (datetime.fromisoformat(time)
-                     .astimezone(ctx.obj[clk.TIMEZONE]))
-        ret = query.get_now_and_next(tt, safe_filter, safe_time)
-        format_time = ctx.obj[clk.FORMAT_TIME]
-        rs = ctx.obj[clk.REPLACE_STRINGS]
-        ret_str = ""
-        if ret[0]:
-            humanized = humanize_iso(ret[0][1], safe_time,
-                                     'was', iso, format_time)
-            ret_str += f'{replace_strings(ret[0][0], rs)} {humanized}\n'
-        if ret[1]:
-            humanized = humanize_iso(ret[1][1], safe_time,
-                                     'is', iso, format_time)
-            ret_str += f'{replace_strings(ret[1][0], rs)} {humanized}\n'
-        return ret_str
-    return now_and_next
+def now_and_next(tt, time, iso, use_times, replace_strings, hours, tz):
+    times = extract_times(tt, use_times)
+    safe_time = datetime.fromisoformat(time).astimezone(tz)
+    ret = query.get_now_and_next(tt, times, safe_time)
+    format_time = get_time_format_function(hours, tz)
+    rs = extract_replace_strings(tt, replace_strings)
+    ret_str = ""
+    if ret[0]:
+        humanized = humanize_iso(ret[0][1], safe_time,
+                                 'was', iso, format_time)
+        ret_str += f'{perform_replace_strings(ret[0][0], rs)} {humanized}\n'
+    if ret[1]:
+        humanized = humanize_iso(ret[1][1], safe_time,
+                                 'is', iso, format_time)
+        ret_str += f'{perform_replace_strings(ret[1][0], rs)} {humanized}\n'
+    return ret_str
