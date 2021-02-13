@@ -3,11 +3,11 @@ import humanize
 import calendar
 from datetime import date
 
-from . import constants
+from . import constants as c
 from . import query
 
-tk = constants.TimetableKeys
-ck = constants.ConfigKeys
+tk = c.TimetableKeys
+ck = c.ConfigKeys
 
 
 def get_time_format_function(hours, tz):
@@ -20,17 +20,6 @@ def get_time_format_function(hours, tz):
     if hours:
         return twelve_hours
     return twenty_four_hours
-
-
-def extract_times(tt, use_times):
-    ret = use_times
-
-    if not ret:
-        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
-
-    available_times = query.get_available_times(tt)
-    ret = [x for x in ret if x in available_times]
-    return ret
 
 
 def extract_replace_strings(tt, replace_strings):
@@ -53,7 +42,7 @@ def show_info(tt):
     cache_expiry = info[3][1]
     cache_string = humanize.naturaldelta(cache_expiry)
     ret += f'Last updated on {info[3][0]}\n'
-    et += f'Default cache expiry set to {cache_string}\n\n'
+    ret += f'Default cache expiry set to {cache_string}\n\n'
 
     ret += (f'{info[2][0]} dates available between '
             f'{info[2][1]} and '
@@ -85,26 +74,33 @@ def calculate_time_width(times, rs, padding):
     return len(max(replaced, key=len)) + padding
 
 
+def calculate_time_width_tuple(times, padding):
+    return len(max(times, key=len)) + padding
+
+
 def show_day(tt, dt, use_times, replace_strings, hours, tz):
-    times = extract_times(tt, use_times)
     rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
-    day = query.get_day(tt, dt)
-    (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
-    ret = (f'{tt[tk.NAME].capitalize()} timetable for '
+    day = query.get_day(tt, dt, use_times)
+
+    replaced_day = [(perform_replace_strings(time, rs), raw_time)
+                    for time, raw_time in day]
+
+    (islamic_y, islamic_m, islamic_d) = query.get_islamic_date_today(tt, dt)
+    info = query.get_info(tt)
+    ret = (f'{info[0].capitalize()} timetable for '
            f'{humanize.naturaldate(dt)} '
            f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
-    padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
-    width = calculate_time_width(times, rs, padding)
-    for time in times:
-        raw_time = day[tk.TIMES][time]
-        ret += f'{perform_replace_strings(time, rs)}:'.ljust(width, " ")
+    times = [time for time, _ in replaced_day]
+    width = calculate_time_width_tuple(times, c.COLUMN_PADDING)
+    for time, raw_time in replaced_day:
+        ret += f'{time}:'.ljust(width, " ")
         ret += f'{format_time(raw_time)}\n'
     return ret
 
 
 def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
-    times = extract_times(tt, use_times)
+    times = query.extract_times(tt, use_times)
     rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
     dt = date(year, month, 1)
@@ -115,8 +111,8 @@ def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
            f'{calendar.month_name[month]} {year} '
            f'({islamic_m} {islamic_y}):\n\n')
 
-    col_padding = tt[tk.SETUP][tk.CONFIG][ck.COLUMN_PADDING]
-    num_padding = tt[tk.SETUP][tk.CONFIG][ck.DIGIT_PADDING]
+    col_padding = c.COLUMN_PADDING
+    num_padding = c.DIGIT_PADDING
     today_mark = '*'
     clock_width = 8 if hours else 5
     width = max(calculate_time_width(times, rs, col_padding),
@@ -164,7 +160,7 @@ def humanize_iso(time, when, verb, iso, format_time):
 
 
 def now_and_next(tt, time, iso, use_times, replace_strings, hours, tz):
-    times = extract_times(tt, use_times)
+    times = query.extract_times(tt, use_times)
     ret = query.get_now_and_next(tt, times, time)
     format_time = get_time_format_function(hours, tz)
     rs = extract_replace_strings(tt, replace_strings)

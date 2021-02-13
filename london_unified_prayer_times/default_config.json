@@ -30,7 +30,5 @@
 	"json_islamic_day": "islamicday",
 	"json_islamic_month": "islamicmonth",
 	"json_islamic_year": "islamicyear",
-	"column_padding" : 4,
-	"digit_padding" : 2,
 	"cache_expiry": 2
 }

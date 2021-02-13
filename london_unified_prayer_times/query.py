@@ -28,8 +28,25 @@ def get_time(timetable, date, time):
     return timetable[tk.DATES][date][tk.TIMES][time]
 
 
-def get_day(timetable, date):
-    return timetable[tk.DATES][date]
+def extract_times(tt, use_times):
+    ret = use_times
+
+    if not ret:
+        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_TIMES]
+
+    available_times = get_available_times(tt)
+    ret = [x for x in ret if x in available_times]
+    return ret
+
+
+def get_day(timetable, date, use_times):
+    times = extract_times(timetable, use_times)
+    ret = []
+    day = timetable[tk.DATES][date][tk.TIMES]
+    for time in times:
+        ret.append((time, day[time]))
+
+    return ret
 
 
 def get_month(timetable, date):

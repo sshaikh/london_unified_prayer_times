@@ -33,8 +33,6 @@ class ConfigKeys(Enum):
     JSON_ISLAMIC_DAY = 'json_islamic_day'
     JSON_ISLAMIC_MONTH = 'json_islamic_month'
     JSON_ISLAMIC_YEAR = 'json_islamic_year'
-    COLUMN_PADDING = 'column_padding'
-    DIGIT_PADDING = 'digit_padding'
     CACHE_EXPIRY = 'cache_expiry'
 
 
@@ -49,3 +47,5 @@ class ClickKeys(Enum):
 
 
 DEFAULT_TIMETABLE = 'default'
+COLUMN_PADDING = 4
+DIGIT_PADDING = 2
