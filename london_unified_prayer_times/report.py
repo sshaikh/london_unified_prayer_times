@@ -2,7 +2,6 @@ import json
 import humanize
 import calendar
 from datetime import date
-from datetime import datetime
 
 from . import constants
 from . import query
@@ -84,11 +83,10 @@ def calculate_time_width(times, rs, padding):
     return len(max(replaced, key=len)) + padding
 
 
-def show_day(tt, requested_date, use_times, replace_strings, hours, tz):
+def show_day(tt, dt, use_times, replace_strings, hours, tz):
     times = extract_times(tt, use_times)
     rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
-    dt = date.fromisoformat(requested_date)
     day = query.get_day(tt, dt)
     (islamic_y, islamic_m, islamic_d) = day[tk.ISLAMIC_DATES][tk.TODAY]
     ret = (f'{tt[tk.NAME].capitalize()} timetable for '
@@ -165,17 +163,16 @@ def humanize_iso(time, when, verb, iso, format_time):
 
 def now_and_next(tt, time, iso, use_times, replace_strings, hours, tz):
     times = extract_times(tt, use_times)
-    safe_time = datetime.fromisoformat(time).astimezone(tz)
-    ret = query.get_now_and_next(tt, times, safe_time)
+    ret = query.get_now_and_next(tt, times, time)
     format_time = get_time_format_function(hours, tz)
     rs = extract_replace_strings(tt, replace_strings)
     ret_str = ""
     if ret[0]:
-        humanized = humanize_iso(ret[0][1], safe_time,
+        humanized = humanize_iso(ret[0][1], time,
                                  'was', iso, format_time)
         ret_str += f'{perform_replace_strings(ret[0][0], rs)} {humanized}\n'
     if ret[1]:
-        humanized = humanize_iso(ret[1][1], safe_time,
+        humanized = humanize_iso(ret[1][1], time,
                                  'is', iso, format_time)
         ret_str += f'{perform_replace_strings(ret[1][0], rs)} {humanized}\n'
     return ret_str

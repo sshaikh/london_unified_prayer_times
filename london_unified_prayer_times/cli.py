@@ -116,7 +116,8 @@ def operate_timetable(ctx, operate):
               help='Date to show times for (defaults to today)')
 def show_day(ctx, requested_date):
     def show_day(tt, times, replace_strings, hours, tz):
-        return report.show_day(tt, requested_date,
+        dt = date.fromisoformat(requested_date)
+        return report.show_day(tt, dt,
                                times, replace_strings, hours, tz)
 
     operate_timetable(ctx, show_day)
@@ -149,7 +150,8 @@ def show_calendar(ctx, year, month):
               help='Display times in ISO format')
 def now_and_next(ctx, time, iso):
     def now_and_next(tt, times, replace_strings, hours, tz):
-        return report.now_and_next(tt, time, iso, times,
+        safe_time = datetime.fromisoformat(time).astimezone(tz)
+        return report.now_and_next(tt, safe_time, iso, times,
                                    replace_strings, hours, tz)
 
     operate_timetable(ctx, now_and_next)
