@@ -81,21 +81,26 @@ def calculate_time_width_tuple(times, padding):
 def show_day(tt, dt, use_times, replace_strings, hours, tz):
     rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
-    day = query.get_day(tt, dt, use_times)
 
-    replaced_day = [(perform_replace_strings(time, rs), raw_time)
-                    for time, raw_time in day]
+    day = query.get_day(tt, dt, use_times)
+    info = query.get_info(tt)
 
     (islamic_y, islamic_m, islamic_d) = query.get_islamic_date_today(tt, dt)
-    info = query.get_info(tt)
     ret = (f'{info[0].capitalize()} timetable for '
            f'{humanize.naturaldate(dt)} '
            f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
-    times = [time for time, _ in replaced_day]
+
+    formatted_day = [(perform_replace_strings(time, rs),
+                     format_time(raw_time))
+                     for time, raw_time in day]
+
+    times = [time for time, _ in formatted_day]
     width = calculate_time_width_tuple(times, c.COLUMN_PADDING)
-    for time, raw_time in replaced_day:
+
+    for time, raw_time in formatted_day:
         ret += f'{time}:'.ljust(width, " ")
-        ret += f'{format_time(raw_time)}\n'
+        ret += f'{raw_time}\n'
+
     return ret
 
 
