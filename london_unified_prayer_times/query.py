@@ -37,6 +37,21 @@ def get_month(timetable, date):
             if (k.month == date.month and k.year == date.year)}
 
 
+def get_info(timetable):
+    return (timetable[tk.NAME],
+            timetable[tk.SETUP][tk.SOURCE],
+            (timetable[tk.STATS][tk.NUMBER_OF_DATES],
+             timetable[tk.STATS][tk.MIN_DATE],
+             timetable[tk.STATS][tk.MAX_DATE]),
+            (timetable[tk.STATS][tk.LAST_UPDATED],
+             timetable[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]))
+
+
+def get_config(timetable):
+    return (timetable[tk.SETUP][tk.CONFIG],
+            timetable[tk.SETUP][tk.SCHEMA])
+
+
 def get_now_and_next(timetable, time_filter, query_time):
     dt = query_time.date()
     ordered_times = []

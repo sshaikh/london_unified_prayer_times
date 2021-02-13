@@ -11,11 +11,10 @@ from datetime import timedelta
 from . import cache
 from . import config
 from . import constants
+from . import query
 from . import report
 
 
-tk = constants.TimetableKeys
-ck = constants.ConfigKeys
 clk = constants.ClickKeys
 
 
@@ -71,9 +70,11 @@ def init(ctx, url, config_file, schema_file):
                               safe_config,
                               safe_schema)
 
-    click.echo(f'Successfully initialised {tt[tk.NAME]} timetable'
-               f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates'
-               f' from {tt[tk.SETUP][tk.SOURCE]}')
+    info = query.get_info(tt)
+
+    click.echo(f'Successfully initialised {info[0]} timetable'
+               f' with {info[2][0]} dates'
+               f' from {info[1]}')
 
 
 @main.command()
@@ -82,8 +83,10 @@ def refresh(ctx):
     name = ctx.obj[clk.NAME]
     tt = cache.refresh_timetable_by_name(name)
 
-    click.echo(f'Successfully refreshed {tt[tk.NAME]} timetable'
-               f' with {tt[tk.STATS][tk.NUMBER_OF_DATES]} dates')
+    info = query.get_info(tt)
+
+    click.echo(f'Successfully refreshed {info[0]} timetable'
+               f' with {info[2][0]} dates')
 
 
 def load_timetable(ctx):

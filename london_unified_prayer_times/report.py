@@ -8,7 +8,6 @@ from . import query
 
 tk = constants.TimetableKeys
 ck = constants.ConfigKeys
-clk = constants.ClickKeys
 
 
 def get_time_format_function(hours, tz):
@@ -46,26 +45,29 @@ def generate_heading(heading):
 
 
 def show_info(tt):
-    ret = generate_heading(f'{tt[tk.NAME].capitalize()} timetable')
+    info = query.get_info(tt)
 
-    ret += f'Downloaded from {tt[tk.SETUP][tk.SOURCE]}\n\n'
-    cache_expiry = tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]
+    ret = generate_heading(f'{info[0].capitalize()} timetable')
+
+    ret += f'Downloaded from {info[1]}\n\n'
+    cache_expiry = info[3][1]
     cache_string = humanize.naturaldelta(cache_expiry)
-    ret += f'Last updated on {tt[tk.STATS][tk.LAST_UPDATED]}\n'
-    ret += f'Default cache expiry set to {cache_string}\n\n'
+    ret += f'Last updated on {info[3][0]}\n'
+    et += f'Default cache expiry set to {cache_string}\n\n'
 
-    ret += (f'{tt[tk.STATS][tk.NUMBER_OF_DATES]} dates available between '
-            f'{tt[tk.STATS][tk.MIN_DATE]} and '
-            f'{tt[tk.STATS][tk.MAX_DATE]} with the following times:\n\n')
+    ret += (f'{info[2][0]} dates available between '
+            f'{info[2][1]} and '
+            f'{info[2][2]} with the following times:\n\n')
 
     for time in query.get_available_times(tt):
         ret += time + '\n'
 
+    config = query.get_config(tt)
     ret += '\nConfig:\n\n'
-    ret += str(tt[tk.SETUP][tk.CONFIG])
+    ret += str(config[0])
 
     ret += '\nSchema:\n\n'
-    ret += json.dumps(tt[tk.SETUP][tk.SCHEMA]) + '\n'
+    ret += json.dumps(config[1]) + '\n'
     return ret
 
 

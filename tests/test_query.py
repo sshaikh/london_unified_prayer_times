@@ -7,6 +7,7 @@ from . import test_timetable
 
 
 tk = constants.TimetableKeys
+ck = constants.ConfigKeys
 
 
 def test_islamic_date(three_day_timetable):
@@ -57,7 +58,26 @@ def test_get_month(three_day_timetable):
     assert date(2020, 10, 2) in days.keys()
 
 
-def help_test_current_time(tt, times, query_time, expected):
+def test_get_info(three_day_timetable):
+    tt = three_day_timetable
+    data = query.get_info(tt)
+    assert data[0] == tt[tk.NAME]
+    assert data[1] == tt[tk.SETUP][tk.SOURCE]
+    assert data[2] == (tt[tk.STATS][tk.NUMBER_OF_DATES],
+                       tt[tk.STATS][tk.MIN_DATE],
+                       tt[tk.STATS][tk.MAX_DATE])
+    assert data[3] == (tt[tk.STATS][tk.LAST_UPDATED],
+                       tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY])
+
+
+def test_get_config(three_day_timetable):
+    tt = three_day_timetable
+    data = query.get_config(tt)
+    assert data == (tt[tk.SETUP][tk.CONFIG],
+                    tt[tk.SETUP][tk.SCHEMA])
+
+
+def help_test_now_and_next(tt, times, query_time, expected):
     ret = query.get_now_and_next(tt, times, query_time)
     assert expected[0][0] == ret[0][0]
     assert expected[0][1] == ret[0][1]
@@ -66,7 +86,7 @@ def help_test_current_time(tt, times, query_time, expected):
 
 
 def test_get_now_and_next(three_day_timetable):
-    help_test_current_time(three_day_timetable,
+    help_test_now_and_next(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               5, 0),
@@ -76,7 +96,7 @@ def test_get_now_and_next(three_day_timetable):
                             ('zuhrbegins',
                              test_timetable.create_utc_datetime(2020, 10, 2,
                                                                 11, 55))))
-    help_test_current_time(three_day_timetable,
+    help_test_now_and_next(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               14, 0),
@@ -86,7 +106,7 @@ def test_get_now_and_next(three_day_timetable):
                             ('maghribbegins',
                              test_timetable.create_utc_datetime(2020, 10, 2,
                                                                 17, 38))))
-    help_test_current_time(three_day_timetable,
+    help_test_now_and_next(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               18, 0),
@@ -96,7 +116,7 @@ def test_get_now_and_next(three_day_timetable):
                             ('fajrbegins',
                              test_timetable.create_utc_datetime(2020, 10, 3,
                                                                 4, 34))))
-    help_test_current_time(three_day_timetable,
+    help_test_now_and_next(three_day_timetable,
                            ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
                            test_timetable.create_utc_datetime(2020, 10, 2,
                                                               4, 0),
