@@ -1,0 +1,213 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - script.googleusercontent.com
+      User-Agent:
+      - Python-urllib/3.9
+    method: GET
+    uri:  "https://mock.location.com/lupt"
+  response:
+    body:
+      string: '<HTML>
+
+        <HEAD>
+
+        <TITLE>Moved Temporarily</TITLE>
+
+        </HEAD>
+
+        <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+        <H1>Moved Temporarily</H1>
+
+        The document has moved <A HREF="https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec">here</A>.
+
+        </BODY>
+
+        </HTML>
+
+        '
+    headers:
+      Accept-Ranges:
+      - none
+      Access-Control-Allow-Origin:
+      - '*'
+      Alt-Svc:
+      - h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Connection:
+      - close
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Tue, 12 Jan 2021 16:05:30 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Location:
+      - https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec
+      Pragma:
+      - no-cache
+      Server:
+      - GSE
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - script.google.com
+      User-Agent:
+      - Python-urllib/3.9
+    method: GET
+    uri: https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec
+  response:
+    body:
+      string: '<HTML>
+
+        <HEAD>
+
+        <TITLE>Moved Temporarily</TITLE>
+
+        </HEAD>
+
+        <BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+        <H1>Moved Temporarily</H1>
+
+        The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&amp;lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH">here</A>.
+
+        </BODY>
+
+        </HTML>
+
+        '
+    headers:
+      Accept-Ranges:
+      - none
+      Access-Control-Allow-Origin:
+      - '*'
+      Alt-Svc:
+      - h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Connection:
+      - close
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Tue, 12 Jan 2021 16:05:31 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Location:
+      - https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH
+      Pragma:
+      - no-cache
+      Server:
+      - GSE
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - script.googleusercontent.com
+      User-Agent:
+      - Python-urllib/3.9
+    method: GET
+    uri: https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH
+  response:
+    body:
+      string: "{\"data\":[{\"gregoriandate\":\"2020-09-30T23:00:00.000Z\",\"islamicday\"\
+        :\"14\",\"islamicmonth\":\"Safar\",\"islamicyear\":\"1442\",\"sunrise\":\"\
+        6:59\",\"fajrbegins\":\"5:31\",\"fajrjam\u0101ah\":\"6:01\",\"zuhrbegins\"\
+        :\"12:55\",\"zuhrjam\u0101ah\":\"1:30\",\"asrmithl1\":\"3:55\",\"asrmithl2\"\
+        :\"4:43\",\"asrjam\u0101ah\":\"5:00\",\"maghribbegins\":\"6:40\",\"maghribjam\u0101\
+        ah\":\"6:47\",\"ish\u0101begins\":\"7:58\",\"ish\u0101jam\u0101ah\":\"8:15\"\
+        },{\"gregoriandate\":\"2020-10-01T23:00:00.000Z\",\"islamicday\":\"15\",\"\
+        islamicmonth\":\"Safar\",\"islamicyear\":\"1442\",\"sunrise\":\"7:00\",\"\
+        fajrbegins\":\"5:32\",\"fajrjam\u0101ah\":\"6:02\",\"zuhrbegins\":\"12:55\"\
+        ,\"zuhrjam\u0101ah\":\"1:45\",\"asrmithl1\":\"3:54\",\"asrmithl2\":\"4:41\"\
+        ,\"asrjam\u0101ah\":\"5:00\",\"maghribbegins\":\"6:38\",\"maghribjam\u0101\
+        ah\":\"6:45\",\"ish\u0101begins\":\"7:56\",\"ish\u0101jam\u0101ah\":\"8:15\"\
+        },{\"gregoriandate\":\"2020-10-02T23:00:00.000Z\",\"islamicday\":\"16\",\"\
+        islamicmonth\":\"Safar\",\"islamicyear\":\"1442\",\"sunrise\":\"7:02\",\"\
+        fajrbegins\":\"5:34\",\"fajrjam\u0101ah\":\"6:04\",\"zuhrbegins\":\"12:54\"\
+        ,\"zuhrjam\u0101ah\":\"1:30\",\"asrmithl1\":\"3:52\",\"asrmithl2\":\"4:39\"\
+        ,\"asrjam\u0101ah\":\"5:00\",\"maghribbegins\":\"6:36\",\"maghribjam\u0101\
+        ah\":\"6:43\",\"ish\u0101begins\":\"7:55\",\"ish\u0101jam\u0101ah\":\"8:15\"\
+        }]}"
+    headers:
+      Accept-Ranges:
+      - none
+      Access-Control-Allow-Origin:
+      - '*'
+      Alt-Svc:
+      - h3-29=":443"; ma=2592000,h3-T051=":443"; ma=2592000,h3-Q050=":443"; ma=2592000,h3-Q046=":443";
+        ma=2592000,h3-Q043=":443"; ma=2592000,quic=":443"; ma=2592000; v="46,43"
+      Cache-Control:
+      - no-cache, no-store, max-age=0, must-revalidate
+      Connection:
+      - close
+      Content-Security-Policy:
+      - frame-ancestors 'self'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Tue, 12 Jan 2021 16:05:31 GMT
+      Expires:
+      - Mon, 01 Jan 1990 00:00:00 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - GSE
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1
