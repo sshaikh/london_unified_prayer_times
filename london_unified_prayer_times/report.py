@@ -47,7 +47,7 @@ def show_info(tt):
     ret += '\nConfig:\n\n'
     ret += str(config[0])
 
-    ret += '\nSchema:\n\n'
+    ret += '\n\nSchema:\n\n'
     ret += json.dumps(config[1]) + '\n'
     return ret
 
