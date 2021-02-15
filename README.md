@@ -13,11 +13,24 @@ A library for retrieving data from The London Unified Prayer Timetable.
 
 ## Features
 
--   TODO
+The library can:
+
+-   Retrieve and manage a local copy of the London Unified Prayer Timetable
+-   Query the local copy of the timetable
+
+Once initialised, the cli can:
+
+-   Show the times for a day
+-   Show the times for a month in calendar format
+-   Show the current and next prayer time in relative formats
 
 ## What is this?
 
-A Python library to retrieve, store and update a local prayer timetable for the London region using a format that happens to feed <https://www.eastlondonmosque.org.uk>.
+Mainly a Python library to retrieve, store and update a local prayer timetable
+for the London region using a format that happens to feed
+<https://www.eastlondonmosque.org.uk>.
+
+Also provided is a command line utility to manage and query the timetable.
 
 ## FAQ
 
@@ -31,6 +44,16 @@ address isn\'t provided here.
 And yes, this technically means that anyone can craft an online dataset
 of custom times and have it accessible with this library. If you do,
 I\'d love to hear about it.
+
+### How do you use the CLI tool?
+
+The tool uses the click library, so passing --help everywhere should give some
+guidance on usage. Hint: you have to init first.
+
+Honestly, I don't expect many to use this and so documentation is a little... 
+lacking. As with all great programmers, I believe the tool to make sense out 
+of the box. You can drop me a line if you get stuck - eventually that
+will form the documentation.
 
 ### Why not just use on of the many Prayer Time libraries available on Pypi?
 
@@ -48,8 +71,8 @@ While arguably more correct (since they use your precise location as an
 input), the libraries relying on calculation will not match up with the
 ELM dataset. The ELM timetable is shared by The London Central Mosque,
 and so has the mindshare of many mosques across London. So if you want
-your application to match the timetable of your local London mosque,
-this this library is for you.
+your application to likely  match the timetable of your local London mosque,
+this this library may be for you.
 
 Most of the existing Pypi libraries also choose to wrap
 <https://aladhan.com/>, which means they require an online connection to
@@ -62,14 +85,14 @@ maintaining a local store of prayer times.
 
 There are a few reasons:
 
-1.  The LUPT website is /not/ the gold source for this data. It is run
+1.  The LUPT website is *not* the gold source for this data. It is run
     by awesome volunteers who appear to manually upload transformed data
     from elsewhere (probably ELM\'s website). As this library is
     intentionally designed to make a locally available copy, it\'s
-    probably a better idea to go directly to a source of that data.
+    probably a better idea for it to go directly to a source of that data.
 2.  The primary role of the LUPT website appears to be to make time
     strings available to mosque UI apps. Something like Home Assistant
-    requires data a little more \"machine-friendly\", like in UTC or
+    requires data a little more \"machine-friendly\", like times in UTC or
     epoch time. And again, if we\'re to transform the LUPT website data
     anyway then it makes more sense to go to a source.
 
@@ -80,7 +103,8 @@ been written for use with Home Assistant, which itself is written in
 Python. Since this library doesn\'t actually do that much, it made sense
 to keep it as native as possible.
 
-Please excuse the anti-Python patterns - PRs are welcome.
+Please excuse the anti-Python patterns - PRs are welcome. Although please,
+no comments on the lack of classes, that bit's deliberate.
 
 ### Will you pray for me?
 
