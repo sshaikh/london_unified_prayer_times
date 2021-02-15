@@ -105,7 +105,7 @@ def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
            f'{calendar.month_name[fdt.month]} {fdt.year} '
            f'({islamic_m} {islamic_y}):\n\n')
 
-    formatted_header = ((header[0], header[1]) +
+    formatted_header = (('is thur', header[0], header[1]) +
                         tuple(perform_replace_strings(col, rs)
                               for col in header[2]))
 
@@ -113,29 +113,41 @@ def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
     tday = date.today()
     today_mark = '*'
     for day in days:
-        day_string = str(day[0].day).rjust(2, " ")
-        if day[0] == tday:
+        dt = day[0]
+        is_thu = (dt.weekday() == 3)
+        sep = " "
+        day_string = str(dt.day).rjust(2, sep)
+        if dt == tday:
             day_string = f'{today_mark} {day_string}'
-        day_string = day_string.rjust(4, " ")
+        day_string = day_string.rjust(4, sep)
+        dow = dt.strftime("%a")
+        dow = dow.upper() if dt.weekday() == 4 else dow
+        day_string = f'{day_string} {dow}'
         iday_string = f'{str(day[1][2]).rjust(2, " ")} {day[1][1]}'
-        day_tuple = ((day_string, iday_string) +
+        day_tuple = ((is_thu, day_string, iday_string) +
                      tuple(format_time(t) for t in day[2]))
         formatted_days.append(day_tuple)
 
     col_padding = c.COLUMN_PADDING
-    dt_header_width = max(len(item[0])
+    dt_header_width = max(len(item[1])
                           for item in formatted_days) + col_padding
-    idt_header_width = max(len(item[1])
+    idt_header_width = max(len(item[2])
                            for item in formatted_days) + col_padding
-    time_header_width = max(max(len(tm) for tm in day[2:])
+    time_header_width = max(max(len(tm) for tm in day[3:])
                             for day in formatted_days) + col_padding
 
     for line in formatted_days:
-        ret += line[0].ljust(dt_header_width, " ")
-        ret += line[1].ljust(idt_header_width, " ")
-        for tm in line[2:]:
-            ret += tm.ljust(time_header_width, " ")
+        sep = " "
+        ret += line[1].ljust(dt_header_width, sep)
+        ret += line[2].ljust(idt_header_width, sep)
+        for tm in line[3:]:
+            ret += tm.ljust(time_header_width, sep)
         ret += '\n'
+        if line[0]:
+            ret += "-" * (dt_header_width +
+                          idt_header_width +
+                          (time_header_width * (len(line) - 3)))
+            ret += "\n"
 
     return ret
 
