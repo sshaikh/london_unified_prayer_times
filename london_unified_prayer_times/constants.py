@@ -48,4 +48,3 @@ class ClickKeys(Enum):
 
 DEFAULT_TIMETABLE = 'default'
 COLUMN_PADDING = 4
-DIGIT_PADDING = 2

@@ -77,6 +77,7 @@ def get_config(timetable):
 
 
 def get_now_and_next(timetable, time_filter, query_time):
+    time_filter = extract_times(timetable, time_filter)
     dt = query_time.date()
     ordered_times = []
     dates = timetable[tk.DATES]

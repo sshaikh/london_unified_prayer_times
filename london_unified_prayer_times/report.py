@@ -6,7 +6,6 @@ from datetime import date
 from . import constants as c
 from . import query
 
-tk = c.TimetableKeys
 ck = c.ConfigKeys
 
 
@@ -20,13 +19,6 @@ def get_time_format_function(hours, tz):
     if hours:
         return twelve_hours
     return twenty_four_hours
-
-
-def extract_replace_strings(tt, replace_strings):
-    ret = replace_strings
-    if not ret:
-        ret = tt[tk.SETUP][tk.CONFIG][ck.DEFAULT_REPLACE_STRINGS]
-    return ret
 
 
 def generate_heading(heading):
@@ -67,23 +59,17 @@ def perform_replace_strings(string, replace_strings):
     return ret
 
 
-def calculate_time_width(times, rs, padding):
-    replaced = []
-    for time in times:
-        replaced.append(perform_replace_strings(time, rs))
-    return len(max(replaced, key=len)) + padding
-
-
-def calculate_time_width_tuple(times, padding):
-    return len(max(times, key=len)) + padding
+def extract_replace_strings(replace_strings, tt):
+    return (replace_strings or
+            query.get_config(tt)[0][ck.DEFAULT_REPLACE_STRINGS])
 
 
 def show_day(tt, dt, use_times, replace_strings, hours, tz):
-    rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
 
     day = query.get_day(tt, dt, use_times)
     info = query.get_info(tt)
+    rs = extract_replace_strings(replace_strings, tt)
 
     (islamic_y, islamic_m, islamic_d) = query.get_islamic_date_today(tt, dt)
     ret = (f'{info[0].capitalize()} timetable for '
@@ -95,7 +81,7 @@ def show_day(tt, dt, use_times, replace_strings, hours, tz):
                      for time, raw_time in day]
 
     times = [time for time, _ in formatted_day]
-    width = calculate_time_width_tuple(times, c.COLUMN_PADDING)
+    width = max(len(t) for t in times) + c.COLUMN_PADDING
 
     for time, raw_time in formatted_day:
         ret += f'{time}:'.ljust(width, " ")
@@ -105,11 +91,11 @@ def show_day(tt, dt, use_times, replace_strings, hours, tz):
 
 
 def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
-    rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
 
-    info = query.get_info(tt)
     (header, days) = query.get_month(tt, year, month, use_times)
+    info = query.get_info(tt)
+    rs = extract_replace_strings(replace_strings, tt)
 
     dt = date(year, month, 1)
     (islamic_y, islamic_m, _) = query.get_islamic_date_today(tt, dt)
@@ -162,10 +148,11 @@ def humanize_iso(time, when, verb, iso, format_time):
 
 
 def now_and_next(tt, time, iso, use_times, replace_strings, hours, tz):
-    times = query.extract_times(tt, use_times)
-    ret = query.get_now_and_next(tt, times, time)
     format_time = get_time_format_function(hours, tz)
-    rs = extract_replace_strings(tt, replace_strings)
+
+    ret = query.get_now_and_next(tt, use_times, time)
+    rs = extract_replace_strings(replace_strings, tt)
+
     ret_str = ""
     if ret[0]:
         humanized = humanize_iso(ret[0][1], time,
