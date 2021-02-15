@@ -52,9 +52,15 @@ def test_day(three_day_timetable):
 
 
 def test_get_month(three_day_timetable):
-    days = query.get_month(three_day_timetable, date(2020, 10, 1))
+    times = ['fajrbegins', 'sunrise']
+    (header, days) = query.get_month(three_day_timetable, 2020, 10, times)
+
+    assert len(header) == 3
+    assert len(header[2]) == len(times)
     assert len(days) == 3
-    assert date(2020, 10, 2) in days.keys()
+    assert days[1] == (date(2020, 10, 2), (1442, 'Safar', 15),
+                       [test_timetable.create_utc_datetime(2020, 10, 2, 4, 32),
+                        test_timetable.create_utc_datetime(2020, 10, 2, 6, 0)])
 
 
 def test_get_info(three_day_timetable):

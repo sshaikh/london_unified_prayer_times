@@ -49,9 +49,16 @@ def get_day(timetable, date, use_times):
     return ret
 
 
-def get_month(timetable, date):
-    return {k: v for (k, v) in timetable[tk.DATES].items()
-            if (k.month == date.month and k.year == date.year)}
+def get_month(timetable, year, month, use_times):
+    times = extract_times(timetable, use_times)
+    header = ('date', 'islamic date', times)
+
+    days = [(dt, tms[tk.ISLAMIC_DATES][tk.TODAY],
+             [tms[tk.TIMES][tm] for tm in times])
+            for dt, tms in timetable[tk.DATES].items()
+            if dt.month == month and dt.year == year]
+
+    return (header, days)
 
 
 def get_info(timetable):

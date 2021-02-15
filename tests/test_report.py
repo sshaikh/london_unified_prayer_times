@@ -57,8 +57,8 @@ def test_show_calendar(three_day_timetable):
     ret = report.show_calendar(three_day_timetable, 2020, 10, None, None,
                                False, pytz.timezone('Europe/London'))
     assert ('Pytest timetable for October 2020 (Safar 1442):\n\n'
-            'date    islamic date       fajr') in ret
-    assert '   2    15 Safar           05:32' in ret
+            'date    islamic date    fajr') in ret
+    assert '   2    15 Safar        05:32' in ret
 
 
 def test_now_next(three_day_timetable):

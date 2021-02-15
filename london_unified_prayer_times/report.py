@@ -105,55 +105,52 @@ def show_day(tt, dt, use_times, replace_strings, hours, tz):
 
 
 def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
-    times = query.extract_times(tt, use_times)
     rs = extract_replace_strings(tt, replace_strings)
     format_time = get_time_format_function(hours, tz)
+
+    info = query.get_info(tt)
+    (header, days) = query.get_month(tt, year, month, use_times)
+
     dt = date(year, month, 1)
-    days = query.get_month(tt, dt)
-    first_day = next(iter(days.values()))
-    (islamic_y, islamic_m, _) = first_day[tk.ISLAMIC_DATES][tk.TODAY]
-    ret = (f'{tt[tk.NAME].capitalize()} timetable for '
-           f'{calendar.month_name[month]} {year} '
+    (islamic_y, islamic_m, _) = query.get_islamic_date_today(tt, dt)
+    (fdt, (islamic_y, islamic_m, _), _) = next(iter(days))
+
+    ret = (f'{info[0].capitalize()} timetable for '
+           f'{calendar.month_name[fdt.month]} {fdt.year} '
            f'({islamic_m} {islamic_y}):\n\n')
 
-    col_padding = c.COLUMN_PADDING
-    num_padding = c.DIGIT_PADDING
-    today_mark = '*'
-    clock_width = 8 if hours else 5
-    width = max(calculate_time_width(times, rs, col_padding),
-                clock_width + col_padding)
-    header_date = 'date'
-    dt_width = (max(len(header_date),
-                    num_padding + len(today_mark) + 1)
-                + col_padding)
-    header_islamic_date = 'islamic date'
-    islamic_months = set()
-    for day in days.values():
-        islamic_months.add(day[tk.ISLAMIC_DATES][tk.TODAY][1])
-    max_month = len(max(islamic_months, key=len))
-    im_width = (max(len(header_islamic_date), max_month) +
-                num_padding + 1 + col_padding)
-    header = (str(header_date.ljust(dt_width, " ")) +
-              str(header_islamic_date.ljust(im_width, " ")))
+    formatted_header = ((header[0], header[1]) +
+                        tuple(perform_replace_strings(col, rs)
+                              for col in header[2]))
 
-    for time in times:
-        header += f'{perform_replace_strings(time, rs).ljust(width, " ")}'
-    ret += header + '\n'
+    formatted_days = [formatted_header]
     tday = date.today()
-    for k, v in days.items():
-        (_, islamic_m, islamic_d) = v[tk.ISLAMIC_DATES][tk.TODAY]
-        day_string = str(k.day)
-        if k == tday:
-            day_string = (today_mark + ' ' +
-                          day_string.rjust(num_padding, " "))
-        line = (f'{day_string.rjust(col_padding, " ")}    '
-                f'{str(islamic_d).rjust(num_padding, " ")} '
-                f'{islamic_m.ljust(im_width - num_padding - 1, " ")}')
+    today_mark = '*'
+    for day in days:
+        day_string = str(day[0].day).rjust(2, " ")
+        if day[0] == tday:
+            day_string = f'{today_mark} {day_string}'
+        day_string = day_string.rjust(4, " ")
+        iday_string = f'{str(day[1][2]).rjust(2, " ")} {day[1][1]}'
+        day_tuple = ((day_string, iday_string) +
+                     tuple(format_time(t) for t in day[2]))
+        formatted_days.append(day_tuple)
 
-        ptimes = v[tk.TIMES]
-        for time in times:
-            line = line + f'{format_time(ptimes[time]).ljust(width, " ")}'
-        ret += line + '\n'
+    col_padding = c.COLUMN_PADDING
+    dt_header_width = max(len(item[0])
+                          for item in formatted_days) + col_padding
+    idt_header_width = max(len(item[1])
+                           for item in formatted_days) + col_padding
+    time_header_width = max(max(len(tm) for tm in day[2:])
+                            for day in formatted_days) + col_padding
+
+    for line in formatted_days:
+        ret += line[0].ljust(dt_header_width, " ")
+        ret += line[1].ljust(idt_header_width, " ")
+        for tm in line[2:]:
+            ret += tm.ljust(time_header_width, " ")
+        ret += '\n'
+
     return ret
 
 
