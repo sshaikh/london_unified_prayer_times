@@ -12,6 +12,16 @@ A library for retrieving data from The London Unified Prayer Timetable.
 -  Free software: GNU General Public License v3
 -  Documentation: https://london-unified-prayer-times.readthedocs.io.
 
+What is this?
+-------------
+
+Mainly a Python library to retrieve, store and update a local prayer
+timetable for the London region using a format that happens to feed
+https://www.eastlondonmosque.org.uk.
+
+Also provided is a command line utility to manage and query the
+timetable.
+
 Features
 --------
 
@@ -27,15 +37,13 @@ Once initialised, the cli can:
 -  Show the times for a month in calendar format
 -  Show the current and next prayer time in relative formats
 
-What is this?
--------------
+Installing
+----------
 
-Mainly a Python library to retrieve, store and update a local prayer
-timetable for the London region using a format that happens to feed
-https://www.eastlondonmosque.org.uk.
+``pip install london-unified-prayer-times``
 
-Also provided is a command line utility to manage and query the
-timetable.
+Alternatively Arch users can install via the AUR at:
+https://aur.archlinux.org/packages/python-london-unified-prayer-times/
 
 FAQ
 ---
