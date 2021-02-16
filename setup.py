@@ -4,10 +4,10 @@
 
 from setuptools import setup, find_packages
 
-with open('README.md') as readme_file:
+with open('README.rst') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.md') as history_file:
+with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = ['Click',
@@ -44,7 +44,6 @@ setup(
     install_requires=requirements,
     license="GNU General Public License v3",
     long_description=readme + '\n\n' + history,
-    long_description_content_type='text/markdown',
     include_package_data=True,
     keywords='london_unified_prayer_times',
     name='london_unified_prayer_times',
@@ -53,6 +52,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/sshaikh/london_unified_prayer_times',
-    version='1.0.0',
+    version='1.0.1',
     zip_safe=False,
 )
