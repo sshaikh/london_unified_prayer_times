@@ -1,0 +1,71 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - mock.location.com
+      User-Agent:
+      - Mozilla/5.0
+    method: GET
+    uri: https://mock.location.com/prayer-times
+  response:
+    body:
+      string: "\n<!DOCTYPE html>\n<!--[if gt IE 8]><!-->\n<html lang=\"en\" class=\"no-js\">\n<body
+        class=\"pagesPostBody prayer-times loginSection pf_noHeaderMedia\">\n<footer
+        id=\"pageFooterWrapper\" class=\"pageFooterWrapper\">\n<div class=\"pageFooter\"><section
+        class=\"footerBox footerBox5 Prayerdata\">\n<table class=\"tableizer-table\">\n<thead>\n<tr
+        class=\"tableizer-firstrow\">\n<th>Gregorian date</th>\n<th>Islamic day</th>\n<th>Islamic
+        month</th>\n<th>Islamic year</th>\n<th>Sunrise</th>\n<th>Fajr Begins</th>\n<th>Fajr
+        Jam\u0101'ah</th>\n<th>Zuhr Begins</th>\n<th>Zuhr Jam\u0101'ah</th>\n<th>Asr
+        Mithl 1</th>\n<th>Asr Mithl 2</th>\n<th>Asr Jam\u0101'ah</th>\n<th>Maghrib
+        Begins</th>\n<th>Maghrib Jam\u0101'ah</th>\n<th>Ish\u0101 Begins</th>\n<th>Ish\u0101
+        Jam\u0101'ah</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>01/10/2021</td>\n<td>24</td>\n<td>Safar</td>\n<td>1443</td>\n<td>6:58</td>\n<td>5:30</td>\n<td>5:50</td>\n<td>12:55</td>\n<td>1:45</td>\n<td>3:56</td>\n<td>4:43</td>\n<td>5:00</td>\n<td>6:41</td>\n<td>6:48</td>\n<td>7:59</td>\n<td>8:15</td>\n</tr>\n<tr>\n<td>02/10/2021</td>\n<td>25</td>\n<td>Safar</td>\n<td>1443</td>\n<td>7:00</td>\n<td>5:32</td>\n<td>5:52</td>\n<td>12:55</td>\n<td>1:30</td>\n<td>3:54</td>\n<td>4:41</td>\n<td>5:00</td>\n<td>6:39</td>\n<td>6:46</td>\n<td>7:57</td>\n<td>8:15</td>\n</tr>\n<tr>\n<td>03/10/2021</td>\n<td>26</td>\n<td>Safar</td>\n<td>1443</td>\n<td>7:02</td>\n<td>5:34</td>\n<td>5:54</td>\n<td>12:54</td>\n<td>1:30</td>\n<td>3:53</td>\n<td>4:39</td>\n<td>5:00</td>\n<td>6:36</td>\n<td>6:43</td>\n<td>7:55</td>\n<td>8:15</td>\n</tr>\n</tbody>\n</table>\n</section>\n
+        </div>\n</footer>\n\n\n\n
+        </body>\n</html>\n"
+    headers:
+      Access-Control-Expose-Headers:
+      - Request-Context
+      Age:
+      - '15'
+      CF-Cache-Status:
+      - HIT
+      CF-Ray:
+      - 641ec4f5ca8906fd-LHR
+      Connection:
+      - close
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Sun, 18 Apr 2021 15:01:36 GMT
+      Expect-CT:
+      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
+      Expires:
+      - Sun, 18 Apr 2021 19:01:36 GMT
+      Pragma:
+      - no-cache
+      Request-Context:
+      - appId=cid-v1:41a1386f-21c5-4910-962f-f343eaf534f2
+      Server:
+      - cloudflare
+      Set-Cookie:
+      - __cfduid=d7c9530afa39a85c28d06afc237bb793b1618758096; expires=Tue, 18-May-21
+        15:01:36 GMT; path=/; domain=.mock.location.com; HttpOnly; SameSite=Lax;
+        Secure
+      Strict-Transport-Security:
+      - max-age=15552000; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-HTML-Edge-Cache-Status:
+      - HIT
+      X-XSS-Protection:
+      - 1; mode=block
+      cf-request-id:
+      - 0987196d9b000006fdd294a000000001
+    status:
+      code: 200
+      message: OK
+version: 1

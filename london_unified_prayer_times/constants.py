@@ -29,10 +29,11 @@ class ConfigKeys(Enum):
     DEFAULT_TIMES = 'default_times'
     DEFAULT_REPLACE_STRINGS = 'default_replace_strings'
     JSON_DATA_PATH = 'json_data_path'
-    JSON_GREGORIAN_DATE = 'json_gregorian_date'
-    JSON_ISLAMIC_DAY = 'json_islamic_day'
-    JSON_ISLAMIC_MONTH = 'json_islamic_month'
-    JSON_ISLAMIC_YEAR = 'json_islamic_year'
+    HTML_TABLE_CSS_CLASS = 'html_table_css_class'
+    DATA_GREGORIAN_DATE = 'data_gregorian_date'
+    DATA_ISLAMIC_DAY = 'data_islamic_day'
+    DATA_ISLAMIC_MONTH = 'data_islamic_month'
+    DATA_ISLAMIC_YEAR = 'data_islamic_year'
     CACHE_EXPIRY = 'cache_expiry'
 
 

@@ -5,7 +5,7 @@ interactions:
       Connection:
       - close
       Host:
-      - script.googleusercontent.com
+      - mock.location.com
       User-Agent:
       - Python-urllib/3.9
     method: GET
@@ -24,7 +24,7 @@ interactions:
 
         <H1>Moved Temporarily</H1>
 
-        The document has moved <A HREF="https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec">here</A>.
+        The document has moved <A HREF="https://mock.location.com/">here</A>.
 
         </BODY>
 
@@ -52,7 +52,7 @@ interactions:
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Location:
-      - https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec
+      - https://mock.location.com/lupt
       Pragma:
       - no-cache
       Server:
@@ -76,11 +76,11 @@ interactions:
       Connection:
       - close
       Host:
-      - script.google.com
+      - mock.location.com
       User-Agent:
       - Python-urllib/3.9
     method: GET
-    uri: https://script.google.com/macros/s/AKfycbyQTVEMoCavXbeQVTQr80n1AQLPk5PLLJPbpE-KqvB_9h-LV1ps/exec
+    uri: https://mock.location.com/lupt 
   response:
     body:
       string: '<HTML>
@@ -95,7 +95,7 @@ interactions:
 
         <H1>Moved Temporarily</H1>
 
-        The document has moved <A HREF="https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&amp;lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH">here</A>.
+        The document has moved 
 
         </BODY>
 
@@ -123,7 +123,7 @@ interactions:
       Expires:
       - Mon, 01 Jan 1990 00:00:00 GMT
       Location:
-      - https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH
+      - https://mock.location.com/
       Pragma:
       - no-cache
       Server:
@@ -147,11 +147,11 @@ interactions:
       Connection:
       - close
       Host:
-      - script.googleusercontent.com
+      - mock.location.com
       User-Agent:
       - Python-urllib/3.9
     method: GET
-    uri: https://script.googleusercontent.com/macros/echo?user_content_key=yophrd2Cuhc8BzgN-YiuT7JK_AcxWTgr-M12adTcG_NHGTIkXukIjsjiQKDzuAAtZ8SUwLzz2REt-aA8Fgi98kVhSnn-yvnNm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnK__4VCI9cUfislTBEwE9483B0TZ_HJEksaW92hDCPez_yZEOM1K-ZWz7rJarf50_NsAUXIaJqQ5&lib=MnbyLqsdFHGdCo2Zr5NhOSJA7VlBhJiiH
+    uri: https://mock.location.com/
   response:
     body:
       string: "{\"data\":[{\"gregoriandate\":\"2020-09-30T23:00:00.000Z\",\"islamicday\"\

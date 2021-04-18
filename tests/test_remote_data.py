@@ -8,3 +8,10 @@ def test_get_json_data():
     url = ("https://mock.location.com/lupt")
     json = remote_data.get_json_data(url, config.lupt_schema)
     assert json is not None
+
+
+@pytest.mark.vcr()
+def test_get_html_data():
+    url = ("https://mock.location.com/prayer-times")
+    data = remote_data.get_html_data(url, "Prayerdata")
+    assert data is not None

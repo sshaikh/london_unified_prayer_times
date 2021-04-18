@@ -26,9 +26,10 @@
 		["mithl1", ""],
 		["jamāah", " jamāah"]],
 	"json_data_path": ["data"],
-	"json_gregorian_date": "gregoriandate",
-	"json_islamic_day": "islamicday",
-	"json_islamic_month": "islamicmonth",
-	"json_islamic_year": "islamicyear",
+	"html_table_css_class": "Prayerdata",
+	"data_gregorian_date": "gregoriandate",
+	"data_islamic_day": "islamicday",
+	"data_islamic_month": "islamicmonth",
+	"data_islamic_year": "islamicyear",
 	"cache_expiry": 2
 }

@@ -69,25 +69,25 @@ def build_timetable(name, source, config, schema, json):
     results = create_empty_timetable(name, source, config, schema)
     dates = results[tk.DATES]
     data = (sorted(resolve_dict(json, config[ck.JSON_DATA_PATH]),
-                   key=lambda k: k[config[ck.JSON_GREGORIAN_DATE]]))
+                   key=lambda k: k[config[ck.DATA_GREGORIAN_DATE]]))
 
     yesterday = None
     islamic_months = set()
 
     for day in data:
-        dt = fix_gregorian_date(day[config[ck.JSON_GREGORIAN_DATE]],
+        dt = fix_gregorian_date(day[config[ck.DATA_GREGORIAN_DATE]],
                                 config[ck.TIMEZONE])
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}
         day_entry[tk.ISLAMIC_DATES] = islamicdates
 
-        islamic_month = day[config[ck.JSON_ISLAMIC_MONTH]]
+        islamic_month = day[config[ck.DATA_ISLAMIC_MONTH]]
         islamic_months.add(islamic_month)
 
-        today = (int(day[config[ck.JSON_ISLAMIC_YEAR]]),
+        today = (int(day[config[ck.DATA_ISLAMIC_YEAR]]),
                  islamic_month,
-                 int(day[config[ck.JSON_ISLAMIC_DAY]]))
+                 int(day[config[ck.DATA_ISLAMIC_DAY]]))
         islamicdates[tk.TODAY] = today
         if yesterday is not None:
             yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today

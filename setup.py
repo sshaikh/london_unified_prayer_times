@@ -16,7 +16,8 @@ requirements = ['Click',
                 'python-dateutil',
                 'appdirs',
                 'tzlocal',
-                'humanize']
+                'humanize',
+                'beautifulsoup4']
 
 setup_requirements = ['pytest-runner', ]
 
