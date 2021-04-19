@@ -71,7 +71,7 @@ little… lacking. As with all great programmers, I believe the tool to
 make sense out of the box. You can drop me a line if you get stuck -
 eventually that will form the documentation.
 
-Why not just use on of the many Prayer Time libraries available on Pypi?
+Why not just use on of the many Prayer Time libraries available on PyPi?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In short, because they won't output London Unified Prayer Times.
@@ -91,7 +91,7 @@ and so has the mindshare of many mosques across London. So if you want
 your application to likely match the timetable of your local London
 mosque, this this library may be for you.
 
-Most of the existing Pypi libraries also choose to wrap
+Most of the existing PyPi libraries also choose to wrap
 https://aladhan.com/, which means they require an online connection to
 operate (which although convenient seems a bit convoluted for a
 calculation that could easily be performed locally). The aim of this
