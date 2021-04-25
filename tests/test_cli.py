@@ -22,8 +22,7 @@ def assert_cli(args, expected):
 def test_init(cache_mock):
     assert_cli(['init',
                 '--url', 'test_source',
-                '--config', 'config',
-                '--schema', 'schema'],
+                '--config', 'config'],
                'Successfully initialised pytest timetable ' +
                'with 3 dates from conftest.py')
 

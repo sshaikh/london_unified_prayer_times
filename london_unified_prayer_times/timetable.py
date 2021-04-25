@@ -8,9 +8,8 @@ tk = constants.TimetableKeys
 ck = constants.ConfigKeys
 
 
-def fix_gregorian_date(from_json, timezone):
-    dt = dateutil.parser.parse(from_json)
-    dt = dt.astimezone(timezone)
+def fix_gregorian_date(from_data, pinfo):
+    dt = dateutil.parser.parse(from_data, parserinfo=pinfo)
     return dt.date()
 
 
@@ -41,12 +40,11 @@ def unaware_prayer_time_to_utc(sample_time, sample_date,
                                prayers_config[ck.TIMEZONE], is_pm)
 
 
-def create_empty_timetable(name, source, config, schema):
+def create_empty_timetable(name, source, config):
     results = {}
     results[tk.NAME] = name
     results[tk.SETUP] = {}
     results[tk.SETUP][tk.SOURCE] = source
-    results[tk.SETUP][tk.SCHEMA] = schema
     results[tk.SETUP][tk.CONFIG] = config
     results[tk.STATS] = {}
     results[tk.STATS][tk.NUMBER_OF_DATES] = 0
@@ -58,25 +56,21 @@ def create_empty_timetable(name, source, config, schema):
     return results
 
 
-def resolve_dict(dic, path):
-    ret = dic
-    for p in path:
-        ret = ret[p]
-    return ret
-
-
-def build_timetable(name, source, config, schema, json):
-    results = create_empty_timetable(name, source, config, schema)
+def build_timetable(name, source, config, data):
+    results = create_empty_timetable(name, source, config)
     dates = results[tk.DATES]
-    data = (sorted(resolve_dict(json, config[ck.JSON_DATA_PATH]),
+    sorted_data = (sorted(data,
                    key=lambda k: k[config[ck.DATA_GREGORIAN_DATE]]))
 
     yesterday = None
     islamic_months = set()
 
-    for day in data:
-        dt = fix_gregorian_date(day[config[ck.DATA_GREGORIAN_DATE]],
-                                config[ck.TIMEZONE])
+    pinfo = dateutil.parser.parserinfo(config[ck.DAY_FIRST],
+                                       config[ck.YEAR_FIRST])
+
+    for day in sorted_data:
+        dt = fix_gregorian_date(day[config[ck.DATA_GREGORIAN_DATE]], pinfo)
+
         day_entry = {}
         dates[dt] = day_entry
         islamicdates = {}

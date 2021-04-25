@@ -51,7 +51,7 @@ def get_day(timetable, date, use_times):
 
 def get_month(timetable, year, month, use_times):
     times = extract_times(timetable, use_times)
-    header = ('date', 'islamic date', times)
+    header = ('Date', 'Islamic Date', times)
 
     days = [(dt, tms[tk.ISLAMIC_DATES][tk.TODAY],
              [tms[tk.TIMES][tm] for tm in times])
@@ -72,8 +72,7 @@ def get_info(timetable):
 
 
 def get_config(timetable):
-    return (timetable[tk.SETUP][tk.CONFIG],
-            timetable[tk.SETUP][tk.SCHEMA])
+    return timetable[tk.SETUP][tk.CONFIG]
 
 
 def get_now_and_next(timetable, time_filter, query_time):

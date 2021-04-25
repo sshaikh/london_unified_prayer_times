@@ -51,7 +51,7 @@ FAQ
 This doesn't work! Why's it asking for a URL?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This library is designed to download timetable data held in JSON format
+This library is designed to download timetable data held in HTML format
 and accessible via a URL. It's up to the user of the library to provide
 that URL. There is at least one such URL in the public domain, but that
 address isn't provided here.

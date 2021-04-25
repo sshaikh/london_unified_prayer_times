@@ -54,11 +54,10 @@ def load_timetable(name, refresh_delta):
     return tt
 
 
-def init_timetable(name, source, config, schema):
-    json = remote_data.get_json_data(source, schema)
+def init_timetable(name, source, config):
+    data = remote_data.get_html_data(source, config[ck.HTML_TABLE_CSS_CLASS])
     built_timetable = timetable.build_timetable(name, source,
-                                                config, schema,
-                                                json)
+                                                config, data)
     cache_timetable(built_timetable)
     return built_timetable
 
@@ -66,11 +65,10 @@ def init_timetable(name, source, config, schema):
 def refresh_timetable(timetable):
     setup = timetable[tk.SETUP]
     url = setup[tk.SOURCE]
-    schema = setup[tk.SCHEMA]
     config = setup[tk.CONFIG]
     name = timetable[tk.NAME]
     try:
-        return init_timetable(name, url, config, schema)
+        return init_timetable(name, url, config)
     except Exception:
         return load_cached_timetable(name)
 

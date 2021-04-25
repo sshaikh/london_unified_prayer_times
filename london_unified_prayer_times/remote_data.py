@@ -1,18 +1,5 @@
 import urllib.request
-import json
-import jsonschema
 from bs4 import BeautifulSoup
-
-
-def get_json_data(url, schema):
-    with urllib.request.urlopen(url) as data:
-        json_data = json.loads(data.read().decode())
-        jsonschema.validate(json_data, schema)
-        return json_data
-
-
-def clean_string(s):
-    return "".join([i for i in s if i not in " '"]).lower()
 
 
 def get_html_data(url, css_class):
@@ -22,7 +9,7 @@ def get_html_data(url, css_class):
         soup = BeautifulSoup(response, 'html.parser')
         prayerdata = soup.find("section", class_=css_class).table
 
-        headings = [clean_string(th.get_text())
+        headings = [th.get_text()
                     for th in prayerdata.thead.tr.find_all("th")]
 
         web_data = []

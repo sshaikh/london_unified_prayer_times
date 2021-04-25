@@ -1,4 +1,3 @@
-import json
 import humanize
 import calendar
 from datetime import date
@@ -45,10 +44,8 @@ def show_info(tt):
 
     config = query.get_config(tt)
     ret += '\nConfig:\n\n'
-    ret += str(config[0])
+    ret += str(config)
 
-    ret += '\n\nSchema:\n\n'
-    ret += json.dumps(config[1]) + '\n'
     return ret
 
 
@@ -61,7 +58,7 @@ def perform_replace_strings(string, replace_strings):
 
 def extract_replace_strings(replace_strings, tt):
     return (replace_strings or
-            query.get_config(tt)[0][ck.DEFAULT_REPLACE_STRINGS])
+            query.get_config(tt)[ck.DEFAULT_REPLACE_STRINGS])
 
 
 def show_day(tt, dt, use_times, replace_strings, hours, tz):

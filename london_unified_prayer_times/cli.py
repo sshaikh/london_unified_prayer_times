@@ -39,6 +39,7 @@ clk = constants.ClickKeys
               type=int,
               default=None,
               help='Override configured cache expiry (weeks)')
+@click.version_option()
 @click.pass_context
 def main(ctx, timetable, hours, timezone, time_filter,
          replace_strings, cache_expiry):
@@ -59,16 +60,12 @@ def main(ctx, timetable, hours, timezone, time_filter,
               help='URL to retrive timetable from')
 @click.option('--config', '-c', 'config_file',
               help='Location of custom config')
-@click.option('--schema', '-s', 'schema_file',
-              help='Location of custom schema')
-def init(ctx, url, config_file, schema_file):
+def init(ctx, url, config_file):
     name = ctx.obj[clk.NAME]
     safe_config = config.load_config(config_file)
-    safe_schema = config.load_schema(schema_file)
     tt = cache.init_timetable(name,
                               url,
-                              safe_config,
-                              safe_schema)
+                              safe_config)
 
     info = query.get_info(tt)
 

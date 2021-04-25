@@ -12,14 +12,14 @@ ck = constants.ConfigKeys
 
 def test_islamic_date(three_day_timetable):
     today = query.get_islamic_date_today(three_day_timetable,
-                                         date(2020, 10, 2))
-    assert today == (1442, "Safar", 15)
+                                         date(2021, 10, 2))
+    assert today == (1443, "Safar", 25)
 
 
 def test_islamic_date_tomorrow(three_day_timetable):
     tomorrow = query.get_islamic_date_tomorrow(three_day_timetable,
-                                               date(2020, 10, 2))
-    assert tomorrow == (1442, "Safar", 16)
+                                               date(2021, 10, 2))
+    assert tomorrow == (1443, "Safar", 26)
 
 
 def test_available_times(three_day_timetable):
@@ -31,8 +31,7 @@ def test_available_times(three_day_timetable):
 def test_available_times_empty_timetable():
     tt = timetable.create_empty_timetable('test',
                                           'url',
-                                          config.default_config,
-                                          config.lupt_schema)
+                                          config.default_config)
     list_times = query.get_available_times(tt)
 
     assert len(list_times) == 12
@@ -40,27 +39,27 @@ def test_available_times_empty_timetable():
 
 def test_time(three_day_timetable):
     time = query.get_time(three_day_timetable,
-                          date(2020, 10, 2),
-                          "sunrise")
-    assert time == test_timetable.create_utc_datetime(2020, 10, 2, 6, 0)
+                          date(2021, 10, 2),
+                          "Sunrise")
+    assert time == test_timetable.create_utc_datetime(2021, 10, 2, 6, 0)
 
 
 def test_day(three_day_timetable):
-    day = query.get_day(three_day_timetable, date(2020, 10, 2), ['sunrise'])
-    assert day[0] == ('sunrise',
-                      test_timetable.create_utc_datetime(2020, 10, 2, 6, 0))
+    day = query.get_day(three_day_timetable, date(2021, 10, 2), ['Sunrise'])
+    assert day[0] == ('Sunrise',
+                      test_timetable.create_utc_datetime(2021, 10, 2, 6, 0))
 
 
 def test_get_month(three_day_timetable):
-    times = ['fajrbegins', 'sunrise']
-    (header, days) = query.get_month(three_day_timetable, 2020, 10, times)
+    times = ['Fajr Begins', 'Sunrise']
+    (header, days) = query.get_month(three_day_timetable, 2021, 10, times)
 
     assert len(header) == 3
     assert len(header[2]) == len(times)
     assert len(days) == 3
-    assert days[1] == (date(2020, 10, 2), (1442, 'Safar', 15),
-                       [test_timetable.create_utc_datetime(2020, 10, 2, 4, 32),
-                        test_timetable.create_utc_datetime(2020, 10, 2, 6, 0)])
+    assert days[1] == (date(2021, 10, 2), (1443, 'Safar', 25),
+                       [test_timetable.create_utc_datetime(2021, 10, 2, 4, 32),
+                        test_timetable.create_utc_datetime(2021, 10, 2, 6, 0)])
 
 
 def test_get_info(three_day_timetable):
@@ -78,8 +77,7 @@ def test_get_info(three_day_timetable):
 def test_get_config(three_day_timetable):
     tt = three_day_timetable
     data = query.get_config(tt)
-    assert data == (tt[tk.SETUP][tk.CONFIG],
-                    tt[tk.SETUP][tk.SCHEMA])
+    assert data == tt[tk.SETUP][tk.CONFIG]
 
 
 def help_test_now_and_next(tt, times, query_time, expected):
@@ -92,42 +90,42 @@ def help_test_now_and_next(tt, times, query_time, expected):
 
 def test_get_now_and_next(three_day_timetable):
     help_test_now_and_next(three_day_timetable,
-                           ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
-                           test_timetable.create_utc_datetime(2020, 10, 2,
+                           ['Fajr Begins', 'Zuhr Begins', 'Maghrib Begins'],
+                           test_timetable.create_utc_datetime(2021, 10, 2,
                                                               5, 0),
-                           (('fajrbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
+                           (('Fajr Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
                                                                 4, 32)),
-                            ('zuhrbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
+                            ('Zuhr Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
                                                                 11, 55))))
     help_test_now_and_next(three_day_timetable,
-                           ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
-                           test_timetable.create_utc_datetime(2020, 10, 2,
+                           ['Fajr Begins', 'Zuhr Begins', 'Maghrib Begins'],
+                           test_timetable.create_utc_datetime(2021, 10, 2,
                                                               14, 0),
-                           (('zuhrbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
+                           (('Zuhr Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
                                                                 11, 55)),
-                            ('maghribbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
-                                                                17, 38))))
+                            ('Maghrib Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
+                                                                17, 39))))
     help_test_now_and_next(three_day_timetable,
-                           ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
-                           test_timetable.create_utc_datetime(2020, 10, 2,
+                           ['Fajr Begins', 'Zuhr Begins', 'Maghrib Begins'],
+                           test_timetable.create_utc_datetime(2021, 10, 2,
                                                               18, 0),
-                           (('maghribbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
-                                                                17, 38)),
-                            ('fajrbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 3,
+                           (('Maghrib Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
+                                                                17, 39)),
+                            ('Fajr Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 3,
                                                                 4, 34))))
     help_test_now_and_next(three_day_timetable,
-                           ['fajrbegins', 'zuhrbegins', 'maghribbegins'],
-                           test_timetable.create_utc_datetime(2020, 10, 2,
+                           ['Fajr Begins', 'Zuhr Begins', 'Maghrib Begins'],
+                           test_timetable.create_utc_datetime(2021, 10, 2,
                                                               4, 0),
-                           (('maghribbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 1,
-                                                                17, 40)),
-                            ('fajrbegins',
-                             test_timetable.create_utc_datetime(2020, 10, 2,
+                           (('Maghrib Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 1,
+                                                                17, 41)),
+                            ('Fajr Begins',
+                             test_timetable.create_utc_datetime(2021, 10, 2,
                                                                 4, 32))))

@@ -18,13 +18,12 @@ def assert_timetable_components(data, name, url, size):
     assert data[tk.NAME] == name
     assert data[tk.SETUP][tk.SOURCE] == url
     assert len(data[tk.DATES]) == size
-    day = data[tk.DATES][datetime.date(2020, 10, 2)]
-    assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1442, "Safar", 15)
-    assert day[tk.ISLAMIC_DATES][tk.TOMORROW] == (1442, "Safar", 16)
-    assert (day[tk.TIMES]['sunrise'] ==
-            test_timetable.create_utc_datetime(2020, 10, 2, 6, 0))
+    day = data[tk.DATES][datetime.date(2021, 10, 2)]
+    assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1443, "Safar", 25)
+    assert day[tk.ISLAMIC_DATES][tk.TOMORROW] == (1443, "Safar", 26)
+    assert (day[tk.TIMES]['Sunrise'] ==
+            test_timetable.create_utc_datetime(2021, 10, 2, 6, 0))
     assert data[tk.SETUP][tk.CONFIG] == config.default_config
-    assert data[tk.SETUP][tk.SCHEMA] == config.lupt_schema
 
 
 def assert_timetable(data, timetable):
@@ -70,8 +69,7 @@ def test_init_timetable(three_unsorted_days_mock):
     url = ("https://mock.location.com/lupt")
     data = cache.init_timetable(pickle_filename,
                                 url,
-                                config.default_config,
-                                config.lupt_schema)
+                                config.default_config)
     assert_timetable_components(data, pickle_filename, url, 3)
 
 
@@ -88,12 +86,12 @@ def test_refresh_timetable_by_name(three_day_timetable,
 
 
 def help_auto_refresh(tt, week_delta):
-    faketime = (datetime.datetime(2020, 10, 15, 15, 15, 15) +
+    faketime = (datetime.datetime(2021, 10, 15, 15, 15, 15) +
                 datetime.timedelta(weeks=week_delta))
     tt[tk.STATS][tk.LAST_UPDATED] = faketime
 
 
-@freeze_time("2020-10-15 15:15:15")
+@freeze_time("2021-10-15 15:15:15")
 def test_refresh_timetable_on_load(three_day_timetable,
                                    cached_timetable_mock,
                                    refresh_cached_timetable_mock):
@@ -106,7 +104,7 @@ def test_refresh_timetable_on_load(three_day_timetable,
     assert cache.refresh_timetable.called
 
 
-@freeze_time("2020-10-15 15:15:15")
+@freeze_time("2021-10-15 15:15:15")
 def test_no_refresh_timetable_on_load(three_day_timetable,
                                       cached_timetable_mock,
                                       refresh_cached_timetable_mock):
@@ -119,7 +117,7 @@ def test_no_refresh_timetable_on_load(three_day_timetable,
     assert not cache.refresh_timetable.called
 
 
-@freeze_time("2020-10-15 15:15:15")
+@freeze_time("2021-10-15 15:15:15")
 def test_default_refresh_timetable_on_load(three_day_timetable,
                                            cached_timetable_mock,
                                            refresh_cached_timetable_mock):
