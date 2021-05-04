@@ -70,7 +70,7 @@ def show_day(tt, dt, use_times, replace_strings, hours, tz):
 
     (islamic_y, islamic_m, islamic_d) = query.get_islamic_date_today(tt, dt)
     ret = (f'{info[0].capitalize()} timetable for '
-           f'{humanize.naturaldate(dt)} '
+           f'{dt.strftime("%d %B %Y ")}'
            f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
 
     formatted_day = [(perform_replace_strings(time, rs),

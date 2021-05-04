@@ -16,7 +16,7 @@ def test_show_day(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
                           None, False, pytz.timezone('Europe/London'))
-    assert ('Pytest timetable for Oct 01 2021 (24 Safar 1443):\n\n'
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:      05:30') in ret
 
 
@@ -25,7 +25,7 @@ def test_show_day_replace(three_day_timetable):
     rs = [('Fajr', 'Jraf')]
     ret = report.show_day(three_day_timetable, dt, False,
                           rs, False, pytz.timezone('Europe/London'))
-    assert ('Pytest timetable for Oct 01 2021 (24 Safar 1443):\n\n'
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Jraf Begins:      05:30') in ret
 
 
@@ -34,14 +34,15 @@ def test_show_day_time_filter(three_day_timetable):
     use_times = ['Zuhr Begins']
     ret = report.show_day(three_day_timetable, dt, use_times,
                           None, False, pytz.timezone('Europe/London'))
-    assert 'Pytest timetable for Oct 01 2021 (24 Safar 1443):\n\nZuhr:' in ret
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
+            'Zuhr:') in ret
 
 
 def test_show_day_am(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
                           None, True, pytz.timezone('Europe/London'))
-    assert ('Pytest timetable for Oct 01 2021 (24 Safar 1443):\n\n'
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:       5:30 am') in ret
 
 
@@ -49,7 +50,7 @@ def test_show_day_tz(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
                           None, False, pytz.timezone('CET'))
-    assert ('Pytest timetable for Oct 01 2021 (24 Safar 1443):\n\n'
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:      06:30') in ret
 
 
