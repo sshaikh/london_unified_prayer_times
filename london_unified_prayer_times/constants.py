@@ -3,8 +3,7 @@ from enum import Enum
 
 class TimetableKeys(Enum):
     DATES = 'dates'
-    ISLAMIC_DATES = 'islamicdates'
-    TODAY = 'today'
+    ISLAMIC_DATE = 'islamicdate'
     TOMORROW = 'tomorrow'
     TIMES = 'times'
     SOURCE = 'source'

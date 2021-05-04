@@ -11,15 +11,9 @@ ck = constants.ConfigKeys
 
 
 def test_islamic_date(three_day_timetable):
-    today = query.get_islamic_date_today(three_day_timetable,
-                                         date(2021, 10, 2))
+    today = query.get_islamic_date(three_day_timetable,
+                                   date(2021, 10, 2))
     assert today == (1443, "Safar", 25)
-
-
-def test_islamic_date_tomorrow(three_day_timetable):
-    tomorrow = query.get_islamic_date_tomorrow(three_day_timetable,
-                                               date(2021, 10, 2))
-    assert tomorrow == (1443, "Safar", 26)
 
 
 def test_available_times(three_day_timetable):

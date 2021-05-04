@@ -8,16 +8,8 @@ tk = constants.TimetableKeys
 ck = constants.ConfigKeys
 
 
-def get_islamic_date(timetable, date, when):
-    return timetable[tk.DATES][date][tk.ISLAMIC_DATES][when]
-
-
-def get_islamic_date_today(timetable, date):
-    return get_islamic_date(timetable, date, tk.TODAY)
-
-
-def get_islamic_date_tomorrow(timetable, date):
-    return get_islamic_date(timetable, date, tk.TOMORROW)
+def get_islamic_date(timetable, date):
+    return timetable[tk.DATES][date][tk.ISLAMIC_DATE]
 
 
 def get_available_times(timetable):
@@ -53,7 +45,7 @@ def get_month(timetable, year, month, use_times):
     times = extract_times(timetable, use_times)
     header = ('Date', 'Islamic Date', times)
 
-    days = [(dt, tms[tk.ISLAMIC_DATES][tk.TODAY],
+    days = [(dt, tms[tk.ISLAMIC_DATE],
              [tms[tk.TIMES][tm] for tm in times])
             for dt, tms in timetable[tk.DATES].items()
             if dt.month == month and dt.year == year]

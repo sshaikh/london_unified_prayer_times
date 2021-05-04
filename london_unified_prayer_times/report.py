@@ -68,7 +68,7 @@ def show_day(tt, dt, use_times, replace_strings, hours, tz):
     info = query.get_info(tt)
     rs = extract_replace_strings(replace_strings, tt)
 
-    (islamic_y, islamic_m, islamic_d) = query.get_islamic_date_today(tt, dt)
+    (islamic_y, islamic_m, islamic_d) = query.get_islamic_date(tt, dt)
     ret = (f'{info[0].capitalize()} timetable for '
            f'{dt.strftime("%d %B %Y ")}'
            f'({islamic_d} {islamic_m} {islamic_y}):\n\n')
@@ -95,7 +95,7 @@ def show_calendar(tt, year, month, use_times, replace_strings, hours, tz):
     rs = extract_replace_strings(replace_strings, tt)
 
     dt = date(year, month, 1)
-    (islamic_y, islamic_m, _) = query.get_islamic_date_today(tt, dt)
+    (islamic_y, islamic_m, _) = query.get_islamic_date(tt, dt)
     (fdt, (islamic_y, islamic_m, _), _) = next(iter(days))
 
     ret = (f'{info[0].capitalize()} timetable for '

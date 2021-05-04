@@ -73,8 +73,6 @@ def build_timetable(name, source, config, data):
 
         day_entry = {}
         dates[dt] = day_entry
-        islamicdates = {}
-        day_entry[tk.ISLAMIC_DATES] = islamicdates
 
         islamic_month = day[config[ck.DATA_ISLAMIC_MONTH]]
         islamic_months.add(islamic_month)
@@ -82,9 +80,7 @@ def build_timetable(name, source, config, data):
         today = (int(day[config[ck.DATA_ISLAMIC_YEAR]]),
                  islamic_month,
                  int(day[config[ck.DATA_ISLAMIC_DAY]]))
-        islamicdates[tk.TODAY] = today
-        if yesterday is not None:
-            yesterday[tk.ISLAMIC_DATES][tk.TOMORROW] = today
+        day_entry[tk.ISLAMIC_DATE] = today
 
         prayers = {}
 
@@ -96,6 +92,10 @@ def build_timetable(name, source, config, data):
 
         day_entry[tk.TIMES] = {k: v for k, v in
                                sorted(prayers.items(), key=lambda k: k[1])}
+
+        if yesterday is not None:
+            yesterday[tk.TOMORROW] = day_entry
+
         yesterday = day_entry
 
     results[tk.STATS][tk.NUMBER_OF_DATES] = len(dates)

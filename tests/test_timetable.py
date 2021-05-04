@@ -147,8 +147,15 @@ def test_get_list_of_date_items(three_day_timetable):
     date_dict = three_day_timetable[tk.DATES]
     assert three_day_timetable[tk.STATS][tk.NUMBER_OF_DATES] == len(date_dict)
     dt = date_dict[datetime.date(2021, 10, 2)]
-    assert dt[tk.ISLAMIC_DATES][tk.TODAY] == (1443, "Safar", 25)
-    assert dt[tk.ISLAMIC_DATES][tk.TOMORROW] == (1443, "Safar", 26)
+    assert dt[tk.ISLAMIC_DATE] == (1443, "Safar", 25)
+
+
+def test_tomorrow(three_day_timetable):
+    date_dict = three_day_timetable[tk.DATES]
+    dt = date_dict[datetime.date(2021, 10, 1)]
+    tomorrow = date_dict[datetime.date(2021, 10, 2)]
+
+    assert dt[tk.TOMORROW] == tomorrow
 
 
 def test_get_sorted_prayer_times(three_day_timetable):
@@ -158,7 +165,7 @@ def test_get_sorted_prayer_times(three_day_timetable):
     dates = three_day_timetable[tk.DATES]
 
     day = dates[datetime.date(2021, 10, 2)]
-    assert len(day) == 2
+    assert len(day) == 3
 
     times = day[tk.TIMES]
     assert len(times) == len(prayers_config[ck.TIMES])

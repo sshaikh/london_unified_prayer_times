@@ -19,8 +19,7 @@ def assert_timetable_components(data, name, url, size):
     assert data[tk.SETUP][tk.SOURCE] == url
     assert len(data[tk.DATES]) == size
     day = data[tk.DATES][datetime.date(2021, 10, 2)]
-    assert day[tk.ISLAMIC_DATES][tk.TODAY] == (1443, "Safar", 25)
-    assert day[tk.ISLAMIC_DATES][tk.TOMORROW] == (1443, "Safar", 26)
+    assert day[tk.ISLAMIC_DATE] == (1443, "Safar", 25)
     assert (day[tk.TIMES]['Sunrise'] ==
             test_timetable.create_utc_datetime(2021, 10, 2, 6, 0))
     assert data[tk.SETUP][tk.CONFIG] == config.default_config
