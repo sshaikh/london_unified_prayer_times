@@ -15,3 +15,8 @@ History
 ------------------
 
 -  Now scrape from HTML page. 
+
+1.2.0 (2021-05-04)
+------------------
+
+-  Each day entry now has easier access to tomorrow's day entry
