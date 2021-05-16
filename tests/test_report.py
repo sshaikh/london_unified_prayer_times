@@ -38,6 +38,15 @@ def test_show_day_time_filter(three_day_timetable):
             'Zuhr:') in ret
 
 
+def test_show_day_time_filter_asr(three_day_timetable):
+    dt = date.fromisoformat('2021-10-01')
+    use_times = ['Asr Mithl 1']
+    ret = report.show_day(three_day_timetable, dt, use_times,
+                          None, False, pytz.timezone('Europe/London'))
+    assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
+            'Asr:') in ret
+
+
 def test_show_day_am(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,

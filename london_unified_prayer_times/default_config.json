@@ -25,7 +25,7 @@
                 "Ishā Begins"],
 	"default_replace_strings": [
 		[" Begins", ""],
-		["Mithl 1", ""]],
+		[" Mithl 1", ""]],
 	"html_table_css_class": "Prayerdata",
 	"data_gregorian_date": "Gregorian date",
 	"data_islamic_day": "Islamic day",
