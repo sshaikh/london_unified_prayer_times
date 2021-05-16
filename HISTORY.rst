@@ -20,3 +20,8 @@ History
 ------------------
 
 -  Each day entry now has easier access to tomorrow's day entry
+
+1.2.1 (2021-05-16)
+------------------
+
+-  Fixed default config for Mithl string replacement
