@@ -22,10 +22,9 @@ def cache_timetable(timetable):
     cache_dir, cache_file = get_cache_fileinfo(pickle_filename)
 
     os.makedirs(cache_dir, exist_ok=True)
-    try:
+
+    if os.path.exists(cache_file):
         os.remove(cache_file)
-    except OSError as e:
-        print("Error: %s - %s." % (e.filename, e.strerror))
 
     with open(cache_file, 'wb') as outfile:
         pickle.dump(timetable, outfile)

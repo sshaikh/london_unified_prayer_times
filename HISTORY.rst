@@ -25,3 +25,8 @@ History
 ------------------
 
 -  Fixed default config for Mithl string replacement
+
+1.2.2 (2021-05-26)
+------------------
+
+- Suppress printing error while initialising new timetable 
