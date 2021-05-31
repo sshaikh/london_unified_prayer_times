@@ -19,14 +19,19 @@ History
 1.2.0 (2021-05-04)
 ------------------
 
--  Each day entry now has easier access to tomorrow's day entry
+-  Each day entry now has easier access to tomorrow's day entry.
 
 1.2.1 (2021-05-16)
 ------------------
 
--  Fixed default config for Mithl string replacement
+-  Fixed default config for Mithl string replacement.
 
 1.2.2 (2021-05-26)
 ------------------
 
-- Suppress printing error while initialising new timetable 
+- Suppress printing error while initialising new timetable.
+
+1.2.3 (2021-05-31)
+------------------
+
+- Replace Mithl 2 by default.
