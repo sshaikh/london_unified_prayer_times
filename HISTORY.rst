@@ -40,3 +40,8 @@ History
 ------------------
 
 - Support dicts as replace strings configs.
+
+1.2.5 (2021-05-31)
+------------------
+
+- Default config now reloads from json instead of recylcing cached.

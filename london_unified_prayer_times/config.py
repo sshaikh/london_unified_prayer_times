@@ -20,7 +20,6 @@ def build_config(json):
 
 default_config_json = json.loads(
     pkg_resources.read_text(__package__, 'default_config.json'))
-default_config = build_config(default_config_json)
 
 
 def load_json(filename):
@@ -29,7 +28,11 @@ def load_json(filename):
 
 
 def safe_load(filename, generator, default):
-    return (filename and generator(filename)) or default
+    return (filename and generator(filename)) or default()
+
+
+def default_config():
+    return build_config(default_config_json)
 
 
 def load_config(filename):

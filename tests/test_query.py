@@ -25,7 +25,7 @@ def test_available_times(three_day_timetable):
 def test_available_times_empty_timetable():
     tt = timetable.create_empty_timetable('test',
                                           'url',
-                                          config.default_config)
+                                          config.default_config())
     list_times = query.get_available_times(tt)
 
     assert len(list_times) == 12

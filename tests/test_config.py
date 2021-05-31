@@ -13,3 +13,11 @@ def test_build_config():
     assert len(bconfig) == len(json)
     assert bconfig[ck.TIMEZONE] == pytz.timezone('Europe/London')
     assert bconfig[ck.CACHE_EXPIRY] == datetime.timedelta(weeks=2)
+
+
+def test_reload_config():
+    cfg = config.load_config(None)
+    backup = cfg[ck.DEFAULT_TIMES]
+    cfg[ck.DEFAULT_TIMES] = []
+    cfg = config.load_config(None)
+    assert cfg[ck.DEFAULT_TIMES] == backup

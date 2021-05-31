@@ -22,7 +22,7 @@ def assert_timetable_components(data, name, url, size):
     assert day[tk.ISLAMIC_DATE] == (1443, "Safar", 25)
     assert (day[tk.TIMES]['Sunrise'] ==
             test_timetable.create_utc_datetime(2021, 10, 2, 6, 0))
-    assert data[tk.SETUP][tk.CONFIG] == config.default_config
+    assert data[tk.SETUP][tk.CONFIG] == config.default_config()
 
 
 def assert_timetable(data, timetable):
@@ -68,7 +68,7 @@ def test_init_timetable(three_unsorted_days_mock):
     url = ("https://mock.location.com/lupt")
     data = cache.init_timetable(pickle_filename,
                                 url,
-                                config.default_config)
+                                config.default_config())
     assert_timetable_components(data, pickle_filename, url, 3)
 
 

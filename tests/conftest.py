@@ -109,7 +109,7 @@ def parserinfo():
 
 @pytest.fixture
 def three_day_timetable(three_unsorted_days):
-    prayers_config = config.default_config
+    prayers_config = config.default_config()
     return timetable.build_timetable('pytest',
                                      'conftest.py',
                                      prayers_config,
@@ -150,4 +150,4 @@ def cache_mock(three_day_timetable, mocker):
                  return_value=three_day_timetable)
     mocker.patch('london_unified_prayer_times.cli.config.' +
                  'load_config',
-                 return_value=config.default_config)
+                 return_value=config.default_config())

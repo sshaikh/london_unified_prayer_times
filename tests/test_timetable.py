@@ -56,7 +56,7 @@ def test_unaware_time_to_utc_gmt_pm():
 
 
 def test_is_zuhr_pm():
-    prayers_config = config.default_config
+    prayers_config = config.default_config()
     assert (timetable.is_ambigious_pm("Zuhr Begins", 11, prayers_config)
             is False)
     assert timetable.is_ambigious_pm("Zuhr Begins", 1, prayers_config) is True
@@ -68,7 +68,7 @@ def help_test_auto_am_pm(sample_time, sample_date, prayer, expected):
     found = timetable.unaware_prayer_time_to_utc(sample_time,
                                                  sample_date,
                                                  prayer,
-                                                 config.default_config)
+                                                 config.default_config())
 
     assert found == expected
 
@@ -125,7 +125,7 @@ def test_zuhr_am_pm_after_1pm_bst():
 def test_new_timetable():
     name = 'test_timetable'
     source = 'test_source'
-    dconfig = config.default_config
+    dconfig = config.default_config()
 
     new_timetable = timetable.create_empty_timetable(name,
                                                      source,
@@ -160,7 +160,7 @@ def test_tomorrow(three_day_timetable):
 
 def test_get_sorted_prayer_times(three_day_timetable):
     prayer = "Sunrise"
-    prayers_config = config.default_config
+    prayers_config = config.default_config()
 
     dates = three_day_timetable[tk.DATES]
 
