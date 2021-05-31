@@ -51,7 +51,7 @@ def show_info(tt):
 
 def perform_replace_strings(string, replace_strings):
     ret = string
-    for (s, g) in replace_strings:
+    for (s, g) in replace_strings.items():
         ret = ret.replace(s, g)
     return ret
 

@@ -22,7 +22,7 @@ def test_show_day(three_day_timetable):
 
 def test_show_day_replace(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
-    rs = [('Fajr', 'Jraf')]
+    rs = {'Fajr': 'Jraf'}
     ret = report.show_day(three_day_timetable, dt, False,
                           rs, False, pytz.timezone('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'

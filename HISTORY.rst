@@ -35,3 +35,8 @@ History
 ------------------
 
 - Replace Mithl 2 by default.
+
+1.2.4 (2021-05-31)
+------------------
+
+- Support dicts as replace strings configs.
