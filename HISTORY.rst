@@ -45,3 +45,8 @@ History
 ------------------
 
 - Default config now reloads from json instead of recylcing cached.
+
+1.2.6 (2021-06-17)
+------------------
+
+- Last Update time now explicitly stored as UTC.

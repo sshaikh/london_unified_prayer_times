@@ -51,7 +51,8 @@ def create_empty_timetable(name, source, config):
     results[tk.STATS][tk.MIN_DATE] = None
     results[tk.STATS][tk.MAX_DATE] = None
     results[tk.STATS][tk.ISLAMIC_MONTHS] = []
-    results[tk.STATS][tk.LAST_UPDATED] = datetime.datetime.utcnow()
+    now = datetime.datetime.utcnow()
+    results[tk.STATS][tk.LAST_UPDATED] = pytz.utc.localize(now)
     results[tk.DATES] = {}
     return results
 
