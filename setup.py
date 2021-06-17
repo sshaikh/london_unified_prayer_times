@@ -53,6 +53,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/sshaikh/london_unified_prayer_times',
-    version='1.2.6',
+    version='1.2.7',
     zip_safe=False,
 )

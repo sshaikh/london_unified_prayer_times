@@ -50,3 +50,8 @@ History
 ------------------
 
 - Last Update time now explicitly stored as UTC.
+
+1.2.7 (2021-06-17)
+------------------
+
+- Fixed bug in time comparison.

@@ -2,6 +2,7 @@ import appdirs
 import os
 import pickle
 import datetime
+import pytz
 from . import remote_data
 from . import timetable
 from . import constants
@@ -45,7 +46,7 @@ def load_timetable(name, refresh_delta):
         delta = tt[tk.SETUP][tk.CONFIG][ck.CACHE_EXPIRY]
 
     last_updated = tt[tk.STATS][tk.LAST_UPDATED]
-    cutoff = datetime.datetime.utcnow() - delta
+    cutoff = pytz.utc.localize(datetime.datetime.utcnow()) - delta
 
     if last_updated < cutoff:
         tt = refresh_timetable(tt)
