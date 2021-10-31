@@ -55,3 +55,9 @@ History
 ------------------
 
 - Fixed bug in time comparison.
+
+1.2.8 (2021-10-31)
+------------------
+
+- Removed pytz as deprecated
+- Removed TOMORROW as causing issues with pickling large timetables
