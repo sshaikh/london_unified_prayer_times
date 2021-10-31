@@ -150,14 +150,6 @@ def test_get_list_of_date_items(three_day_timetable):
     assert dt[tk.ISLAMIC_DATE] == (1443, "Safar", 25)
 
 
-def test_tomorrow(three_day_timetable):
-    date_dict = three_day_timetable[tk.DATES]
-    dt = date_dict[datetime.date(2021, 10, 1)]
-    tomorrow = date_dict[datetime.date(2021, 10, 2)]
-
-    assert dt[tk.TOMORROW] == tomorrow
-
-
 def test_get_sorted_prayer_times(three_day_timetable):
     prayer = "Sunrise"
     prayers_config = config.default_config()
@@ -165,7 +157,7 @@ def test_get_sorted_prayer_times(three_day_timetable):
     dates = three_day_timetable[tk.DATES]
 
     day = dates[datetime.date(2021, 10, 2)]
-    assert len(day) == 3
+    assert len(day) == 2
 
     times = day[tk.TIMES]
     assert len(times) == len(prayers_config[ck.TIMES])

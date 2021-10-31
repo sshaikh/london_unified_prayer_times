@@ -4,7 +4,6 @@ from enum import Enum
 class TimetableKeys(Enum):
     DATES = 'dates'
     ISLAMIC_DATE = 'islamicdate'
-    TOMORROW = 'tomorrow'
     TIMES = 'times'
     SOURCE = 'source'
     NAME = 'name'

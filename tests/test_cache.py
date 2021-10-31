@@ -2,6 +2,7 @@ import datetime
 import appdirs
 import os
 import pickle
+from zoneinfo import ZoneInfo
 from freezegun import freeze_time
 from london_unified_prayer_times import cache
 from london_unified_prayer_times import config
@@ -85,8 +86,10 @@ def test_refresh_timetable_by_name(three_day_timetable,
 
 
 def help_auto_refresh(tt, week_delta):
-    faketime = (datetime.datetime(2021, 10, 15, 15, 15, 15) +
-                datetime.timedelta(weeks=week_delta))
+    faketime = (datetime.datetime(
+                2021, 10, 15, 15, 15, 15,
+                tzinfo=ZoneInfo("UTC"))
+                + datetime.timedelta(weeks=week_delta))
     tt[tk.STATS][tk.LAST_UPDATED] = faketime
 
 

@@ -63,7 +63,6 @@ def build_timetable(name, source, config, data):
     sorted_data = (sorted(data,
                    key=lambda k: k[config[ck.DATA_GREGORIAN_DATE]]))
 
-    yesterday = None
     islamic_months = set()
 
     pinfo = dateutil.parser.parserinfo(config[ck.DAY_FIRST],
@@ -93,11 +92,6 @@ def build_timetable(name, source, config, data):
 
         day_entry[tk.TIMES] = {k: v for k, v in
                                sorted(prayers.items(), key=lambda k: k[1])}
-
-        if yesterday is not None:
-            yesterday[tk.TOMORROW] = day_entry
-
-        yesterday = day_entry
 
     results[tk.STATS][tk.NUMBER_OF_DATES] = len(dates)
     results[tk.STATS][tk.MIN_DATE] = min(dates.keys())
