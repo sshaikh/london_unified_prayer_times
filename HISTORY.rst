@@ -61,3 +61,8 @@ History
 
 - Removed pytz as deprecated
 - Removed TOMORROW as causing issues with pickling large timetables
+
+1.2.9 (2021-10-31)
+------------------
+
+- Removed unnecessary jsonpickle requirement
