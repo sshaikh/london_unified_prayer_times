@@ -1,5 +1,5 @@
 import dateutil.parser
-import pytz
+from zoneinfo import ZoneInfo
 import datetime
 from . import constants
 
@@ -17,8 +17,8 @@ def unaware_time_to_utc(h, m, sample_date, timezone, is_pm=False):
     if is_pm:
         h = h + 12
     time = datetime.time(h, m)
-    dt = timezone.localize(datetime.datetime.combine(sample_date, time))
-    dt_utc = dt.astimezone(pytz.utc)
+    dt = datetime.datetime.combine(sample_date, time).replace(tzinfo=timezone)
+    dt_utc = dt.astimezone(ZoneInfo("UTC"))
     return dt_utc
 
 
@@ -51,8 +51,8 @@ def create_empty_timetable(name, source, config):
     results[tk.STATS][tk.MIN_DATE] = None
     results[tk.STATS][tk.MAX_DATE] = None
     results[tk.STATS][tk.ISLAMIC_MONTHS] = []
-    now = datetime.datetime.utcnow()
-    results[tk.STATS][tk.LAST_UPDATED] = pytz.utc.localize(now)
+    now = datetime.datetime.utcnow().replace(tzinfo=ZoneInfo("UTC"))
+    results[tk.STATS][tk.LAST_UPDATED] = now
     results[tk.DATES] = {}
     return results
 

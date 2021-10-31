@@ -1,6 +1,6 @@
 from freezegun import freeze_time
 import datetime
-import pytz
+from zoneinfo import ZoneInfo
 from london_unified_prayer_times import config
 from london_unified_prayer_times import timetable
 from london_unified_prayer_times import constants
@@ -24,14 +24,14 @@ def test_fix_gregorian_date(parserinfo):
 
 def help_test_unaware_time_to_utc(sample_time, sample_date, expected,
                                   is_pm=False):
-    tz = pytz.timezone('Europe/London')
+    tz = ZoneInfo('Europe/London')
     h, m = map(int, sample_time.split(':'))
     found = timetable.unaware_time_to_utc(h, m, sample_date, tz, is_pm)
     assert found == expected
 
 
 def create_utc_datetime(y, m, d, hh, mm):
-    return pytz.utc.localize(datetime.datetime(y, m, d, hh, mm))
+    return datetime.datetime(y, m, d, hh, mm, tzinfo=ZoneInfo("UTC"))
 
 
 def test_unaware_time_to_utc_gmt():

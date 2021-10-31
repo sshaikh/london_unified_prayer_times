@@ -4,8 +4,8 @@ import click
 from click_default_group import DefaultGroup
 from datetime import date
 from datetime import datetime
-import pytz
 from tzlocal import get_localzone
+from zoneinfo import ZoneInfo
 from datetime import timedelta
 
 from . import cache
@@ -24,7 +24,7 @@ clk = constants.ClickKeys
 @click.option('--12h/--24h', 'hours', default=False,
               help='Render times in 24h or 12h')
 @click.option('--timezone', '-tz',
-              default=get_localzone().zone,
+              default=get_localzone(),
               help='Timezone to render times in')
 @click.option('--use-time', '-ut', 'time_filter',
               multiple=True,
@@ -105,7 +105,7 @@ def operate_timetable(ctx, operate):
         times = ctx.obj[clk.USE_TIMES]
         replace_strings = ctx.obj[clk.REPLACE_STRINGS]
         hours = ctx.obj[clk.HOURS]
-        tz = pytz.timezone(ctx.obj[clk.TIMEZONE])
+        tz = ZoneInfo(ctx.obj[clk.TIMEZONE])
         click.echo(operate(tt, times, replace_strings, hours, tz))
 
 

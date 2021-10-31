@@ -1,4 +1,4 @@
-import pytz
+from zoneinfo import ZoneInfo
 from datetime import date
 from datetime import datetime
 
@@ -15,7 +15,7 @@ def test_timetable_info(three_day_timetable):
 def test_show_day(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
-                          None, False, pytz.timezone('Europe/London'))
+                          None, False, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:      05:30') in ret
 
@@ -24,7 +24,7 @@ def test_show_day_replace(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     rs = {'Fajr': 'Jraf'}
     ret = report.show_day(three_day_timetable, dt, False,
-                          rs, False, pytz.timezone('Europe/London'))
+                          rs, False, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Jraf Begins:      05:30') in ret
 
@@ -33,7 +33,7 @@ def test_show_day_time_filter(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     use_times = ['Zuhr Begins']
     ret = report.show_day(three_day_timetable, dt, use_times,
-                          None, False, pytz.timezone('Europe/London'))
+                          None, False, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Zuhr:') in ret
 
@@ -42,7 +42,7 @@ def test_show_day_time_filter_asr(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     use_times = ['Asr Mithl 1']
     ret = report.show_day(three_day_timetable, dt, use_times,
-                          None, False, pytz.timezone('Europe/London'))
+                          None, False, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Asr:') in ret
 
@@ -50,7 +50,7 @@ def test_show_day_time_filter_asr(three_day_timetable):
 def test_show_day_am(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
-                          None, True, pytz.timezone('Europe/London'))
+                          None, True, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:       5:30 am') in ret
 
@@ -58,21 +58,21 @@ def test_show_day_am(three_day_timetable):
 def test_show_day_tz(three_day_timetable):
     dt = date.fromisoformat('2021-10-01')
     ret = report.show_day(three_day_timetable, dt, None,
-                          None, False, pytz.timezone('CET'))
+                          None, False, ZoneInfo('CET'))
     assert ('Pytest timetable for 01 October 2021 (24 Safar 1443):\n\n'
             'Fajr:      06:30') in ret
 
 
 def test_show_calendar(three_day_timetable):
     ret = report.show_calendar(three_day_timetable, 2021, 10, None, None,
-                               False, pytz.timezone('Europe/London'))
+                               False, ZoneInfo('Europe/London'))
     assert ('Pytest timetable for October 2021 (Safar 1443):\n\n') in ret
     assert 'Date        Islamic Date    Fajr' in ret
     assert '   1 FRI    24 Safar        05:30' in ret
 
 
 def test_now_next(three_day_timetable):
-    tz = pytz.timezone('Europe/London')
+    tz = ZoneInfo('Europe/London')
     t = datetime(2021, 10, 2, 6).astimezone(tz)
     ret = report.now_and_next(three_day_timetable, t, False,
                               ['Fajr Begins', 'Zuhr Begins'], None,
@@ -82,7 +82,7 @@ def test_now_next(three_day_timetable):
 
 
 def test_now_next_iso(three_day_timetable):
-    tz = pytz.timezone('Europe/London')
+    tz = ZoneInfo('Europe/London')
     t = datetime(2021, 10, 2, 6).astimezone(tz)
     ret = report.now_and_next(three_day_timetable, t, True,
                               ['Fajr Begins', 'Zuhr Begins'], None,
